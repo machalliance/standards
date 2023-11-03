@@ -2,6 +2,13 @@
 
 In this wiki, we define interoperability standards and provide reference materials to facilitate easy integration and collaboration across various platforms. We cover typical platform categories and define the roles of each platform in a composable digital solution landscape. Additionally, we provide reference architecture diagrams and entity samples to illustrate and support interoperability, ensuring a smooth and cohesive digital ecosystem.
 
+[Reference architecture diagrams](./diagrams)
+[Reference architecture examples](./diagrams/examples)
+[Platform definitions](./platforms)
+[Platform roles](./platforms/platform-roles.md)
+[Entity reference](./entity)
+[Interoperability Protocols best practice](./protocols)
+
 ## Intro to the MACH Alliance
 MACH Alliance promotes a technology ecosystem that is based on four key principles: Microservices-based, API-first, Cloud-native SaaS, and Headless. These principles ensure maximum flexibility, scalability, and interoperability for digital commerce platforms and other business applications.
 
