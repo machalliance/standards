@@ -14,6 +14,10 @@ In this wiki, we define interoperability standards and provide reference materia
 
 [Interoperability Protocols best practice](./protocols)
 
+
+[Interoperability Terminology](./terminology.md)
+
+
 ## Intro to the MACH Alliance
 MACH Alliance promotes a technology ecosystem that is based on four key principles: Microservices-based, API-first, Cloud-native SaaS, and Headless. These principles ensure maximum flexibility, scalability, and interoperability for digital commerce platforms and other business applications.
 
