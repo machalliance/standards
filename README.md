@@ -10,7 +10,7 @@ In this wiki, we define interoperability standards and provide reference materia
 
 [Platform roles](./platforms/platform-roles.md)
 
-[Entity reference](./entity)
+[Entity reference/Canonical Data Model (CDM)](./entity)
 
 [Interoperability Protocols best practice](./protocols)
 
