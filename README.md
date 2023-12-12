@@ -1,6 +1,6 @@
 # Welcome to the MACH Alliance interoperability standards!
 
-In this wiki, we define interoperability standards and provide reference materials to facilitate easy integration and collaboration across various platforms. We cover typical platform categories and define the roles of each platform in a composable digital solution landscape. Additionally, we provide reference architecture diagrams and entity samples to illustrate and support interoperability, ensuring a smooth and cohesive digital ecosystem.
+In this repo, we define interoperability standards and provide reference materials to facilitate easy integration and collaboration across various platforms. We cover typical platform categories and define the roles of each platform in a composable digital solution landscape. Additionally, we provide reference architecture diagrams and entity samples to illustrate and support interoperability, ensuring a smooth and cohesive digital ecosystem.
 
 [Reference architecture diagrams](./diagrams)
 
