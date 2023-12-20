@@ -6,6 +6,8 @@ In this repo, we define interoperability standards and provide reference materia
 
 [Reference architecture examples](./diagrams/examples)
 
+[Diagram tooling](./diagrams/tooling.md)
+
 [Platform definitions](./platforms)
 
 [Platform roles](./platforms/platform-roles.md)

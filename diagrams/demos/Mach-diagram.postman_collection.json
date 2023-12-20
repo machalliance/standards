@@ -1,0 +1,274 @@
+{
+	"info": {
+		"_postman_id": "cd85ca8e-24b5-45c4-81b9-22143a79a07f",
+		"name": "Mach-diagram",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "8422032"
+	},
+	"item": [
+		{
+			"name": "PNG example 1",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "image/svg+xml",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "image/png",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"rows\": [\n    [\"explainer-row\", {\"labels\": [{\"label\": \"DIGITAL CHANNELS\", \"column-span\": 5}]}],\n        [\"boxes-row\", {\"labels\": [\"WEBSITES\", \"ECOMMERCE\", \"CHANNELS\", \"\", \"\"]}],\n        [\"layers-separator\", {\"label\": \"DIGITAL EXPERIENCE COMPOSITION & FRONTEND\"}],\n        [\"layers-separator\", {\"label\": \"DATA ORCHESTRATION LAYER\"}],\n        [\"boxes-row\", {\"labels\": [\"CONTENT\", \"COMMERCE\", \"SEARCH\", \"LOYALTY\", \"ENGAGEMENT\"]}],\n        [\"layers-separator\", {\"label\": \"DATA INTEGRATION LAYER\"}],\n        [\"boxes-row\", {\"labels\": [\"PIM\", \"ERP\", \"OMS\", \"CRM\", \"BI\"]}]]}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://mach-diagrammer.azurewebsites.net/mach-diagram"
+			},
+			"response": []
+		},
+		{
+			"name": "PNG example 2",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "image/svg+xml",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "image/png",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rows\": [\n        [\"explainer-row\", {\"labels\": [{\"label\": \"DIGITAL CHANNELS\", \"column-span\": 5}]}],\n        [\"boxes-row\", {\"labels\": [\"WEBSITES\", \"STOREFRONT\", \"SELF SERVICE\", \"POS or APP\", \"MARKETPLACE\"]}],\n        [\"layers-separator\", {\"label\": \"DIGITAL EXPERIENCE COMPOSITION & FRONTEND\"}],\n        [\"layers-cutline\", {\"label\": \"Delivery and scale\"}],\n        [\"layers-separator\", {\"label\": \"DATA ORCHESTRATION LAYER\", \"comment\": \"Delivery API, CDN, API gateway, WAF, BFF, APIs directly from systems (depending on orchestration strategy and scale)\"}],\n        [\"explainer-row\", {\"labels\": [{\"label\": \"CONTENT\"}, {\"label\": \"COMMERCE\", \"column-span\": 2}, {\"label\": \"SUCCESS\"}, {\"label\": \"CUSTOMERS\"}]}],\n        [\"boxes-row\", {\"labels\": [\"CMS\", \"COMMERCE\", \"SEARCH\", \"LOYALTY\", \"CDP\"]}],\n        [\"boxes-row\", {\"labels\": [\"DAM\", \"PAYMENT\", \"RECOMMENDATION\", \"MARKETING\", \"IAM\"]}],\n        [\"boxes-row\", {\"labels\": [\"EXPERIENCE MGMT\", \"QUOTING\", \"PROMOTION\", \"CAMPAIGNS\", \"CUSTOMER SERVICE\"]}],\n        [\"layers-separator\", {\"label\": \"DATA INTEGRATION LAYER\", \"comment\": \"iPaaS, Enterprise Service Bus, or Event broker/Message queue, ETL Middleware (depending on integration strategy and legacy)\"}],\n        [\"boxes-row\", {\"labels\": [\"PIM\", \"ERP\", \"OMS\", \"CRM\", \"BI\"]}],\n        [\"boxes-row\", {\"labels\": [\"CPQ ENGINE\", \"FINANCE\", \"WMS\", \"FSM\", \"DWH\"]}],\n        [\"boxes-row\", {\"labels\": [\"PLM\", \"QMS\", \"TMS\", \"LMS\", \"DL\"]}]\n    ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://mach-diagrammer.azurewebsites.net/mach-diagram"
+			},
+			"response": []
+		},
+		{
+			"name": "PNG example 3",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "image/svg+xml",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "image/png",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rows\": [\n        [\"explainer-row\", {\"labels\": [{\"label\": \"DIGITAL CHANNELS\", \"column-span\": 5}]}],\n        [\"boxes-row\", {\"labels\": [\"WEBSITES\", \"STOREFRONT\", \"SELF SERVICE\", \"POS or APP\", \"MARKETPLACE\"]}],\n        [\"layers-separator\", {\"label\": \"DIGITAL EXPERIENCE COMPOSITION & FRONTEND\"}],\n        [\"layers-cutline\", {\"label\": \"Delivery and scale\"}],\n        [\"layers-separator\", {\"label\": \"DATA ORCHESTRATION LAYER\", \"comment\": \"Delivery API, CDN, API gateway, WAF, BFF, APIs directly from systems (depending on orchestration strategy and scale)\"}],\n        [\"explainer-row\", {\"labels\": [{\"label\": \"CONTENT\"}, {\"label\": \"COMMERCE\", \"column-span\": 2}, {\"label\": \"SUCCESS\"}, {\"label\": \"CUSTOMERS\"}]}],\n\n        [\"boxes-row\", {\"labels\": [\"CMS\", \"COMMERCE\", \"SEARCH\", \"LOYALTY\", \"CDP\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"Content entries\", \"Products\", \"FullTextSearch\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"Localization\", \"Cart\", \"Filtering/FacetedSearch\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"Taxonomies\", \"Discounts\", \"Search Rankings\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"Scheduling\", \"Payment Methods\", \"RelatedProducts?\", \"xx\", \"xx\"]}],\n\n        [\"boxes-row\", {\"labels\": [\"DAM\", \"PAYMENT\", \"RECOMMENDATION\", \"MARKETING\", \"IAM\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n\n        [\"boxes-row\", {\"labels\": [\"EXPERIENCE MGMT\", \"QUOTING\", \"PROMOTION\", \"CAMPAIGNS\", \"CUSTOMER SERVICE\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"layers-separator\", {\"label\": \"DATA INTEGRATION LAYER\", \"comment\": \"iPaaS, Enterprise Service Bus, or Event broker/Message queue, ETL Middleware (depending on integration strategy and legacy)\"}],\n        [\"boxes-row\", {\"labels\": [\"PIM\", \"ERP\", \"OMS\", \"CRM\", \"BI\"]}],\n        [\"boxes-row\", {\"labels\": [\"CPQ ENGINE\", \"FINANCE\", \"WMS\", \"FSM\", \"DWH\"]}],\n        [\"boxes-row\", {\"labels\": [\"PLM\", \"QMS\", \"TMS\", \"LMS\", \"DL\"]}]\n    ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://mach-diagrammer.azurewebsites.net/mach-diagram"
+			},
+			"response": []
+		},
+		{
+			"name": "SVG example 3",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "image/svg+xml",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "image/png",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rows\": [\n        [\"explainer-row\", {\"labels\": [{\"label\": \"DIGITAL CHANNELS\", \"column-span\": 5}]}],\n        [\"boxes-row\", {\"labels\": [\"WEBSITES\", \"STOREFRONT\", \"SELF SERVICE\", \"POS or APP\", \"MARKETPLACE\"]}],\n        [\"layers-separator\", {\"label\": \"DIGITAL EXPERIENCE COMPOSITION & FRONTEND\"}],\n        [\"layers-cutline\", {\"label\": \"Delivery and scale\"}],\n        [\"layers-separator\", {\"label\": \"DATA ORCHESTRATION LAYER\", \"comment\": \"Delivery API, CDN, API gateway, WAF, BFF, APIs directly from systems (depending on orchestration strategy and scale)\"}],\n        [\"explainer-row\", {\"labels\": [{\"label\": \"CONTENT\"}, {\"label\": \"COMMERCE\", \"column-span\": 2}, {\"label\": \"SUCCESS\"}, {\"label\": \"CUSTOMERS\"}]}],\n\n        [\"boxes-row\", {\"labels\": [\"CMS\", \"COMMERCE\", \"SEARCH\", \"LOYALTY\", \"CDP\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"Content entries\", \"Products\", \"FullTextSearch\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"Localization\", \"Cart\", \"Filtering/FacetedSearch\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"Taxonomies\", \"Discounts\", \"Search Rankings\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"Scheduling\", \"Payment Methods\", \"RelatedProducts?\", \"xx\", \"xx\"]}],\n\n        [\"boxes-row\", {\"labels\": [\"DAM\", \"PAYMENT\", \"RECOMMENDATION\", \"MARKETING\", \"IAM\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n\n        [\"boxes-row\", {\"labels\": [\"EXPERIENCE MGMT\", \"QUOTING\", \"PROMOTION\", \"CAMPAIGNS\", \"CUSTOMER SERVICE\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"xx\", \"xx\", \"xx\", \"xx\", \"xx\"]}],\n        [\"layers-separator\", {\"label\": \"DATA INTEGRATION LAYER\", \"comment\": \"iPaaS, Enterprise Service Bus, or Event broker/Message queue, ETL Middleware (depending on integration strategy and legacy)\"}],\n        [\"boxes-row\", {\"labels\": [\"PIM\", \"ERP\", \"OMS\", \"CRM\", \"BI\"]}],\n        [\"boxes-row\", {\"labels\": [\"CPQ ENGINE\", \"FINANCE\", \"WMS\", \"FSM\", \"DWH\"]}],\n        [\"boxes-row\", {\"labels\": [\"PLM\", \"QMS\", \"TMS\", \"LMS\", \"DL\"]}]\n    ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://mach-diagrammer.azurewebsites.net/mach-diagram"
+			},
+			"response": []
+		},
+		{
+			"name": "1 PNG DEMO",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "image/svg+xml",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "image/png",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rows\": [\n        [\"explainer-row\", {\"labels\": [{\"label\": \"DIGITAL CHANNELS\", \"column-span\": 5}]}],\n        [\"explainer-row\", {\"labels\": [{\"label\": \"THESE\"}, {\"label\": \"CAN\"}, {\"label\": \"SPAN\", \"column-span\": 2}, {\"label\": \"Or not :-)\"}]}],\n        [\"boxes-row\", {\"labels\": [\"for\", \"now\", \"it's\", \"five\", \"columns\"]}],\n        [\"boxes-row\", {\"labels\": [\"or\", \"less\"]}],\n        [\"boxes-row\", {\"labels\": [\"up\", \"to\", \"you\"]}],\n        [\"boxes-row\", {\"labels\": [\"and\", \"\", \"can\", \"\", \"skip\"]}],\n        [\"boxes-row\", {\"labels\": [\"\", \"\", \"\", \"\", \"boxes\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"Details\", \"boxes\", \"look\", \"DIFFERENT\", \"\"]}],\n        [\"layers-separator\", {\"label\": \"Layer separators can stand alone\"}],\n        [\"layers-separator\", {\"label\": \"Or have\", \"comment\": \"A comment row attached on them as well\"}],\n        [\"layers-cutline\", {\"label\": \"Cutlines are very simple\"}],\n        [\"layers-cutline\", {\"label\": \"And don't resize or adapt to text length for now\"}],\n        [\"layers-separator\", {\"label\": \"That's all\", \"comment\": \"Folks\"}]\n    ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://mach-diagrammer.azurewebsites.net/mach-diagram"
+			},
+			"response": []
+		},
+		{
+			"name": "1 SVG DEMO",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "image/svg+xml",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "image/png",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rows\": [\n        [\"explainer-row\", {\"labels\": [{\"label\": \"DIGITAL CHANNELS\", \"column-span\": 5}]}],\n        [\"explainer-row\", {\"labels\": [{\"label\": \"THESE\"}, {\"label\": \"CAN\"}, {\"label\": \"SPAN\", \"column-span\": 2}, {\"label\": \"Or not :-)\"}]}],\n        [\"boxes-row\", {\"labels\": [\"for\", \"now\", \"it's\", \"five\", \"columns\"]}],\n        [\"boxes-row\", {\"labels\": [\"or\", \"less\"]}],\n        [\"boxes-row\", {\"labels\": [\"up\", \"to\", \"you\"]}],\n        [\"boxes-row\", {\"labels\": [\"and\", \"\", \"can\", \"\", \"skip\"]}],\n        [\"boxes-row\", {\"labels\": [\"\", \"\", \"\", \"\", \"boxes\"]}],\n        [\"details-boxes-row\", {\"labels\": [\"Details\", \"boxes\", \"look\", \"DIFFERENT\", \"\"]}],\n        [\"layers-separator\", {\"label\": \"Layer separators can stand alone\"}],\n        [\"layers-separator\", {\"label\": \"Or have\", \"comment\": \"A comment row attached on them as well\"}],\n        [\"layers-cutline\", {\"label\": \"Cutlines are very simple\"}],\n        [\"layers-cutline\", {\"label\": \"And don't resize or adapt to text length for now\"}],\n        [\"layers-separator\", {\"label\": \"That's all\", \"comment\": \"Folks\"}]\n    ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://mach-diagrammer.azurewebsites.net/mach-diagram"
+			},
+			"response": []
+		},
+		{
+			"name": "SVG example 2",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "image/svg+xml",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "image/png",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rows\": [\n        [\"explainer-row\", {\"labels\": [{\"label\": \"DIGITAL CHANNELS\", \"column-span\": 5}]}],\n        [\"boxes-row\", {\"labels\": [\"WEBSITES\", \"STOREFRONT\", \"SELF SERVICE\", \"POS or APP\", \"MARKETPLACE\"]}],\n        [\"layers-separator\", {\"label\": \"DIGITAL EXPERIENCE COMPOSITION & FRONTEND\"}],\n        [\"layers-cutline\", {\"label\": \"Delivery and scale\"}],\n        [\"layers-separator\", {\"label\": \"DATA ORCHESTRATION LAYER\", \"comment\": \"Delivery API, CDN, API gateway, WAF, BFF, APIs directly from systems (depending on orchestration strategy and scale)\"}],\n        [\"explainer-row\", {\"labels\": [{\"label\": \"CONTENT\"}, {\"label\": \"COMMERCE\", \"column-span\": 2}, {\"label\": \"SUCCESS\"}, {\"label\": \"CUSTOMERS\"}]}],\n        [\"boxes-row\", {\"labels\": [\"CMS\", \"COMMERCE\", \"SEARCH\", \"LOYALTY\", \"CDP\"]}],\n        [\"boxes-row\", {\"labels\": [\"DAM\", \"PAYMENT\", \"RECOMMENDATION\", \"MARKETING\", \"IAM\"]}],\n        [\"boxes-row\", {\"labels\": [\"EXPERIENCE MGMT\", \"QUOTING\", \"PROMOTION\", \"CAMPAIGNS\", \"CUSTOMER SERVICE\"]}],\n        [\"layers-separator\", {\"label\": \"DATA INTEGRATION LAYER\", \"comment\": \"iPaaS, Enterprise Service Bus, or Event broker/Message queue, ETL Middleware (depending on integration strategy and legacy)\"}],\n        [\"boxes-row\", {\"labels\": [\"PIM\", \"ERP\", \"OMS\", \"CRM\", \"BI\"]}],\n        [\"boxes-row\", {\"labels\": [\"CPQ ENGINE\", \"FINANCE\", \"WMS\", \"FSM\", \"DWH\"]}],\n        [\"boxes-row\", {\"labels\": [\"PLM\", \"QMS\", \"TMS\", \"LMS\", \"DL\"]}]\n    ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://mach-diagrammer.azurewebsites.net/mach-diagram"
+			},
+			"response": []
+		},
+		{
+			"name": "SVG example 1",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "image/svg+xml",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "image/png",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"rows\": [\n    [\"explainer-row\", {\"labels\": [{\"label\": \"DIGITAL CHANNELS\", \"column-span\": 5}]}],\n        [\"boxes-row\", {\"labels\": [\"WEBSITES\", \"ECOMMERCE\", \"CHANNELS\", \"\", \"\"]}],\n        [\"layers-separator\", {\"label\": \"DIGITAL EXPERIENCE COMPOSITION & FRONTEND\"}],\n        [\"layers-separator\", {\"label\": \"DATA ORCHESTRATION LAYER\"}],\n        [\"boxes-row\", {\"labels\": [\"CONTENT\", \"COMMERCE\", \"SEARCH\", \"LOYALTY\", \"ENGAGEMENT\"]}],\n        [\"layers-separator\", {\"label\": \"DATA INTEGRATION LAYER\"}],\n        [\"boxes-row\", {\"labels\": [\"PIM\", \"ERP\", \"OMS\", \"CRM\", \"BI\"]}]]}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://mach-diagrammer.azurewebsites.net/mach-diagram"
+			},
+			"response": []
+		}
+	]
+}
