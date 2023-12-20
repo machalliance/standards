@@ -57,7 +57,7 @@ The rows of the desired diagram are simply specified after each other in this sa
 
 ### Laying constraints
 
-In this current version, the tool is expecting a diagram that has 5 rows. In practice this means that all fixed-width row types will span 5 rows as you'll see in later examples. If this becomes a significant limitation, this can be made more flexible in the future.
+In this current version, the tool is expecting a diagram that has 5 columns. In practice this means that all fixed-width row types will span 5 rows as you'll see in later examples. If this becomes a significant limitation, this can be made more flexible in the future.
 
 ## Row types
 
