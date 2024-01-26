@@ -1,6 +1,6 @@
 # MACH Alliance interoperability standards
 
-The resources collected in this repository aim to enable software developers to lead their company’s transformation to a composable web architecture following MACH principles. This includes:
+The resources collected in this repository aim to **enable software developers to lead their company’s transformation to a composable web architecture following MACH principles.** This includes:
 
 * Interoperability standards and reference materials which facilitate easy integration and collaboration across various platforms
 * Typical platform categories and the roles of each platform in a composable digital solution landscape
@@ -26,7 +26,7 @@ By adhering to these principles, the MACH Alliance aims to foster an ecosystem o
 
 ## Reference materials
 
-* [Platform definitions](./reference/platforms.md): defines three-letter-acronym platforms you’ll come across frequently in MACH materials.
+* **[Platform definitions](./reference/platforms.md):** defines three-letter-acronym platforms you’ll come across frequently in MACH materials.
 * Materials we’ll add in the future:
   * Reference architecture diagrams and examples
   * Platform roles
