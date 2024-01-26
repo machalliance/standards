@@ -6,6 +6,11 @@ The resources collected in this repository aim to enable software developers to 
 * Typical platform categories and the roles of each platform in a composable digital solution landscape
 * Reference architecture diagrams and entity samples to illustrate and support interoperability, which aim to ensure a smooth and cohesive digital ecosystem
 
+## Table of contents
+
+* [What are the MACH principles?](#what-are-the-mach-principles)
+* [Reference materials](#reference-materials)
+
 ## What are the MACH principles?
 The [MACH Alliance](https://machalliance.org/) promotes a technology ecosystem that is based on four key principles: Microservices-based, API-first, Cloud-native SaaS, and Headless. These principles ensure maximum flexibility, scalability, and interoperability for digital commerce platforms and other business applications.
 
