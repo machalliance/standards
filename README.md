@@ -9,9 +9,11 @@ The resources collected in this repository aim to **enable software developers t
 ## Table of contents
 
 * [What are the MACH principles?](#what-are-the-mach-principles)
+* [Guidance for software architects](#guidance-for-software-architects)
 * [Reference materials](#reference-materials)
 
 ## What are the MACH principles?
+
 The [MACH Alliance](https://machalliance.org/) promotes a technology ecosystem that is based on four key principles: Microservices-based, API-first, Cloud-native SaaS, and Headless. These principles ensure maximum flexibility, scalability, and interoperability for digital commerce platforms and other business applications.
 
 * **Microservices-based:** Microservices architecture breaks down a traditional monolithic application into smaller, independent services that are easier to develop, deploy, and scale.
@@ -23,6 +25,28 @@ The [MACH Alliance](https://machalliance.org/) promotes a technology ecosystem t
 * **Headless:** Headless technology decouples the front-end and back-end of an application, allowing for greater flexibility in how the user interface is built and delivered.
 
 By adhering to these principles, the MACH Alliance aims to foster an ecosystem of interoperable, best-of-breed technology solutions that empower businesses to build flexible, scalable, and future-proof digital platforms.
+
+## Guidance for software architects
+
+Not sure where to start on your MACH implementation journey? We recommend referencing these guides in the order they appear here. Refer also to [reference materials](#reference-materials) for additional detail.
+
+### Understanding composable architectures
+
+These guides introduce composable architectures at a high level, providing reference architectures and guidance on evaluating and integrating technologies.
+
+* Introducing MACH interoperability standards
+* How MACH technology works in composable solutions
+* Understanding composable architectures
+* MACH Reference Architecture
+* How to evaluate and integrate composable solutions
+
+### Leading the transformation
+
+Coming later. These guides will describe how to transition to an composable architecture as an organization.
+
+### Implementing composable
+
+Coming later. These guides will describe at a detailed component level how to implement a composable architecture, as well as expectations for system interoperability.
 
 ## Reference materials
 
