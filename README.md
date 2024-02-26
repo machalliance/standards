@@ -34,7 +34,7 @@ Not sure where to start on your MACH implementation journey? We recommend refere
 
 These guides introduce composable architectures at a high level, providing reference architectures and guidance on evaluating and integrating technologies.
 
-* Introducing MACH interoperability standards
+* [Introducing MACH interoperability standards](https://machalliance.org/insights/phase-ii-of-the-mach-alliance-interoperability-standards)
 * How MACH technology works in composable solutions
 * Understanding composable architectures
 * MACH Reference Architecture
