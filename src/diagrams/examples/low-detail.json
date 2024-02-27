@@ -1,0 +1,30 @@
+{
+  "rows": [
+    ["explainer-row", {
+      "labels": [
+        {"label": "DIGITAL CHANNELS", "column-span": 5}
+      ]
+    }],
+    ["boxes-row", {
+      "labels": ["WEBSITES", "STOREFRONT", "SELF SERVICE", "POS", "APP"]
+    }],
+    ["layers-separator", {
+      "label": "DIGITAL EXPERIENCE COMPOSITION & FRONTEND"
+    }],
+    ["layers-cutline", {
+      "label": "Delivery and scale"
+    }],
+    ["layers-separator", {
+      "label": "DATA ORCHESTRATION LAYER"
+    }],
+    ["boxes-row", {
+      "labels": ["CONTENT", "COMMERCE", "SEARCH", "LOYALTY", "ENGAGEMENT"]
+    }],
+    ["layers-separator", {
+      "label": "DATA INTEGRATION LAYER"
+    }],
+    ["boxes-row", {
+      "labels": ["MDM", "ERP", "OMS", "CRM", "BI"]
+    }]
+  ]
+}
