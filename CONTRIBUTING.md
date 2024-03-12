@@ -2,10 +2,6 @@
 
 Thanks for your interest in contributing to the MACH Interoperability Standards repository. Before you dive in, please check out these guidelines. Not following them may result in your Pull Request/issue being closed.
 
-## Code of Conduct
-
-We follow the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/), which is widely accepted as a standard in communities. Let's keep it respectful and kind.
-
 ## Repository Ownership
 
 This repository is managed by the MACH Alliance Tech Council and maintained by the Interoperability Standards Task Force led by [@adampnielsen](https://github.com/adampnielsen).
