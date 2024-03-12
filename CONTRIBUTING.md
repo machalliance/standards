@@ -4,7 +4,7 @@ Thanks for your interest in contributing to the MACH Interoperability Standards 
 
 ## Code of Conduct
 
-We follow the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/1/4/code-of-conduct/), which is widely accepted as a standard in communities. Let's keep it respectful and kind.
+We follow the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/2/1/code-of-conduct/), which is widely accepted as a standard in communities. Let's keep it respectful and kind.
 
 ## Repository Ownership
 
