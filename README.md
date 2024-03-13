@@ -57,3 +57,7 @@ Coming later. These guides will describe at a detailed component level how to im
   * Entity reference/Canonical Data Model (CDM)
   * Interoperability Protocols best practice
   * Interoperability Terminology
+
+## Contributing
+
+Before contributing to this repository, please read the [Contribution Guide](./CONTRIBUTING.md)
