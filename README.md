@@ -38,6 +38,7 @@ These guides introduce composable architectures at a high level, providing refer
 * How MACH technology works in composable solutions
 * Understanding composable architectures
 * MACH Reference Architecture
+* **[MACH Reference Architecture Introduction](./reference/architecture-intro.md)**
 * How to evaluate and integrate composable solutions
 
 ### Leading the transformation
