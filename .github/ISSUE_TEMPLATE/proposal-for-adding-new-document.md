@@ -1,5 +1,5 @@
 ---
-name: Proposal for adding new document
+name: Proposal for adding a new document
 about: Describe an idea for a new document describing interoperability satnards, best
   practices for MACH adoption or an explainer
 title: "[Proposal]: <document>"
