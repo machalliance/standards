@@ -10,7 +10,7 @@ assignees: ''
 
 ## What kind of document do you think we're lacking?
 
-<!-- Describe in a few sentences what kind fo content we're missing -->
+<!-- Describe in a few sentences what kind of content we're missing -->
 
 ## Why should it be added?
 
