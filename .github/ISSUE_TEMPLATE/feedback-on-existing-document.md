@@ -1,6 +1,6 @@
 ---
 name: Feedback on an existing document
-about: Provide feedback on existing document or suggest how it can be improved.
+about: Provide feedback on an existing document or suggest how it can be improved.
 title: "[Feedback]: <name of the document>, <improvement>"
 labels: ''
 assignees: ''
@@ -13,7 +13,7 @@ assignees: ''
 
 ## Why should it be changed?
 
-<!-- In simple words explain why this document needs to be improved and what si the value coming out of this improvement
+<!-- In simple words explain why this document needs to be improved and what is the value coming out of this improvement -->
 
 ## Describe the improvement
 

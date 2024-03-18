@@ -1,7 +1,7 @@
 ---
 name: Proposal for adding a new document
 about: Describe an idea for a new document describing interoperability standards, best
-  practices for MACH adoption or an explainer
+  practices for MACH adoption or an explainer.
 title: "[Proposal]: <document>"
 labels: ''
 assignees: ''
@@ -14,6 +14,6 @@ assignees: ''
 
 ## Why should it be added?
 
-<!-- What is the value coming out of this document, who would use that, and for what purpose?
+<!-- What is the value coming out of this document, who would use that, and for what purpose? -->
 
-[ ] I am willing to help in crating this document
+[ ] I am willing to help in creating this document
