@@ -45,3 +45,5 @@ The digital ecosystem's variability, with multiple platforms serving key functio
 The MACH principles guide the strategic choice between platform and component composability, influenced by the need for market differentiation and the complexity of digital business models.
 
 As architects, the task is to manage this transition, focusing on abstracting multiple platform instances to ensure the digital ecosystem is performant, resilient, scalable, and a true enabler of long-term business success.
+
+> Want to know more? See the [detailed explainer for Architects](architecture-explained.md)
