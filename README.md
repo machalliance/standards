@@ -36,7 +36,7 @@ These guides introduce composable architectures at a high level, providing refer
 
 * [Introducing MACH interoperability standards](https://machalliance.org/insights/phase-ii-of-the-mach-alliance-interoperability-standards)
 * [MACH Reference Architecture Introduction](./reference/architecture-intro.md)
-* [MACH Reference Architecture explained: How to design a MACH echosystem](./reference/architecture-explained.md)
+* [MACH Reference Architecture explained: How to design a MACH ecosystem](./reference/architecture-explained.md)
 * How to evaluate and integrate composable solutions
 * How MACH technology works in composable solutions
 
