@@ -1,4 +1,4 @@
-# MACH Reference Architecture intro: The Path to Composable Echosystems
+# MACH Reference Architecture intro: The Path to Composable Ecosystems
 
 Digital architectures are rapidly evolving, requiring architects to deeply understand composable systems, guided by the MACH principle. This journey encompasses three fundamental layers—Data Integration, Data Orchestration, and Digital Experience Composition & Frontend—each crucial for creating a flexible and robust ecosystem.
 
