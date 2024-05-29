@@ -31,7 +31,7 @@
 | CDN        | Content Delivery Network              |
 | Event      | Broker/MQ (Message Queue)             |
 | iPaaS      | Integration Platform as a Service     |
-| BI         | & Analytics                           |
+| BI         | Business Intelligence & Analytics     |
 | DL         | Data Lake                             |
 | DXO        | Digital Experience Orchestration      |
 | FSM        | Field Service Management              |
