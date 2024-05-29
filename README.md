@@ -47,10 +47,10 @@ These guides introduce composable architectures at a high level, providing refer
 |-|-|-|
 | [MACH interoperability hub](https://machalliance.org/interoperability)|Hub| Central hub for resources and information related to MACH interoperability standards (on the MACH alliance website)|
 | [Introducing MACH interoperability standards](https://machalliance.org/insights/phase-ii-of-the-mach-alliance-interoperability-standards) |Blog| Intro and the big why of MACH interoperability |
-|Part 1: [How to evaluate and integrate composable solutions](xxxxxxx)|Whitepaper|Principles for evaluating systems and approach + what to do with non-conforming legacy systems|
+|Part 1: [How to evaluate and integrate composable solutions](/whitepapers/How%20to%20evaluate%20and%20integrate%20composable%20solutions.pdf)|Whitepaper|Principles for evaluating systems and approach + what to do with non-conforming legacy systems|
 |Part 2: [MACH Reference Architecture Introduction, ](./reference/architecture-intro.md)|Readme| The Path to Composable Ecosystems, introduction to the MACH reference architecture, explaining its components and benefits.|
 |Part 2.1: [MACH Reference Architecture detailed: How to design a MACH ecosystem](./reference/architecture-explained.md) |Readme| Detailed guide on designing a MACH ecosystem, including architecture components and best practices.|
-| Part 3: [Understanding composable architecture, key concepts and patterns](xxxxxxxxx)|Whitepaper| Technical Guide detailing component and platform integration  concepts and patterns in modern digital ecosystems|
+| Part 3: [Understanding composable architecture, key concepts and patterns](/whitepapers/Understanding%20composable%20architectures.pdf)|Whitepaper| Technical Guide detailing component and platform integration  concepts and patterns in modern digital ecosystems|
 | Diagram [MACH Reference Architecture for Composable Ecosystem](/src/diagrams/MACH%20Alliance%20Reference%20Architecture%20Diagrams-rev1.4.pdf)|PDF| MACH Reference Architecture in three levels of detail: Domains, Platform categories, Platform repsponsibility|
 | [Reference Architecture diagram generator](https://mach-diagrams.netlify.app/)|Tool| Code-first Composable Architecture Diagram Generator including code first samples for 3 detail levels of the MACH reference architecture. [generator documentation](/src/diagrams/tooling.md) |
 
