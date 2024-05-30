@@ -1,4 +1,4 @@
-# MACH Alliance Interoperability standards
+# MACH Alliance Interoperability Standards
 
 The resources collected in this repository aim to **enable software developers to lead their company’s transformation to a composable web architecture following MACH principles.** This includes:
 
@@ -14,7 +14,7 @@ Brought to you by the [MACH Alliance Interoperability Task Force](#brought-to-yo
 ## Table of contents
 
 * [What are the MACH principles?](#what-are-the-mach-principles)
-* [Guidance for software architects and technology leaders](#guidance-for-software-architects)
+* [Guidance for software architects and technology leaders](#guidance-for-software-architects-and-technology-leaders)
   * [Understanding composable architectures](#understanding-composable-architectures)
   * [Leading the transformation](#leading-the-transformation)
   * [Implementing composable](#implementing-composable)
@@ -36,7 +36,7 @@ The [MACH Alliance](https://machalliance.org/) promotes a technology ecosystem t
 
 By adhering to these principles, the MACH Alliance aims to foster an ecosystem of interoperable, best-of-breed technology solutions that empower businesses to build flexible, scalable, and future-proof digital platforms.
 
-## Guidance for software architects amd technology leaders
+## Guidance for software architects and technology leaders
 
 Not sure where to start on your composable implementation journey? We recommend referencing these guides in the order they appear here. Dive into [reference materials](/reference/) and [diagrams](/src/diagrams/) for additional detail.
 
@@ -85,7 +85,7 @@ Get in touch with the task force:
 | Person | Role |
 |-|-|
 | [Chris Bach](https://www.linkedin.com/in/chrisbach/)                                        | Co-founder/CSO, Netlify & Executive Board Member, MACH Alliance       |
-| [Adam Peter Nielsen](https://www.linkedin.com/in/adampeternielsen/)                         | CTO, Novicell & Technology Council Member, Interoperability taskforce lead, MACH Alliance              |
+| [Adam Peter Nielsen](https://www.linkedin.com/in/adampeternielsen/)                         | CTO, Novicell & Technology Council Member, Interoperability Task Force Lead, MACH Alliance              |
 | [Daniele Stroppa](https://www.linkedin.com/in/daniele-stroppa/)                             | Senior Partner Solutions Architect, AWS & Technology Council Member, MACH Alliance |
 | [Dom Selvon](https://www.linkedin.com/in/domselvon/)                                        | CTO, Apply Digital & Executive Board Member, MACH Alliance            |
 | [Filip Rakowski](https://www.linkedin.com/in/filiprakowski/)                                | Co-Founder/CTO, Alokai & Technology Council Member, MACH Alliance     |
