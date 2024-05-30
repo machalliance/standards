@@ -10,9 +10,9 @@
 | DAM        | Digital Asset Management              |
 | MA         | Marketing Automation                  |
 | POS        | Point of Sale                         |
-| Search     | and Findability                       |
+| Search     | Search and Findability                |
 | Recommendation     | Content or product recommendation                       |
-| Customer   | Service                               |
+| Enterprise Help Desk   | Customer Service Platform |
 | CDX        | Content Federation                    |
 | BFF        | Backend for Frontend                  |
 | CDP        | Customer Data Platform                |
