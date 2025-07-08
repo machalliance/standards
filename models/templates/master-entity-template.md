@@ -1,20 +1,53 @@
 # MACH Alliance Canonical Entity Model Template
 
-# Entity: `Entity Name`
+## Entity: `Entity Name`
+
+> [!IMPORTANT]
+> This template defines how to describe canonical entities within a MACH composable architecture. It serves as a recipe for data interoperability across vendors and platforms.
+>
+> Each entity should:
+> - Be easy to read, extend, and version.
+> - Include both tabular and JSON examples—**samples appear at the top** to streamline developer adoption.
+> - Encourage the use of **utility objects** (e.g., `Address`) for reuse.
+> - Promote the use of **namespaced trait dictionaries** for flexibility and semantic clarity.
+
+
+## Table of contents
+
+- [Entity purpose](#entity-purpose)
+- [Object: Customer](#object-customer)
+- [Sample Object: Customer](#sample-object-customer)
+- [Sample Object: Address Utility Object](#sample-object-address-utility-object)
+- [Core Components & Relationships](#core-components--relationships)
+- [Typical pitfalls](#typical-pitfalls)
+---
 
 ## Purpose
 
-This template defines how to describe canonical entities within a MACH composable architecture. It serves as a recipe for data interoperability across vendors and platforms.
+> [!NOTE]
+> What functions and data this entity is designed to support.
 
-Each entity should:
-- Be easy to read, extend, and version.
-- Include both tabular and JSON examples—**samples appear at the top** to streamline developer adoption.
-- Encourage the use of **utility objects** (e.g., `Address`) for reuse.
-- Promote the use of **namespaced trait dictionaries** for flexibility and semantic clarity.
+> [!TIP]
+>  A **Customer Entity** example is included throughout this template:
+
+A unified customer model that supports both B2B (company) and B2C (individual) use cases. The model is compatible with CDP and CRM-like systems and includes flexible metadata, contact structure, international-ready address support, and cross-platform referenceIds.
+
+The Entity describes:
+- Customer identity and classification (person vs company)
+- Contact information and communication preferences
+- Address management for billing and shipping
+- Cross-system integration and reference management
+- Customer lifecycle and status tracking
+- Extensible metadata and business-specific attributes
+
 
 ---
 
-## Entity: Customer
+## Object: Object Name
+
+> [!NOTE]
+> Define the field names, description and practice within this entity.
+
 
 | Field         | Description | Practice |
 |---------------|-------------|----------|
@@ -32,6 +65,9 @@ Each entity should:
 ---
 
 ## Sample Object: Customer
+
+> [!NOTE]
+> Sample JSON examples.  Multiple examples may be used.
 
 ```json
 {
@@ -78,7 +114,7 @@ Each entity should:
 
 ---
 
-## Sample Object: Address (Utility Object)
+## Sample Object: Address Utility Object
 
 Utility objects are shared, composable models used across entities eg.: reusing `Address` across `Customer`, `Order`, and `Company`.
 
@@ -99,7 +135,8 @@ Utility objects are shared, composable models used across entities eg.: reusing 
 
 ## Components
 
-### Typical Relationships
+> [!NOTE]
+> Define the typical concepts, descritions and source of truth
 
 | Concept     | Description                          | Typical Source of Truth |
 |-------------|--------------------------------------|--------------------------|
@@ -108,7 +145,10 @@ Utility objects are shared, composable models used across entities eg.: reusing 
 | Traits      | Optional and scoped extensions       | CDP / Loyalty / CRM      |
 | Address     | Customer billing/shipping location   | Commerce / OMS / ERP     |
 
-### Typical Relationships
+## Typical Relationships
+
+> [!NOTE]
+> Use Mermaid to build examples: https://mermaid.js.org/
 
 ```mermaid
 erDiagram
@@ -120,6 +160,9 @@ erDiagram
 ---
 
 ## Typical Pitfalls
+
+> [!NOTE]
+> Define common mistakes and oversights here.
 
 - Not distinguishing between `company` and `person` fields. Keep these clearly separated using nested objects.
 - Overloading a `meta` or `customVariables` field with unstructured data. Use namespaced `traits` instead.
