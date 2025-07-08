@@ -1,4 +1,6 @@
-# MACH Alliance, Open Data Model, Entity: `Product`
+# MACH Alliance, Open Data Model
+
+# Entity: `Product`
 
 ## Table of contents
 
