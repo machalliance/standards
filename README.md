@@ -63,16 +63,16 @@ Coming later. These guides will describe how to transition to an composable arch
 
 Coming later. These guides will describe at a detailed component level how to implement a composable architecture, as well as expectations for system interoperability.
 
-## Reference materials
-
+## Reference materials and Canonical Data Model (CDM)
+* **[Entity reference](./models/entities/readme.md):**  Overview and definitions of key entities used in MACH interoperability.
+* **[Reference Architecture](./reference/architecture-explained.md):**  Reference Architecture explained.
 * **[Platform definitions](./reference/platforms.md):** defines three-letter-acronym platforms you’ll come across frequently in MACH materials.
 * Platform roles guidance: [See High detail version of reference architecture for Platform Responsibility definitions](/src/diagrams/MACH%20Alliance%20Reference%20Architecture%20Diagrams-rev1.4.pdf)
 
-* Materials we’ll add in the future:
-  * Entity reference
-  * Canonical Data Model (CDM)
-  * Interoperability Protocols best practice
-  * Interoperability Terminology
+
+* Materials we’ll likely add in the future:
+    * Interoperability Protocols best practice
+    * Interoperability Terminology
 
 ## Contributing
 
