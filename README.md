@@ -63,8 +63,10 @@ Coming later. These guides will describe how to transition to an composable arch
 
 Coming later. These guides will describe at a detailed component level how to implement a composable architecture, as well as expectations for system interoperability.
 
-## Reference materials and Canonical Data Model (CDM)
+## Reference materials and Open Data Model (ODM)
 * **[Entity reference](./models/entities/readme.md):**  Overview and definitions of key entities used in MACH interoperability.
+  * [Overview](./models/contributing.md)
+  * [How to contribute]()
 * **[Reference Architecture](./reference/architecture-explained.md):**  Reference Architecture explained.
 * **[Platform definitions](./reference/platforms.md):** defines three-letter-acronym platforms you’ll come across frequently in MACH materials.
 * Platform roles guidance: [See High detail version of reference architecture for Platform Responsibility definitions](/src/diagrams/MACH%20Alliance%20Reference%20Architecture%20Diagrams-rev1.4.pdf)
@@ -89,7 +91,7 @@ Get in touch with the task force:
 | [Daniele Stroppa](https://www.linkedin.com/in/daniele-stroppa/)                             | Senior Partner Solutions Architect, AWS & Technology Council Member, MACH Alliance |
 | [Dom Selvon](https://www.linkedin.com/in/domselvon/)                                        | CTO, Apply Digital & Executive Board Member, MACH Alliance            |
 | [Filip Rakowski](https://www.linkedin.com/in/filiprakowski/)                                | Co-Founder/CTO, Alokai & Technology Council Member, MACH Alliance     |
-| [Mark Demeny](https://www.linkedin.com/in/mark-demeny/)                                     | Sr Dir, Product Management, Yext & Tech Analyst, MACH Alliance        |
+| [Mark Demeny](https://www.linkedin.com/in/mark-demeny/)                                     | Tech Analyst, MACH Alliance        |
 | [Ramon Snir](https://www.linkedin.com/in/ramonsnir/)                                        | Staff Product Manager, Netlify & Technology Council Member, MACH Alliance               |
 | [Roberto Carrera](https://www.linkedin.com/in/roberto-carrera/)                             | Strategy Architect, Apply Digital & Technology Council Member, MACH Alliance |
 | [Subhasri Vadyar](https://www.linkedin.com/in/subhasrivadyar/)                              | Technology Architect, Valtech & Technology Council Member, MACH Alliance |
