@@ -26,7 +26,7 @@ Each model:
 - Encourages consistent use of utility objects (e.g. `Address`)
 - Uses `traits` for context-specific, namespaced extensions
 
-Use the ./master-entity-template.md as baseline
+Use the [Entity Model Template](master-entity-template.md) as baseline
 
 
 ## Design Principles
