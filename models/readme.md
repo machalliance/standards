@@ -43,6 +43,7 @@ We chose Markdown and JSON for their balance of **accessibility and precision**:
 - Create compatibility layers across hybrid or legacy systems
 - Seed future YAML schemas, OpenAPI specs, Orchestration layer logic or LLMs
 
+> [!TIP]
 > These models and recipes are not the end—they’re the beginning of better interoperability.
 
 ---
