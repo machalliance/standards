@@ -32,3 +32,14 @@
 
 ## Campaign
 - Campaign
+
+### Utility functions
+- address
+- channe
+- contact
+- currency
+- identifier
+- language
+- media
+- money
+- store
