@@ -6,8 +6,7 @@ The resources collected in this repository aim to **enable software developers t
 * Typical platform categories and the roles of each platform in a composable digital solution landscape
 * Reference architecture diagrams and entity samples to illustrate and support interoperability, which aim to ensure a smooth and cohesive digital ecosystem
 ---
-
-![MACH Alliance Logo](src/readme-content-assets/MACH_Alliance_Logo.svg)
+<img src="src/readme-content-assets/MA-no-whites-space.svg" width="200">
 
 Brought to you by the [MACH Alliance Interoperability Task Force](#brought-to-you-by-the-mach-alliance-interoperability-task-force)
 
