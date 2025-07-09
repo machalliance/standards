@@ -405,19 +405,19 @@ The detailed `enriched.targetAudience` metadata enables personalization engines 
 
 ```mermaid
 erDiagram
-    PRODUCT ||--|| PRODUCT_TYPE : classifiedBy
-    PRODUCT ||--|{ VARIANT : has
-    VARIANT ||--|| MONEY : pricedBy
-    VARIANT ||--|| INVENTORY : stockedIn
-    PRODUCT ||--|{ ATTRIBUTE : has
-    PRODUCT ||--|| CATEGORY : belongsTo
-    PRODUCT ||--|{ MEDIA : hasAssets
-    PRODUCT ||--|{ RELATED_PRODUCT : relatedTo
-    PRODUCT ||--|{ REGION_AVAILABILITY : availableIn
-    PRODUCT ||--|{ CHANNEL_AVAILABILITY : visibleOn
-    PRODUCT ||..|| REVIEW : receives
-    PRODUCT ||..|| MONEY : uses
-    PRODUCT ||..|| MEDIA : uses
+    Product ||--|| Product Type : classifiedBy
+    Product ||--|{ Variant : has
+    Variant ||--|| Money : pricedBy
+    Variant ||--|| Inventory : stockedIn
+    Product ||--|{ Attribute : has
+    Product ||--|| Category : belongsTo
+    Product ||--|{ Media : hasAssets
+    Product ||--|{ Related Product : relatedTo
+    Product ||--|{ Region Availability : availableIn
+    Product ||--|{ Channel Availability : visibleOn
+    Product ||..|| Review : receives
+    Product ||..|| Money : uses
+    Product ||..|| Media : uses
 ```
 
 ---
