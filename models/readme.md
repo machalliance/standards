@@ -70,6 +70,6 @@ These recipes were developed under the guidance of the **MACH Alliance Interoper
 - Melanie Jensen, Apply Digital
 - ...and many others contributing through real-world use cases, architecture demos, and platform research.
 
-> Want to [contribute](contributing.md)? Join the task force or open a pull request with your model insights.
+> Want to [contribute](CONTRIBUTING.md)? Join the task force or open a pull request with your model insights.
 
 ---
