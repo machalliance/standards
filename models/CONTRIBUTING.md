@@ -35,6 +35,6 @@ To start a discussion:
 - Understand the purpose of the project by reading the project description and key definitions of concepts such as entities, recipes, etc. We welcome: 
   - MACH system integrators (SI) and client architects to contribute recipes based on their real-world examples
   - MACH ISVs to contribute recipes and entities based on their domains and integrations with other MACH vendors
-- View the [readme.md](readme.md) in order to understand the folder structure and particularly the [templates](/standards/tree/main/models/templates/) for contribution.
+- View the [Guide to creating canonical data models](templates/creating-canonical-data-models.md) in order to understand the folder structure and particularly the [Entity](templates/master-entity-template.md) and [Recipe](templates/master-recipe-template.md) templates for contribution.
 - Examine the roadmap to see which additional domains or use cases need contributions
 - Understand that contributions are documentation of existing concepts and are given to the MACH Alliance and released under the [CC BY 4.0 Licence](LICENCE).
