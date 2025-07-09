@@ -13,7 +13,7 @@ Rather than prematurely optimizing for implementation or tooling, these recipes 
 
 ## Format and Philosophy
 
-Each recipe includes:
+Each [entity](entities) and [recipe](recipes) includes:
 - **Markdown formatted documentation (`.md`)** for human or machine-readable documentation, narrative context, and sample use case recipes.
 - **Object definitions and JSON samples** for clear, structured example representation of entities and traits.
 - **Trait-based extensions** to support modularity, reuse, and domain-specific concerns for clearer contextual interoperability.
@@ -21,6 +21,25 @@ Each recipe includes:
 We chose Markdown and JSON for their balance of **accessibility and precision**:
 - **Markdown** enables understanding without context—useful in early alignment or design stages, especially across teams unfamiliar with a given stack or vendor.
 - **JSON** provides copy-pasteable clarity for developers, and a foundation for code generation or LLM-based tooling.
+
+> [!TIP]
+> The [entity template](templates/master-entity-template.md) contains more details of the format with examples
+
+Recipes include greater detail for meeting specific use cases, including:
+
+- Business objective
+- Typical pitfalls
+- Data flows
+ - Actors / Stakeholders
+ - Trigger Points / Events
+ - Diagrams
+- Systems Involved
+Data Requirements
+Success Metrics / KPIs
+Security & Compliance Notes
+
+> [!TIP]
+> The [recipe template](templates/master-recipe-template.md) contains more details of the format with examples
 
 ---
 
