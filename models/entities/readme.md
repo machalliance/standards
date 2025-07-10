@@ -4,7 +4,7 @@
 - [Product](product/product.md)
 - Product Type
 - Catalog
-- [Category](category.md)
+- [Category](product/category.md)
 
 ## Cart
 - Cart
@@ -22,7 +22,7 @@
 - Product Discounts
 
 ## Inventory
-- Inventory
+- [Inventory](inventory/inventory.md)
 
 ## Shipping
 - Shipping Method
@@ -37,7 +37,6 @@
 - address
 - channel
 - contact
-- currency
 - identifier
 - language
 - [media](media.md)
