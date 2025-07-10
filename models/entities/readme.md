@@ -4,7 +4,7 @@
 - [Product](product/product.md)
 - Product Type
 - Catalog
-- Category
+- [Category](category.md)
 
 ## Cart
 - Cart
@@ -35,11 +35,11 @@
 
 ### Utility functions
 - address
-- channe
+- channel
 - contact
 - currency
 - identifier
 - language
-- media
+- [media](media.md)
 - money
 - store
