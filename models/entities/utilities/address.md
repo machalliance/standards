@@ -1,4 +1,4 @@
-# MACH Alliance • Open Data Model Utility Object: `Address`
+# MACH Alliance, Open Data Model Utility Object: `Address`
 
 ## Table of contents
 

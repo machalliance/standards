@@ -1,6 +1,4 @@
-# MACH Alliance • Open Data Model
-
-# Entity: `Inventory`
+# MACH Alliance, Open Data Model Entity: `Inventory`
 
 ## Table of contents
 

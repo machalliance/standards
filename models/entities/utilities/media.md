@@ -1,6 +1,4 @@
-# MACH Alliance • Open Data Model
-
-# Utility Object: `Media`
+# MACH Alliance, Open Data Model Utility Object: `Media`
 
 ## Table of contents
 - [Purpose](#purpose)

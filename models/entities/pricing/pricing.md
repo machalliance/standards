@@ -1,6 +1,4 @@
-# MACH Alliance • Open Data Model
-
-# Entity: `Pricing`
+# MACH Alliance, Open Data Model Entity: `Pricing`
 
 ## Table of contents
 

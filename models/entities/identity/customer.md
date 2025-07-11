@@ -1,4 +1,4 @@
-# MACH Alliance • Open Data Model Entity: `Customer`
+# MACH Alliance, Open Data Model Entity: `Customer`
 
 ## Table of contents
 
