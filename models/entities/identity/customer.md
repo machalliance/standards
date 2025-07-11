@@ -43,8 +43,8 @@ Separation of concerns:
 | `type`        | Indicates `person` or `company`. | SHOULD |
 | `status`      | Lifecycle status (`active`, `inactive`, `archived`). | SHOULD |
 | `referenceIds`| Dictionary of cross-system IDs (e.g., CRM, ERP, Commerce Engine) to ease orchestration logic | SHOULD |
-| `createdAt`   | Creation timestamp using [Timestamp](../utilities/timestamp.md) utility object. | SHOULD |
-| `updatedAt`   | Update timestamp using [Timestamp](../utilities/timestamp.md) utility object. | SHOULD |
+| `createdAt`   | Creation timestamp using Timestamp | SHOULD |
+| `updatedAt`   | Update timestamp using Timestamp | SHOULD |
 | `person`      | Object for person data. Only present if `type = person`. | COULD |
 | `company`     | Object for company data. Only present if `type = company`. | COULD |
 | `contacts`    | List of contact persons (only for `type = company`). | RECOMMENDED |
