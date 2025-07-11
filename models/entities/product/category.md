@@ -1,6 +1,4 @@
-# MACH Alliance Canonical Entity Model
-
-# Entity: `Category`
+# MACH Alliance, Open Data Model Entity: `Category`
 
 ## Table of contents
 
@@ -39,10 +37,10 @@ The Category entity defines the hierarchical and navigational structure used to 
 | `parentId` | Parent Category identifier (often used for breadcrumbs). | COULD |
 | `slug` | URL-friendly identifier fragment. | SHOULD |
 | `children` | Array of child category objects. | COULD |
-| `attributes` | Additional metadata schemas. | COULD |
+| `attributes` | Additional metadata schemas or serach filters | COULD |
 | `tags` | Used for metadata, SEO, etc. | COULD |
 | `media` | Image(s) depicting the category using [Media](../utilities/media.md) utility object. | SHOULD |
-| `traits` | Namespaced dictionary for extension data grouped by concern (e.g., `seo`, `merchandising`). | COULD |
+| `traits` | Namespaced dictionary for extension data grouped by concern (e.g., `seo`, `merchandising`,`defaultsort`). | COULD |
 
 ---
 
@@ -52,8 +50,8 @@ Minimal category object for working with individual category, e.g., displaying i
 
 ```json
 {
-  "id": "shorts",
-  "name": { "en-US": "Shorts", "en-GB": "Shorts" },
+  "id": "shorts-223",
+  "name": "Shorts",
   "slug": "shorts",
   "parentId": "clothes"
 }
@@ -68,13 +66,19 @@ Extended category object with traits and additional fields for comprehensive cat
 ```json
 {
   "id": "shorts",
-  "name": { "en-US": "Shorts", "en-GB": "Shorts" },
-  "description": { "en-US": "Comfortable shorts for all occasions", "en-GB": "Comfortable shorts for all occasions" },
-  "slug": "shorts",
+  "name": {
+    "en-US": "Shorts","de-DE": "Shorts"
+  },
+  "description": {
+    "en-US": "Comfortable shorts for all occasions", "de-DE": "Bequeme Shorts für alle Gelegenheiten"
+  },
+  "slug": {
+    "en-US": "shorts", "de-DE": "shorts"
+  },
   "status": "active",
   "referenceIds": {
     "pimId": "cat_shorts_001",
-    "commercetools": "shorts-category"
+    "commerce": "shorts-category"
   },
   "createdAt": "2025-06-01T12:00:00Z",
   "updatedAt": "2025-06-10T12:30:00Z",
@@ -82,7 +86,10 @@ Extended category object with traits and additional fields for comprehensive cat
   "children": [
     {
       "id": "running-shorts",
-      "name": { "en-US": "Running Shorts", "en-GB": "Running Shorts" },
+      "name": {
+        "en-US": "Running Shorts",
+        "de-DE": "Laufshorts"
+      },
       "slug": "running-shorts",
       "parentId": "shorts"
     }
@@ -93,21 +100,27 @@ Extended category object with traits and additional fields for comprehensive cat
   },
   "tags": ["Trousers", "Clothing", "Casual"],
   "media": {
-    "imageUrl": "https://cdn.example.com/shorts.jpg",
-    "altText": "Comfortable shorts collection"
+    "file": "https://cdn.example.com/shorts.jpg",
+    "title": "see media definition"
   },
   "traits": {
     "seo": {
-      "metaTitle": { "en-US": "Premium Shorts Collection", "en-GB": "Premium Shorts Collection" },
-      "metaDescription": { "en-US": "Discover our comfortable shorts for every occasion", "en-GB": "Discover our comfortable shorts for every occasion" },
+      "metaTitle": {
+        "en-US": "Premium Shorts Collection","de-DE": "Premium-Shorts-Kollektion"
+      },
+      "metaDescription": {
+        "en-US": "Discover our comfortable shorts for every occasion","de-DE": "Entdecken Sie unsere bequemen Shorts für jede Gelegenheit"
+      },
       "keywords": ["shorts", "casual wear", "summer"],
       "source": "contentful"
     },
     "merchandising": {
       "featured": true,
       "displayOrder": 5,
-      "promotionalBadge": { "en-US": "New Collection", "en-GB": "New Collection" },
-      "source": "commercetools"
+      "promotionalBadge": {
+        "en-US": "New Collection", "de-DE": "Neue Kollektion"
+      },
+      "source": "commerce"
     },
     "availability": {
       "channelAvailability": ["web", "store"],
@@ -116,6 +129,7 @@ Extended category object with traits and additional fields for comprehensive cat
     }
   }
 }
+
 ```
 
 ---
