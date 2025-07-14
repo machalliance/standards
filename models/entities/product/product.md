@@ -403,16 +403,16 @@ The detailed `enriched.targetAudience` metadata enables personalization engines 
 
 ```mermaid
 erDiagram
-    Product ||--|| Product Type : classifiedBy
+    Product ||--|| "Product Type" : classifiedBy
     Product ||--|{ Variant : has
     Variant ||--|| Money : pricedBy
     Variant ||--|| Inventory : stockedIn
     Product ||--|{ Attribute : has
     Product ||--|| Category : belongsTo
     Product ||--|{ Media : hasAssets
-    Product ||--|{ Related Product : relatedTo
-    Product ||--|{ Region Availability : availableIn
-    Product ||--|{ Channel Availability : visibleOn
+    Product ||--|{ "Related Product" : relatedTo
+    Product ||--|{ "Region Availability" : availableIn
+    Product ||--|{ "Channel Availability" : visibleOn
     Product ||..|| Review : receives
     Product ||..|| Money : uses
     Product ||..|| Media : uses
