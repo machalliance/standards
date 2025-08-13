@@ -1,4 +1,4 @@
-# MACH Alliance Interoperability Standards
+# MACH Alliance Interoperability Standards  
 
 <img src="src/readme-content-assets/MA-no-whites-space.svg" width="200">
 
