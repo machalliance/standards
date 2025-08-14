@@ -9,7 +9,7 @@ assignees: ''
 
 ## What kind of Recipe do you think we're lacking?
 
-<!-- Describe in a few sentences what kind of Entity we are missing -->
+<!-- Describe in a few sentences what kind of Recipe we are missing -->
 
 ## Why should it be added and use case description?
 
