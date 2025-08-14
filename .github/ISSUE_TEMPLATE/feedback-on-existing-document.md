@@ -1,5 +1,5 @@
 ---
-name: Feedback on an existing document
+name: Feedback on an existing document, issue, or recipe
 about: Provide feedback on an existing document or suggest how it can be improved.
 title: "[Feedback]: <name of the document>, <improvement>"
 labels: ''
