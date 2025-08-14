@@ -69,7 +69,7 @@ This standardized structure works across any CRM, CDP, or commerce platform, eli
 - **Next planned release (Q4 2025)** - Order management entities (Order, Cart, Fulfillment) and checkout orchestration recipes
 - **2026 Roadmap** - AI/Agent communication standards, advanced orchestration patterns, and marketplace entities
 
-For more information, visit the [Changelog](./CHANGELOG.md).
+For more information, visit the [current open issues](https://github.com/machalliance/standards/issues) and [Changelog](./CHANGELOG.md).
 
 ## Who it's for
 
