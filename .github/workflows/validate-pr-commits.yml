@@ -1,28 +1,18 @@
 name: Enforce Conventional Commit PR Titles
 on:
   pull_request:
-    branches:
-      - main
-    types:
-      - opened
-      - edited
-      - synchronize
+    branches: [ main ]
+    types: [ opened, edited, synchronize, reopened ]
 
 jobs:
   lint_pr_title:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - name: Validate PR title
-        uses: ytanikin/PRConventionalCommits@1.1.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ytanikin/PRConventionalCommits@1.3.0
         with:
-          task_types: |
-            fix
-            new_model
-            change
-            other
+          task_types: '["fix","new_model","change","other"]'
           add_label: 'true'
-          custom_labels: '{"fix":"Fix","new_model":"New Model","change":"Change","new_recipe":"New Recipe","chore":"Chore"}'
+          custom_labels: '{"fix":"Fix","new_model":"New Model","change":"Change","other":"Other"}'
+          # token is optional; defaults to GITHUB_TOKEN
+          # token: ${{ secrets.GITHUB_TOKEN }}
