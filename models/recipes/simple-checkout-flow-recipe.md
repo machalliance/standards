@@ -4,20 +4,34 @@
 
 ## Table of contents
 
-- [Recipe purpose](#recipe-purpose)
-- [Recipe Overview](#recipe-overview)
-- [Typical pitfalls](#typical-pitfalls)
-- [Actors / Stakeholders](#actors--stakeholders)
-- [Trigger Points / Events](#trigger-points--events)
-- [Recipe Flows](#recipe-flows)
-- [Systems Involved](#systems-involved)
-- [Data Requirements](#data-requirements)
-- [Variants / Alternatives](#variants--alternatives)
-- [Failure Modes / Edge Cases](#failure-modes--edge-cases)
-- [Success Metrics / KPIs](#success-metrics--kpis)
-- [Security & Compliance Notes](#security--compliance-notes)
+- [MACH Alliance • Open Data Model](#mach-alliance--open-data-model)
+  - [Recipe: `Simple Checkout Flow`](#recipe-simple-checkout-flow)
+  - [Table of contents](#table-of-contents)
+  - [Recipe Purpose](#recipe-purpose)
+  - [Recipe Overview](#recipe-overview)
+      - [Approach Rationale](#approach-rationale)
+        - [Quick Implementation](#quick-implementation)
+        - [Essential Security](#essential-security)
+        - [Performance Focus](#performance-focus)
+  - [When to Use This Recipe](#when-to-use-this-recipe)
+  - [Typical pitfalls](#typical-pitfalls)
+  - [Actors / Stakeholders](#actors--stakeholders)
+  - [Trigger Points / Events](#trigger-points--events)
+  - [Recipe Flows](#recipe-flows)
+      - [Sequence Diagram](#sequence-diagram)
+  - [Systems Involved](#systems-involved)
+  - [Data Requirements](#data-requirements)
+    - [Simple Checkout Data Flow](#simple-checkout-data-flow)
+      - [Example Simple Checkout Request](#example-simple-checkout-request)
+  - [Variants / Alternatives](#variants--alternatives)
+  - [Failure Modes / Edge Cases](#failure-modes--edge-cases)
+  - [Success Metrics / KPIs](#success-metrics--kpis)
+  - [Security \& Compliance Notes](#security--compliance-notes)
 
 ## Recipe Purpose
+
+> [!NOTE]
+> This recipe describes a simplified checkout approach suitable for small to medium-scale implementations. For enterprise-scale requirements with complex orchestration needs, see the [Multi-Step Checkout Flow Orchestration](checkout-flow-recipe.md) recipe.
 
 To deliver a streamlined, secure checkout experience that converts cart contents into completed orders with minimal friction. This simplified approach focuses on essential checkout functions while maintaining security and reliability for small to medium-scale commerce operations.
 
@@ -27,7 +41,7 @@ ___Key Business Goals:___
 * Minimize cart abandonment through streamlined user experience
 * Support basic shipping and tax calculations
 * Enable guest and registered customer purchases
-  
+
 **KPI tie-ins:** Conversion rate, checkout completion time, cart abandonment rate, payment success rate, customer satisfaction.
 
 ---
@@ -55,7 +69,26 @@ This simplified checkout approach is ideal for:
 - **Minimal API Calls:** Reduces latency by combining operations where possible
 - **Simple State Management:** Avoids complex session state across multiple services
 
-For a more advanced version, consult the [Multi-Step Checkout Flow Orchestration](checkout-flow-recipe.md) recipe.
+---
+
+## When to Use This Recipe
+
+> [!TIP]
+> Start with this simplified approach for MVPs and straightforward e-commerce sites. You can always migrate to the [orchestrated approach](checkout-flow-recipe.md) as your requirements grow.
+
+**Use this approach when:**
+- Building an MVP or proof of concept
+- Operating a small to medium-scale e-commerce site
+- Selling simple products without complex pricing rules
+- Operating in a single currency and region
+- Prioritizing quick implementation over advanced features
+
+**Consider the orchestrated approach when:**
+- You need multi-step approval workflows (B2B)
+- Managing complex inventory across multiple warehouses
+- Requiring advanced fraud detection and risk management
+- Implementing real-time pricing from multiple sources
+- Operating complex promotional rule engines
 
 ---
 
@@ -69,7 +102,7 @@ For a more advanced version, consult the [Multi-Step Checkout Flow Orchestration
 
 **Consider the more complex orchestrated approach if you need:**
 - Multi-step approval workflows (B2B)
-- Complex inventory allocation across multiple warehouses  
+- Complex inventory allocation across multiple warehouses
 - Advanced fraud detection and risk management
 - Real-time pricing from multiple sources
 - Complex promotional rule engines
@@ -124,18 +157,18 @@ sequenceDiagram
     C->>CP: Click "Checkout"
     CP->>CP: Validate cart contents
     CP-->>C: Show checkout form
-    
+
     C->>CP: Enter shipping address
     CP->>TAX: Calculate taxes
     TAX-->>CP: Tax amount
     CP->>SHIP: Get shipping rates
     SHIP-->>CP: Available methods
     CP-->>C: Show totals and shipping options
-    
+
     C->>CP: Select shipping & enter payment
     CP->>PAY: Authorize payment
     PAY-->>CP: Authorization response
-    
+
     alt Payment Successful
         CP->>CP: Create order
         CP->>CP: Send confirmation email
@@ -149,25 +182,25 @@ sequenceDiagram
 
 ## Systems Involved
 
-| **System**          | **Role**                                    | **Owner**                |
-| ------------------- | ------------------------------------------- | ------------------------ |
-| Commerce Platform   | Cart management, checkout flow, order creation | Engineering Team     |
-| Payment Processor   | Payment authorization and processing        | Engineering / Finance    |
-| Tax Service         | Tax calculation by location                 | Finance Team             |
-| Shipping API        | Shipping rates and tracking                 | Operations Team          |
+| **System**        | **Role**                                       | **Owner**             |
+| ----------------- | ---------------------------------------------- | --------------------- |
+| Commerce Platform | Cart management, checkout flow, order creation | Engineering Team      |
+| Payment Processor | Payment authorization and processing           | Engineering / Finance |
+| Tax Service       | Tax calculation by location                    | Finance Team          |
+| Shipping API      | Shipping rates and tracking                    | Operations Team       |
 
 ---
 
 ## Data Requirements
 
-| **Entity**               | **Function**                           | **Source System**      |
-| ------------------------ | -------------------------------------- | ---------------------- |
-| [Cart](../entities/cart/cart.md)                 | Input - Cart contents and totals       | Commerce Platform      |
-| [Address](../entities/utilities/address.md)         | Input - Shipping and billing addresses | Customer input         |
-| [Product](../entities/product/product.md)        | Input - Product details and pricing    | Commerce Platform      |
-| Tax Calculation          | Output - Tax amounts and rates         | Tax Service            |
-| Shipping Options         | Output - Available methods and rates   | Shipping API           |
-| [Order](../entities/order/order.md)              | Output - Completed order record        | Commerce Platform      |
+| **Entity**                                  | **Function**                           | **Source System** |
+| ------------------------------------------- | -------------------------------------- | ----------------- |
+| [Cart](../entities/cart/cart.md)            | Input - Cart contents and totals       | Commerce Platform |
+| [Address](../entities/utilities/address.md) | Input - Shipping and billing addresses | Customer input    |
+| [Product](../entities/product/product.md)   | Input - Product details and pricing    | Commerce Platform |
+| Tax Calculation                             | Output - Tax amounts and rates         | Tax Service       |
+| Shipping Options                            | Output - Available methods and rates   | Shipping API      |
+| [Order](../entities/order/order.md)         | Output - Completed order record        | Commerce Platform |
 
 ### Simple Checkout Data Flow
 
@@ -210,10 +243,8 @@ sequenceDiagram
   },
   "payment": {
     "method": "card",
-    "number": "4242424242424242",
-    "exp_month": "12",
-    "exp_year": "2025",
-    "cvc": "123"
+    "token": "pm_1234567890",
+    "last_four": "4242"
   },
   "shipping_method": "standard"
 }
@@ -243,14 +274,14 @@ sequenceDiagram
 
 ## Failure Modes / Edge Cases
 
-| **Scenario**                    | **Impact**                        | **Mitigation Strategy**              |
-| ------------------------------- | --------------------------------- | ------------------------------------ |
-| **Payment Declined**           | Customer cannot complete purchase | Clear error message with retry option; suggest alternative payment methods |
-| **Tax Service Unavailable**    | Cannot calculate exact tax        | Use default tax rate with customer notification |
-| **Shipping API Timeout**       | Cannot show shipping options      | Fallback to standard shipping rate |
-| **Product Out of Stock**       | Item unavailable during checkout  | Remove item with notification; suggest alternatives |
-| **Invalid Address**            | Cannot process shipping           | Address validation with correction suggestions |
-| **Session Timeout**            | Customer loses progress           | Extended session warning; save form data |
+| **Scenario**                | **Impact**                        | **Mitigation Strategy**                                                    |
+| --------------------------- | --------------------------------- | -------------------------------------------------------------------------- |
+| **Payment Declined**        | Customer cannot complete purchase | Clear error message with retry option; suggest alternative payment methods |
+| **Tax Service Unavailable** | Cannot calculate exact tax        | Use default tax rate with customer notification                            |
+| **Shipping API Timeout**    | Cannot show shipping options      | Fallback to standard shipping rate                                         |
+| **Product Out of Stock**    | Item unavailable during checkout  | Remove item with notification; suggest alternatives                        |
+| **Invalid Address**         | Cannot process shipping           | Address validation with correction suggestions                             |
+| **Session Timeout**         | Customer loses progress           | Extended session warning; save form data                                   |
 
 ---
 
@@ -304,7 +335,7 @@ sequenceDiagram
 ---
 
 >  This MACH Alliance Canonical Data Model is intentionally __vendor-neutral__ and serves as a foundation for interoperability across composable architectures. It is __continually evolving__ through community contributions, which are reviewed and approved collaboratively.
->  
+>
 >  All contributions are made under the __Creative Commons Attribution 4.0 International License (CC BY 4.0)__. By submitting a contribution, you agree to license your content under <a href="https://creativecommons.org/licenses/by/4.0/deed.en">CC BY 4.0</a>, allowing others to share and adapt the material with proper attribution.
->  
+>
 >  We welcome and encourage continued improvements through community input.

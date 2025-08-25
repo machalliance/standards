@@ -4,20 +4,38 @@
 
 ## Table of contents
 
-- [Recipe purpose](#recipe-purpose)
-- [Recipe Overview](#recipe-overview)
-- [Typical pitfalls](#typical-pitfalls)
-- [Actors / Stakeholders](#actors--stakeholders)
-- [Trigger Points / Events](#trigger-points--events)
-- [Recipe Flows](#recipe-flows)
-- [Systems Involved](#systems-involved)
-- [Data Requirements](#data-requirements)
-- [Variants / Alternatives](#variants--alternatives)
-- [Failure Modes / Edge Cases](#failure-modes--edge-cases)
-- [Success Metrics / KPIs](#success-metrics--kpis)
-- [Security & Compliance Notes](#security--compliance-notes)
+- [MACH Alliance • Open Data Model](#mach-alliance--open-data-model)
+  - [Recipe: `Multi-Step Checkout Flow Orchestration`](#recipe-multi-step-checkout-flow-orchestration)
+  - [Table of contents](#table-of-contents)
+  - [Recipe Purpose](#recipe-purpose)
+  - [Recipe Overview](#recipe-overview)
+      - [Approach Rationale](#approach-rationale)
+        - [Security \& Compliance](#security--compliance)
+        - [Business Logic Integrity](#business-logic-integrity)
+        - [Performance \& Reliability](#performance--reliability)
+        - [Operational Excellence](#operational-excellence)
+  - [When to Use This Recipe](#when-to-use-this-recipe)
+  - [Typical pitfalls](#typical-pitfalls)
+  - [Actors / Stakeholders](#actors--stakeholders)
+  - [Trigger Points / Events](#trigger-points--events)
+  - [Recipe Flows](#recipe-flows)
+      - [Swimlane or Sequence Diagram](#swimlane-or-sequence-diagram)
+  - [Systems Involved](#systems-involved)
+  - [Data Requirements](#data-requirements)
+    - [Data Flow Details](#data-flow-details)
+    - [Data Lineage \& Performance Considerations](#data-lineage--performance-considerations)
+    - [Performance Optimization Strategy](#performance-optimization-strategy)
+    - [Privacy/PII Considerations](#privacypii-considerations)
+      - [Example Checkout Session State](#example-checkout-session-state)
+  - [Variants / Alternatives](#variants--alternatives)
+  - [Failure Modes / Edge Cases](#failure-modes--edge-cases)
+  - [Success Metrics / KPIs](#success-metrics--kpis)
+  - [Security \& Compliance Notes](#security--compliance-notes)
 
 ## Recipe Purpose
+
+> [!NOTE]
+> This recipe describes an enterprise-scale orchestration approach for complex checkout requirements. For simpler implementations, see the [Simple Checkout Flow](simple-checkout-flow-recipe.md) recipe.
 
 To deliver a seamless, secure, and conversion-optimized checkout experience by orchestrating cart validation, payment processing, inventory allocation, tax calculation, and order fulfillment across distributed MACH services. This enables consistent checkout behavior across all channels while maintaining system flexibility and reliability.
 
@@ -28,7 +46,7 @@ ___Key Business Goals:___
 * Enable flexible fulfillment options (shipping, pickup, digital delivery)
 * Support complex pricing scenarios (promotions, taxes, multi-currency)
 * Provide consistent experience across web, mobile, and in-store channels
-  
+
 **KPI tie-ins:** Conversion rate, cart abandonment rate, checkout completion time, payment success rate, customer satisfaction scores, average order value.
 
 ---
@@ -60,6 +78,29 @@ In composable commerce, using an orchestration layer for checkout instead of cli
 - **Monitoring & Observability:** Centralized checkout orchestration enables comprehensive logging, metrics, and alerting for business-critical operations.
 - **A/B Testing:** Checkout flow experiments and optimization require controlled server-side logic that can't be reliably implemented client-side.
 - **Scalability:** Server-side orchestration can handle high-traffic scenarios with proper load balancing and resource management.
+
+---
+
+## When to Use This Recipe
+
+**Use this orchestrated approach when:**
+- Operating at enterprise scale with high transaction volumes
+- Managing complex B2B workflows with approval chains
+- Coordinating inventory across multiple warehouses or channels
+- Implementing sophisticated fraud detection and risk management
+- Supporting multi-currency and multi-region operations
+- Requiring real-time integration with multiple third-party services
+- Needing detailed audit trails and compliance reporting
+
+**Consider the simpler approach when:**
+- Building an MVP or proof of concept
+- Operating a small to medium-scale e-commerce site
+- Selling simple products with straightforward pricing
+- Working in a single currency and region
+- Prioritizing speed of implementation over advanced features
+
+> [!TIP]
+> You can start with the [Simple Checkout Flow](simple-checkout-flow-recipe.md) and migrate to this orchestrated approach as your business scales and requirements become more complex.
 
 ---
 
@@ -158,7 +199,7 @@ sequenceDiagram
     UI->>CO: Start checkout session
     CO->>CE: Validate cart contents
     CE-->>CO: Cart validation response
-    
+
     Note over CO: Parallel service calls for checkout preparation
     par Inventory Check
         CO->>INV: Reserve inventory
@@ -173,17 +214,17 @@ sequenceDiagram
         CO->>PROMO: Validate applied promotions
         PROMO-->>CO: Final discount amounts
     end
-    
+
     CO-->>UI: Checkout summary with totals
     UI-->>C: Display checkout form
-    
+
     C->>UI: Enter shipping & payment details
     UI->>CO: Submit payment information
-    
+
     Note over CO: Payment processing flow
     CO->>PAY: Authorize payment
     PAY-->>CO: Authorization response
-    
+
     alt Payment Successful
         CO->>CE: Create order
         CE-->>CO: Order created
@@ -203,34 +244,34 @@ sequenceDiagram
 
 ## Systems Involved
 
-| **System**              | **Role**                                           | **Owner**                    |
-| ----------------------- | -------------------------------------------------- | ---------------------------- |
-| Checkout Orchestrator   | Central coordination of checkout flow and logic    | Architecture / Engineering   |
-| Commerce Engine         | Cart management, product validation, order creation| Commerce / Product Team      |
-| Payment Gateway         | Payment processing, fraud detection, compliance    | Payments / Security Team     |
-| Inventory Service       | Stock validation, reservation, allocation          | Operations / Supply Chain    |
-| Tax Engine              | Tax calculation, compliance, reporting             | Finance / Compliance Team    |
-| Shipping Service        | Rate calculation, address validation, carriers     | Operations / Logistics       |
-| Promotion Engine        | Discount validation, campaign management           | Marketing / Pricing Team     |
-| Order Management System | Order fulfillment, tracking, communication        | Operations Team              |
-| Customer Data Platform  | Customer profiles, preferences, history           | Data / Marketing Team        |
-| Fraud Detection Service | Risk assessment, transaction monitoring           | Security / Risk Team         |
+| **System**              | **Role**                                            | **Owner**                  |
+| ----------------------- | --------------------------------------------------- | -------------------------- |
+| Checkout Orchestrator   | Central coordination of checkout flow and logic     | Architecture / Engineering |
+| Commerce Engine         | Cart management, product validation, order creation | Commerce / Product Team    |
+| Payment Gateway         | Payment processing, fraud detection, compliance     | Payments / Security Team   |
+| Inventory Service       | Stock validation, reservation, allocation           | Operations / Supply Chain  |
+| Tax Engine              | Tax calculation, compliance, reporting              | Finance / Compliance Team  |
+| Shipping Service        | Rate calculation, address validation, carriers      | Operations / Logistics     |
+| Promotion Engine        | Discount validation, campaign management            | Marketing / Pricing Team   |
+| Order Management System | Order fulfillment, tracking, communication          | Operations Team            |
+| Customer Data Platform  | Customer profiles, preferences, history             | Data / Marketing Team      |
+| Fraud Detection Service | Risk assessment, transaction monitoring             | Security / Risk Team       |
 
 ---
 
 ## Data Requirements
 
-| **Entity**                  | **Function**                                        | **Source System**         |
-| --------------------------- | --------------------------------------------------- | ------------------------- |
-| [Cart](../entities/cart/cart.md)                    | Input - Cart contents and customer session data    | Commerce Engine           |
-| [Customer](../entities/customer/customer.md)        | Input - Customer profile, addresses, preferences    | Customer Data Platform    |
-| [Product](../entities/product/product.md)           | Input - Product details, pricing, availability     | Commerce Engine / PIM     |
-| [Inventory](../entities/inventory/inventory.md)     | Input/Output - Stock levels, reservations          | Inventory Service         |
-| [Pricing](../entities/pricing/pricing.md)           | Input - Product pricing, promotions, discounts     | Pricing Engine            |
-| [Order](../entities/order/order.md)                 | Output - Created order with all transaction details| Order Management System   |
-| Payment Transaction         | Output - Payment authorization, capture details     | Payment Gateway           |
-| Tax Calculation             | Output - Tax amounts, rates, exemptions            | Tax Engine                |
-| [Shipping Method](../entities/shipping/shipping-method.md) | Input - Available shipping options and rates | Shipping Service          |
+| **Entity**                                                 | **Function**                                        | **Source System**       |
+| ---------------------------------------------------------- | --------------------------------------------------- | ----------------------- |
+| [Cart](../entities/cart/cart.md)                           | Input - Cart contents and customer session data     | Commerce Engine         |
+| [Customer](../entities/customer/customer.md)               | Input - Customer profile, addresses, preferences    | Customer Data Platform  |
+| [Product](../entities/product/product.md)                  | Input - Product details, pricing, availability      | Commerce Engine / PIM   |
+| [Inventory](../entities/inventory/inventory.md)            | Input/Output - Stock levels, reservations           | Inventory Service       |
+| [Pricing](../entities/pricing/pricing.md)                  | Input - Product pricing, promotions, discounts      | Pricing Engine          |
+| [Order](../entities/order/order.md)                        | Output - Created order with all transaction details | Order Management System |
+| Payment Transaction                                        | Output - Payment authorization, capture details     | Payment Gateway         |
+| Tax Calculation                                            | Output - Tax amounts, rates, exemptions             | Tax Engine              |
+| [Shipping Method](../entities/shipping/shipping-method.md) | Input - Available shipping options and rates        | Shipping Service        |
 
 ### Data Flow Details
 
@@ -260,6 +301,35 @@ sequenceDiagram
 - **Caching Strategy:** Non-critical data like shipping methods and tax rates can be cached with appropriate TTL
 - **State Management:** Checkout session state must be maintained across multiple service calls with proper cleanup
 - **Rollback Handling:** Failed transactions require coordinated rollback across inventory reservations and payment authorizations
+
+### Performance Optimization Strategy
+
+To ensure optimal checkout performance at scale, implement a multi-layered caching and optimization strategy:
+
+**Cached Data Layers:**
+
+| **Data Type**      | **Cache Strategy**                 | **TTL**    | **Invalidation Trigger**            |
+| ------------------ | ---------------------------------- | ---------- | ----------------------------------- |
+| Tax Rates          | Regional cache by postal code      | 24 hours   | Tax rule changes, quarterly updates |
+| Shipping Methods   | Cache by destination zone          | 12 hours   | Carrier updates, rate changes       |
+| Product Pricing    | Memory cache with fallback         | 1 hour     | Price updates, promotion changes    |
+| Address Validation | LRU cache of validated addresses   | 7 days     | Manual override                     |
+| Promotion Rules    | Pre-computed eligibility cache     | 2 hours    | Campaign updates                    |
+| Currency Exchange  | Rate cache with real-time fallback | 15 minutes | Market volatility threshold         |
+
+**Optimization Techniques:**
+- **Parallel Service Calls:** Execute independent validations simultaneously (inventory, tax, shipping)
+- **Progressive Loading:** Display checkout UI while background services complete
+- **Predictive Prefetching:** Pre-calculate likely shipping/tax scenarios based on user location
+- **Circuit Breakers:** Implement fallback strategies for non-critical services
+- **Response Compression:** Use gzip/brotli for API responses
+- **Connection Pooling:** Maintain persistent connections to frequently accessed services
+
+**Performance Targets:**
+- Initial checkout page load: <1 second
+- Complete checkout validation: <2 seconds
+- Payment authorization: <3 seconds
+- End-to-end checkout completion: <30 seconds
 
 ### Privacy/PII Considerations
 
@@ -407,18 +477,18 @@ sequenceDiagram
 
 ## Failure Modes / Edge Cases
 
-| **Scenario**                      | **Impact**                               | **Mitigation Strategy**                           |
-| --------------------------------- | ---------------------------------------- | ------------------------------------------------- |
-| **Payment Authorization Failure** | Customer cannot complete purchase        | Retry logic with alternate payment methods; clear error messaging with suggested actions |
-| **Inventory Depletion Mid-Checkout** | Product becomes unavailable during checkout | Real-time inventory checks; offer alternatives; waitlist signup options |
-| **Tax Service Unavailable**      | Cannot calculate final order total       | Fallback to cached tax rates; provide estimated totals with clear disclaimers |
-| **Shipping Service Timeout**     | Cannot provide shipping options          | Default shipping methods; cached rate fallbacks; estimated delivery dates |
-| **Promotion Engine Error**       | Discounts cannot be applied              | Allow checkout without discount; manual review and credit post-purchase |
-| **Session Timeout**              | Customer loses checkout progress         | Extended session warnings; auto-save functionality; quick recovery options |
-| **Address Validation Failure**   | Cannot validate shipping address         | Allow manual address entry; flag for verification; provide address suggestions |
-| **Fraud Detection Trigger**      | Payment flagged for manual review        | Hold order processing; customer communication; expedited review process |
-| **Multiple Browser Tab Conflicts** | Concurrent checkout sessions cause errors | Session management with conflict detection; clear messaging about active sessions |
-| **Network Connectivity Issues**  | Partial service failures or timeouts    | Circuit breakers; graceful degradation; retry mechanisms with exponential backoff |
+| **Scenario**                         | **Impact**                                  | **Mitigation Strategy**                                                                  |
+| ------------------------------------ | ------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| **Payment Authorization Failure**    | Customer cannot complete purchase           | Retry logic with alternate payment methods; clear error messaging with suggested actions |
+| **Inventory Depletion Mid-Checkout** | Product becomes unavailable during checkout | Real-time inventory checks; offer alternatives; waitlist signup options                  |
+| **Tax Service Unavailable**          | Cannot calculate final order total          | Fallback to cached tax rates; provide estimated totals with clear disclaimers            |
+| **Shipping Service Timeout**         | Cannot provide shipping options             | Default shipping methods; cached rate fallbacks; estimated delivery dates                |
+| **Promotion Engine Error**           | Discounts cannot be applied                 | Allow checkout without discount; manual review and credit post-purchase                  |
+| **Session Timeout**                  | Customer loses checkout progress            | Extended session warnings; auto-save functionality; quick recovery options               |
+| **Address Validation Failure**       | Cannot validate shipping address            | Allow manual address entry; flag for verification; provide address suggestions           |
+| **Fraud Detection Trigger**          | Payment flagged for manual review           | Hold order processing; customer communication; expedited review process                  |
+| **Multiple Browser Tab Conflicts**   | Concurrent checkout sessions cause errors   | Session management with conflict detection; clear messaging about active sessions        |
+| **Network Connectivity Issues**      | Partial service failures or timeouts        | Circuit breakers; graceful degradation; retry mechanisms with exponential backoff        |
 
 ---
 
@@ -492,7 +562,7 @@ sequenceDiagram
 ---
 
 >  This MACH Alliance Canonical Data Model is intentionally __vendor-neutral__ and serves as a foundation for interoperability across composable architectures. It is __continually evolving__ through community contributions, which are reviewed and approved collaboratively.
->  
+>
 >  All contributions are made under the __Creative Commons Attribution 4.0 International License (CC BY 4.0)__. By submitting a contribution, you agree to license your content under <a href="https://creativecommons.org/licenses/by/4.0/deed.en">CC BY 4.0</a>, allowing others to share and adapt the material with proper attribution.
->  
+>
 >  We welcome and encourage continued improvements through community input.
