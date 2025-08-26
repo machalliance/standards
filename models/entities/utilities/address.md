@@ -60,10 +60,10 @@ The Address utility object provides:
 | `id`                    | Unique identifier for the address (when stored)                   | COULD       |
 | `type`                  | Address type (`shipping`, `billing`, `business`, `residential`)   | SHOULD      |
 | `status`                | Address status (`active`, `inactive`, `archived`, `verified`, `invalid`, `undeliverable`) | COULD       |
-| `street_name`           | Street name                                                       | COULD |
+| `street_name`           | Street name                                                       | SHOULD * |
 | `building_number`       | Building number                                                   | COULD |
 | `building_name`         | Building name                                                     | COULD |
-| `line1`                 | Primary address line (street number and name)                     | COULD        |
+| `line1`                 | Primary address line (street number and name)                     | SHOULD *       |
 | `line2`                 | Secondary address line (apartment, suite, unit)                   | COULD       |
 | `line3`                 | Additional address line (building, complex name)                  | COULD       |
 | `line4`                 | Extra address line for complex addresses                          | COULD       |
@@ -86,6 +86,9 @@ The Address utility object provides:
 | `updated_at`            | ISO 8601 update timestamp                                         | SHOULD      |
 | `verified_at`           | ISO 8601 verification timestamp                                   | COULD       |
 | `extensions`            | Namespaced dictionary for extension data                          | RECOMMENDED |
+
+> [!NOTE]  
+> There are three common ways of storing address information _unstructured_, _structured_ and _hybrid_ addresses. You should consult appropriate guideance around ISO 20022 to understand which is best for your use case.  Read https://www.redcompasslabs.com/insights/how-to-get-ready-for-hybrid-addresses-iso-20022/ for more information.
 
 ---
 
