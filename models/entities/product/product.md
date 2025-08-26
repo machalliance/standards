@@ -43,31 +43,31 @@ The model supports:
 
 The Product entity represents the master product information shared across all variants.
 
-| Field                 | Description                                                     | Practice    |
-| --------------------- | --------------------------------------------------------------- | ----------- |
-| `id`                  | Unique identifier for the product                               | MUST        |
-| `type`                | Reference to Product Type for classification                    | SHOULD      |
+| Field                 | Description                                                          | Practice    |
+| --------------------- | -------------------------------------------------------------------- | ----------- |
+| `id`                  | Unique identifier for the product                                    | MUST        |
+| `type`                | Reference to Product Type for classification                         | SHOULD      |
 | `status`              | Product lifecycle status (`active`, `inactive`, `archived`, `draft`) | SHOULD      |
-| `external_references` | Dictionary of cross-system IDs (e.g., ERP, PIM)                 | SHOULD      |
-| `created_at`          | ISO 8601 creation timestamp                                     | SHOULD      |
-| `updated_at`          | ISO 8601 update timestamp                                       | SHOULD      |
-| `name`                | Product name (string or localized object)                       | MUST        |
-| `description`         | Product description (string or localized object)                | SHOULD      |
-| `slug`                | URL-friendly string for routing and SEO                         | RECOMMENDED |
-| `brand`               | Brand name or identifier                                        | COULD       |
-| `categories`          | Array of category references                                    | RECOMMENDED |
-| `tags`                | Array of tags for filtering and search                          | COULD       |
-| `options`             | Array of option definitions for variants                        | SHOULD      |
-| `default_variant_id`  | ID of the primary/master variant                                | SHOULD      |
-| `variants`            | Array of product variants (Option 1)                            | SHOULD      |
-| `fulfillment_type`    | How the product is delivered (`physical`, `digital`, `service`) | SHOULD      |
-| `tax_category`        | Default tax classification for the product                      | SHOULD      |
-| `primary_image`       | Primary product image                                           | SHOULD      |
-| `media`               | Additional images, videos, documents                            | COULD       |
-| `seo`                 | Metadata for search engine optimization                         | SHOULD      |
-| `rating`              | Aggregated customer review information                          | COULD       |
-| `related_products`    | Array of related product IDs                                    | COULD       |
-| `extensions`          | Namespaced dictionary for extension data                        | RECOMMENDED |
+| `external_references` | Dictionary of cross-system IDs (e.g., ERP, PIM)                      | SHOULD      |
+| `created_at`          | ISO 8601 creation timestamp                                          | SHOULD      |
+| `updated_at`          | ISO 8601 update timestamp                                            | SHOULD      |
+| `name`                | Product name (string or localized object)                            | MUST        |
+| `description`         | Product description (string or localized object)                     | SHOULD      |
+| `slug`                | URL-friendly string for routing and SEO                              | RECOMMENDED |
+| `brand`               | Brand name or identifier                                             | COULD       |
+| `categories`          | Array of category references                                         | RECOMMENDED |
+| `tags`                | Array of tags for filtering and search                               | COULD       |
+| `options`             | Array of option definitions for variants                             | SHOULD      |
+| `default_variant_id`  | ID of the primary/master variant                                     | SHOULD      |
+| `variants`            | Array of product variants (Option 1)                                 | SHOULD      |
+| `fulfillment_type`    | How the product is delivered (`physical`, `digital`, `service`)      | SHOULD      |
+| `tax_category`        | Default tax classification for the product                           | SHOULD      |
+| `primary_image`       | Primary product image                                                | SHOULD      |
+| `media`               | Additional images, videos, documents                                 | COULD       |
+| `seo`                 | Metadata for search engine optimization                              | SHOULD      |
+| `rating`              | Aggregated customer review information                               | COULD       |
+| `related_products`    | Array of related product IDs                                         | COULD       |
+| `extensions`          | Namespaced dictionary for extension data                             | RECOMMENDED |
 
 ---
 
@@ -88,7 +88,7 @@ The ProductVariant entity represents individual sellable items with specific att
 | `cost`              | Cost of goods for margin calculations                   | COULD    |
 | `weight`            | Physical weight for shipping calculations               | SHOULD   |
 | `dimensions`        | Physical dimensions (length, width, height)             | COULD    |
-| `barcode`           | Barcode (UPC, EAN, ISBN, etc.)                          | COULD    |
+| `barcodes`          | Array of barcode objects (type, value; e.g., UPC, GTIN) | COULD    |
 | `inventory`         | Inventory levels and tracking                           | SHOULD   |
 | `tax_category`      | Tax classification override (if different from product) | COULD    |
 | `shipping_required` | Whether physical shipping is needed                     | SHOULD   |
@@ -360,10 +360,11 @@ ProductVariant:
       description: Physical dimensions
 
     # Identification and tracking
-    barcode:
-      type: string
-      description: Barcode (UPC, EAN, ISBN, etc.)
-      pattern: "^[0-9A-Za-z-]+$"
+    barcodes:
+      type: object  # <-- Object, not array
+      description: Product identifiers from various barcode standards
+      additionalProperties:
+        type: string
 
     inventory:
       $ref: "#/components/schemas/Inventory"
@@ -655,7 +656,10 @@ A simple product with only one variant (following the pattern that every product
     "value": 200,
     "unit": "g"
     },
-    "barcode": "1234567890123",
+    "barcodes": [
+      { "upc", "1234567890123" },
+      { "gtin", "9876543210987" }
+    ],
     "shipping_required": true
   }
   ],
