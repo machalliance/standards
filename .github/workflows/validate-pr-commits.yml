@@ -7,6 +7,8 @@ on:
 jobs:
   lint_pr_title:
     runs-on: ubuntu-latest
+    env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
     steps:
       - name: Validate PR title
         uses: ytanikin/PRConventionalCommits@1.3.0
