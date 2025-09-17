@@ -51,8 +51,8 @@ The model supports:
 | `shipping_total`      | Total shipping cost                                                                 | SHOULD      |
 | `discount_total`      | Total discounts applied                                                             | COULD       |
 | `line_items`          | Array of items purchased                                                            | SHOULD      |
-| `billing_address`     | Billing address using the shared address utility object                            | RECOMMENDED |
-| `shipping_address`    | Shipping address using the shared address utility object                           | RECOMMENDED |
+| `billing_address`     | Billing address using the shared [address](../utilities/address.md) utility object | RECOMMENDED |
+| `shipping_address`    | Shipping address using the shared [address](../utilities/address.md) utility object | RECOMMENDED |
 | `payments`            | Array of payment transactions                                                       | RECOMMENDED |
 | `version`             | Integer for optimistic concurrency control                                          | RECOMMENDED |
 | `extensions`          | Namespaced dictionary for extension data grouped by concern                         | RECOMMENDED |
