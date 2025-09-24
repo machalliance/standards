@@ -40,7 +40,7 @@ The Entity describes:
 | `updated_at` | Update timestamp using [timestamp](../utilities/timestamp.md) utility object. | SHOULD |
 | `expires_at` | Expiration timestamp using [timestamp](../utilities/timestamp.md) utility object for cart cleanup. | COULD |
 | `customer_id` | Reference to the customer owning this cart. | SHOULD |
-| `line_items` | Array of items purchased using CartItem objects. | SHOULD |
+| `line_items` | Array of items purchased using CartItem objects. Uses [money](../utilities/money.md) utility object for prices. | SHOULD |
 | `totals` | Cart totals including subtotal, tax, discounts, and grand total using CartTotals object. | SHOULD |
 | `addresses` | List of typed addresses for shipping and billing. Uses the shared [address](../utilities/address.md) utility object. | RECOMMENDED |
 | `shipping_methods` | Available shipping methods and selected options. | COULD |
