@@ -9,7 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - New entities and improvements to existing documentation
 
-## [1.0.0] - 2025-10-06
+## [1.1.0] - 2025-09-30
+
+- **Core Entities**
+    - **Commerce Domain**
+        - [Order](entities/order/order.md) - Order
+        - [Order History](entities/order/order-history.md) - Order History
+        - [Payment](entities/payment/payment.md) - Payment
+
+    - **Product Domain**
+        - [Product](entities/product/product.md) - [Change: Update product data model to improve barcode handling](https://github.com/machalliance/standards/pull/46)        
+
+    - **Utility Objects**
+        - [Money](entities/utilities/money.md) - Currency support
+        - [Address](entities/utilities/address.md) - [Change: feedback address use iso 20222](https://github.com/machalliance/standards/pull/50)
+
+
+- **Integration Recipes**
+    - [Simple Checkout Flow](recipes/simple-checkout-flow-recipe.md) - Convert cart into completed orders
+    - [Multi-Step Checkout Flow Orchestration](recipes/checkout-flow-recipe.md) - Complex version of cart checkout that adds cart validation, payment processing, inventory allocation, tax calculation, and order fulfillment        
+
+## [1.0.0] - 2025-08-06
 ### Added
 - **Project Structure and Guides**
     - [Entity Index](entities/README.md) - Complete list of all entities with descriptions

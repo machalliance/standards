@@ -6,7 +6,7 @@
 [![Recipes](https://img.shields.io/badge/recipes-2-purple.svg)](./recipes)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
-> **Last Updated:** August 2025 | **Version:** 1.0.0 | **Status:** Initial Release
+> **Last Updated:** September 2025 | **Version:** 1.1.0 | **Status:** Initial Release
 
 ## Table of Contents
 - [MACH Open Data Model initiative](#mach-open-data-model-initiative)
@@ -66,7 +66,8 @@ This standardized structure works across any CRM, CDP, or commerce platform, eli
 ## Current status
 
 - **Initial release (August 2025)** - Core project structure with 11 entities across identity, product catalog, commerce operations, and utilities, plus 2 PDP orchestration recipes
-- **Next planned release (Q4 2025)** - Order management entities (Order, Cart, Fulfillment) and checkout orchestration recipes
+- **September 2025** - Order management entities ([Order](entities/order/order.md), [Cart](entities/cart/cart.md), [Payment](entities/payment/payment.md), [Money](entities/utilities/money.md)) and [checkout orchestration recipes](recipes/simple-checkout-flow-recipe.md)
+- **Q4 2025** - Fulfillment, Contact, and other utility functions as well as working with MACH members to contribute recipes (TBD)
 - **2026 Roadmap** - AI/Agent communication standards, advanced orchestration patterns, and marketplace entities
 
 For more information, visit the [current open issues](https://github.com/machalliance/standards/issues) and [Changelog](./CHANGELOG.md).
