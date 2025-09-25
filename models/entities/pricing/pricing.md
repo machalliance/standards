@@ -59,8 +59,8 @@ The Entity describes:
 | --------------------- | --------------------------------------------------------------- | ----------- |
 | `id`                  | Unique identifier for the pricing record                        | MUST        |
 | `product_id`          | Reference to the product/SKU this pricing applies to            | MUST        |
-| `list_price`          | Manufacturer's suggested retail price (MSRP)                    | MUST        |
-| `sale_price`          | Actual selling price to customer                                | MUST        |
+| `list_price`          | Manufacturer's suggested retail price (MSRP) using [money](../utilities/money.md) utility object | MUST        |
+| `sale_price`          | Actual selling price to customer using [money](../utilities/money.md) utility object | MUST        |
 | `type`                | Pricing type (`retail`, `wholesale`, `bulk`)                    | SHOULD      |
 | `status`              | Lifecycle status (`active`, `inactive`, `archived`, `scheduled`, `expired`) | SHOULD      |
 | `external_references` | Dictionary of cross-system IDs (e.g., ERP, PMS)                 | SHOULD      |
