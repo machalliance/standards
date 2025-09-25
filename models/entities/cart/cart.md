@@ -2,13 +2,23 @@
 
 ## Table of contents
 
-- [Entity purpose](#entity-purpose)
-- [Object: Cart](#object-cart)
-- [Sample Object: Cart B2C](#sample-object-cart-b2c)
-- [Sample Object: Cart B2B](#sample-object-cart-b2b)
-- [Inline Objects](#inline-objects)
-- [Core Components & Relationships](#core-components--relationships)
-- [Typical pitfalls](#typical-pitfalls)
+- [MACH Alliance • Open Data Model Entity: `Cart`](#mach-alliance--open-data-model-entity-cart)
+  - [Table of contents](#table-of-contents)
+  - [Purpose](#purpose)
+  - [Object: Cart](#object-cart)
+  - [Sample Object: Cart B2C](#sample-object-cart-b2c)
+  - [Sample Object: Cart B2B](#sample-object-cart-b2b)
+  - [Inline Objects](#inline-objects)
+    - [CartItem Object](#cartitem-object)
+      - [Sample CartItem Object](#sample-cartitem-object)
+    - [CartTotals Object](#carttotals-object)
+      - [Sample CartTotals Object](#sample-carttotals-object)
+    - [AppliedPromotion Object](#appliedpromotion-object)
+      - [Sample AppliedPromotion Object](#sample-appliedpromotion-object)
+  - [Core Components \& Relationships](#core-components--relationships)
+    - [Components](#components)
+    - [Typical Relationships](#typical-relationships)
+    - [Typical pitfalls](#typical-pitfalls)
 
 ---
 
@@ -20,7 +30,7 @@ The Entity describes:
 - Real-time shopping session management with concurrent updates
 - Individual and business customer scenarios
 - Multi-channel shopping experiences with proper approval workflows
-- Flexible pricing and discount structures
+- Flexible pricing structures and promotion tracking
 - Multiple shipping and billing addresses
 - Cart lifecycle and status management
 - Line item management and totals calculation
@@ -30,22 +40,23 @@ The Entity describes:
 
 ## Object: Cart
 
-| Field | Description | Practice |
-|-------|-------------|----------|
-| `id` | Unique cart identifier in given context (e.g., UUID, slug). | SHOULD |
-| `type` | Indicates `b2c` or `b2b` cart type. | SHOULD |
-| `status` | Cart lifecycle status (`active`, `completed`, `abandoned`, `pending_approval`, `approved`, `rejected`). | SHOULD |
-| `external_references` | Dictionary of cross-system IDs to ease orchestration logic | SHOULD |
-| `created_at` | Creation timestamp using [timestamp](../utilities/timestamp.md) utility object. | SHOULD |
-| `updated_at` | Update timestamp using [timestamp](../utilities/timestamp.md) utility object. | SHOULD |
-| `expires_at` | Expiration timestamp using [timestamp](../utilities/timestamp.md) utility object for cart cleanup. | COULD |
-| `customer_id` | Reference to the customer owning this cart. | SHOULD |
-| `line_items` | Array of items purchased using CartItem objects. Uses [money](../utilities/money.md) utility object for prices. | SHOULD |
-| `totals` | Cart totals including subtotal, tax, discounts, and grand total using CartTotals object. | SHOULD |
-| `addresses` | List of typed addresses for shipping and billing. Uses the shared [address](../utilities/address.md) utility object. | RECOMMENDED |
-| `shipping_methods` | Available shipping methods and selected options. | COULD |
-| `payment_methods` | Available payment methods and selected options. | COULD |
-| `extensions` | Namespaced dictionary for extension data grouped by concern (e.g., `analytics`, `personalization`, `approval`). | RECOMMENDED |
+| Field                 | Description                                                                                                          | Practice    |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `id`                  | Unique cart identifier in given context (e.g., UUID, slug).                                                          | SHOULD      |
+| `type`                | Indicates `b2c` or `b2b` cart type.                                                                                  | SHOULD      |
+| `status`              | Cart lifecycle status (`active`, `completed`, `abandoned`, `pending_approval`, `approved`, `rejected`).              | SHOULD      |
+| `external_references` | Dictionary of cross-system IDs to ease orchestration logic                                                           | SHOULD      |
+| `created_at`          | Creation timestamp using [timestamp](../utilities/timestamp.md) utility object.                                      | SHOULD      |
+| `updated_at`          | Update timestamp using [timestamp](../utilities/timestamp.md) utility object.                                        | SHOULD      |
+| `expires_at`          | Expiration timestamp using [timestamp](../utilities/timestamp.md) utility object for cart cleanup.                   | COULD       |
+| `customer_id`         | Reference to the customer owning this cart.                                                                          | SHOULD      |
+| `line_items`          | Array of items purchased using CartItem objects. Uses [money](../utilities/money.md) utility object for prices.      | SHOULD      |
+| `totals`              | Cart totals including subtotal, tax, discounts, and grand total using CartTotals object.                             | SHOULD      |
+| `addresses`           | List of typed addresses for shipping and billing. Uses the shared [address](../utilities/address.md) utility object. | RECOMMENDED |
+| `shipping_methods`    | Available shipping methods and selected options.                                                                     | COULD       |
+| `payment_methods`     | Available payment methods and selected options.                                                                      | COULD       |
+| `applied_promotions`  | Array of promotions applied to this cart using AppliedPromotion objects.                                             | RECOMMENDED |
+| `extensions`          | Namespaced dictionary for extension data grouped by concern (e.g., `analytics`, `personalization`, `approval`).      | RECOMMENDED |
 
 
 ---
@@ -76,13 +87,19 @@ The Entity describes:
         "amount": 34.95,
         "currency": "EUR",
         "type": "retail"
-      },
+      }
+  ],
+  "applied_promotions": [
+    {
+      "id": "PROMO-SUMMER-001",
+      "code": "SUMMER2024",
+      "name": "Summer Sale",
+      "type": "cart",
       "discount": {
         "amount": 5.00,
-        "currency": "EUR",
-        "type": "promotional",
-        "code": "SUMMER2024"
-      }
+        "currency": "EUR"
+      },
+      "applied_at": "2025-06-17T10:10:00Z"
     }
   ],
   "totals": {
@@ -185,13 +202,20 @@ The Entity describes:
         "currency": "EUR",
         "type": "bulk",
         "tier": "enterprise"
-      },
-      "discount": {
-        "amount": 2.00,
-        "currency": "EUR",
-        "type": "contract",
-        "code": "ENTERPRISE2024"
       }
+  ],
+  "applied_promotions": [
+    {
+      "id": "PROMO-ENTERPRISE-001",
+      "code": "ENTERPRISE2024",
+      "name": "Enterprise Contract Discount",
+      "type": "product",
+      "discount": {
+        "amount": 400.00,
+        "currency": "EUR"
+      },
+      "applied_to": ["item_b2b_001"],
+      "applied_at": "2025-06-17T10:15:00Z"
     }
   ],
   "totals": {
@@ -268,18 +292,17 @@ The Entity describes:
 
 Cart items represent individual products in the cart with their quantities, pricing, and discounts.
 
-| Field | Description | Practice |
-|-------|-------------|----------|
-| `id` | Unique identifier for the cart item | SHOULD |
-| `sku` | Stock keeping unit for the product variant | SHOULD |
-| `product_id` | Reference to the product | SHOULD |
-| `variant_id` | Reference to the specific product variant (optional) | COULD |
-| `name` | Human-readable product name | SHOULD |
-| `quantity` | Number of items in cart | SHOULD |
-| `price` | Item price using [money](../utilities/money.md) utility object | SHOULD |
-| `discount` | Applied discount using [money](../utilities/money.md) utility object (optional) | COULD |
-| `added_at` | When item was added to cart using [timestamp](../utilities/timestamp.md) utility object | COULD |
-| `updated_at` | When item was last updated using [timestamp](../utilities/timestamp.md) utility object | COULD |
+| Field        | Description                                                                             | Practice |
+| ------------ | --------------------------------------------------------------------------------------- | -------- |
+| `id`         | Unique identifier for the cart item                                                     | SHOULD   |
+| `sku`        | Stock keeping unit for the product variant                                              | SHOULD   |
+| `product_id` | Reference to the product                                                                | SHOULD   |
+| `variant_id` | Reference to the specific product variant (optional)                                    | COULD    |
+| `name`       | Human-readable product name                                                             | SHOULD   |
+| `quantity`   | Number of items in cart                                                                 | SHOULD   |
+| `price`      | Item price using [money](../utilities/money.md) utility object                          | SHOULD   |
+| `added_at`   | When item was added to cart using [timestamp](../utilities/timestamp.md) utility object | COULD    |
+| `updated_at` | When item was last updated using [timestamp](../utilities/timestamp.md) utility object  | COULD    |
 
 #### Sample CartItem Object
 
@@ -297,13 +320,6 @@ Cart items represent individual products in the cart with their quantities, pric
     "type": "retail",
     "tier": "standard"
   },
-  "discount": {
-    "amount": 5.00,
-    "currency": "EUR",
-    "type": "promotional",
-    "code": "SUMMER2024",
-    "description": "Summer Sale 2024"
-  },
   "added_at": "2025-06-17T10:00:00Z",
   "updated_at": "2025-06-17T10:15:00Z"
 }
@@ -313,15 +329,15 @@ Cart items represent individual products in the cart with their quantities, pric
 
 Cart totals represent the calculated totals for the entire cart including subtotal, discounts, shipping, tax, and grand total.
 
-| Field | Description | Practice |
-|-------|-------------|----------|
-| `subtotal` | Sum of all line items before discounts | SHOULD |
-| `discount` | Total discount amount | COULD |
-| `shipping` | Shipping cost | COULD |
-| `tax` | Tax amount | COULD |
-| `grand_total` | Final total after all calculations | SHOULD |
-| `currency` | Currency code for all amounts | SHOULD |
-| `tax_exemption` | Tax exemption information (optional) | COULD |
+| Field           | Description                            | Practice |
+| --------------- | -------------------------------------- | -------- |
+| `subtotal`      | Sum of all line items before discounts | SHOULD   |
+| `discount`      | Total discount amount                  | COULD    |
+| `shipping`      | Shipping cost                          | COULD    |
+| `tax`           | Tax amount                             | COULD    |
+| `grand_total`   | Final total after all calculations     | SHOULD   |
+| `currency`      | Currency code for all amounts          | SHOULD   |
+| `tax_exemption` | Tax exemption information (optional)   | COULD    |
 
 #### Sample CartTotals Object
 
@@ -340,28 +356,59 @@ Cart totals represent the calculated totals for the entire cart including subtot
 }
 ```
 
+### AppliedPromotion Object
+
+Applied promotions represent promotional discounts that have been applied to the cart.
+
+| Field        | Description                                                                            | Practice |
+| ------------ | -------------------------------------------------------------------------------------- | -------- |
+| `id`         | Reference to the [promotion](../promotion/promotion.md) entity                         | SHOULD   |
+| `code`       | Coupon code used to activate promotion (if applicable)                                 | COULD    |
+| `name`       | Human-readable promotion name for display                                              | SHOULD   |
+| `type`       | Type of promotion (`cart`, `product`, `shipping`)                                      | SHOULD   |
+| `discount`   | Calculated discount amount using [money](../utilities/money.md) utility object         | SHOULD   |
+| `applied_to` | Array of line item IDs affected by this promotion (for product type)                   | COULD    |
+| `applied_at` | When promotion was applied using [timestamp](../utilities/timestamp.md) utility object | COULD    |
+
+#### Sample AppliedPromotion Object
+
+```jsonc
+{
+  "id": "PROMO-SUMMER-001",
+  "code": "SUMMER2024",
+  "name": "Summer Sale",
+  "type": "cart",
+  "discount": {
+    "amount": 25.00,
+    "currency": "EUR"
+  },
+  "applied_to": ["item_001", "item_002"],
+  "applied_at": "2025-06-17T10:15:00Z"
+}
+```
+
 ---
 
 ## Core Components & Relationships
 
 ### Components
 
-| Concept             | Description                                                    | Typical Source of Truth             |
-| -------------------- | -------------------------------------------------------------- | --------------------------------------- |
-| Cart ID              | Unique cart identifier                                         | Commerce Engine                      |
-| Cart Type            | B2C or B2B cart classification                                 | Commerce Engine                      |
-| Cart Status          | Current status in cart lifecycle                               | Commerce Engine                      |
-| Customer             | Customer owning the cart                                       | Customer Management System           |
-| Line Items           | Products and quantities in cart                                | Commerce Engine                      |
-| Totals               | Cart totals and calculations                                   | Commerce Engine                      |
-| Addresses            | Shipping and billing addresses                                 | Address Management System            |
-| Shipping Methods     | Available and selected shipping options                        | Shipping Management System           |
-| Payment Methods      | Available and selected payment options                         | Payment Management System            |
-| Analytics            | Session tracking and conversion data                           | Analytics Platform                   |
-| Approval             | B2B approval workflow management                               | Approval Management System           |
-| Personalization      | Recommendation and personalization data                        | Personalization Engine               |
-| Extensions               | Optional and scoped extensions                                 | Various domain systems               |
-| Reference Ids         | Cross-system identifiers                                       | Integration Layer                    |
+| Concept          | Description                             | Typical Source of Truth    |
+| ---------------- | --------------------------------------- | -------------------------- |
+| Cart ID          | Unique cart identifier                  | Commerce Engine            |
+| Cart Type        | B2C or B2B cart classification          | Commerce Engine            |
+| Cart Status      | Current status in cart lifecycle        | Commerce Engine            |
+| Customer         | Customer owning the cart                | Customer Management System |
+| Line Items       | Products and quantities in cart         | Commerce Engine            |
+| Totals           | Cart totals and calculations            | Commerce Engine            |
+| Addresses        | Shipping and billing addresses          | Address Management System  |
+| Shipping Methods | Available and selected shipping options | Shipping Management System |
+| Payment Methods  | Available and selected payment options  | Payment Management System  |
+| Analytics        | Session tracking and conversion data    | Analytics Platform         |
+| Approval         | B2B approval workflow management        | Approval Management System |
+| Personalization  | Recommendation and personalization data | Personalization Engine     |
+| Extensions       | Optional and scoped extensions          | Various domain systems     |
+| Reference Ids    | Cross-system identifiers                | Integration Layer          |
 
 `Cart` typically resides in many systems, including:
 
@@ -407,7 +454,7 @@ classDef optionalRel stroke:#b5b5b5, stroke-dasharray: 1 1, fill:#f3f3f3, stroke
 ---
 
 >  This MACH Alliance Canonical Data Model is intentionally __vendor-neutral__ and serves as a foundation for interoperability across composable architectures. It is __continually evolving__ through community contributions, which are reviewed and approved collaboratively.
->  
+>
 >  All contributions are made under the __Creative Commons Attribution 4.0 International License (CC BY 4.0)__. By submitting a contribution, you agree to license your content under <a href="https://creativecommons.org/licenses/by/4.0/deed.en">CC BY 4.0</a>, allowing others to share and adapt the material with proper attribution.
->  
+>
 >  We welcome and encourage continued improvements through community input. For more information and guidance on how to contribute, please refer to the <a href="https://github.com/machalliance/common-data-model/blob/main/contributing.md">Contributor Guide</a>.

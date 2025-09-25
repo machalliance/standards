@@ -2,16 +2,29 @@
 
 ## Table of contents
 
-- [Purpose](#purpose)
-- [Object: Money](#object-money)
-- [Sample Objects](#sample-objects)
-- [Sample Object: Basic Money Object](#sample-object-basic-money-object)
-- [Sample Object: Money with High Precision](#sample-object-money-with-high-precision)
-- [Sample Object: Zero Amount](#sample-object-zero-amount)
-- [Sample Object: Negative Amount (for refunds, discounts)](#sample-object-negative-amount-for-refunds-discounts)
-- [Usage Examples](#usage-examples)
-- [Implementation Guidelines](#implementation-guidelines)
-- [Related Utility Objects](#related-utility-objects)
+- [MACH Alliance • Open Data Model Utility Object: `Money`](#mach-alliance--open-data-model-utility-object-money)
+  - [Table of contents](#table-of-contents)
+  - [Purpose](#purpose)
+  - [Object: Money](#object-money)
+  - [Sample Objects](#sample-objects)
+    - [Sample Object: Basic Money Object](#sample-object-basic-money-object)
+    - [Sample Object: Money with High Precision](#sample-object-money-with-high-precision)
+    - [Sample Object: Zero Amount](#sample-object-zero-amount)
+    - [Sample Object: Negative Amount (for refunds, discounts)](#sample-object-negative-amount-for-refunds-discounts)
+  - [Usage Examples](#usage-examples)
+    - [In Pricing Entity](#in-pricing-entity)
+    - [In Cart Totals](#in-cart-totals)
+    - [In Campaign Budget](#in-campaign-budget)
+    - [In Exchange Rate Context](#in-exchange-rate-context)
+  - [Implementation Guidelines](#implementation-guidelines)
+    - [Currency Codes](#currency-codes)
+    - [Precision](#precision)
+    - [Validation Rules](#validation-rules)
+    - [Negative Amount Usage](#negative-amount-usage)
+    - [Best Practices](#best-practices)
+    - [Optional Fields Usage](#optional-fields-usage)
+  - [Common Currency Examples](#common-currency-examples)
+  - [Related Utility Objects](#related-utility-objects)
 
 
 ---
@@ -31,13 +44,13 @@ The Money utility object provides:
 
 ## Object: Money
 
-| Field       | Description                                    | Practice     |
-|-------------|------------------------------------------------|--------------|
-| `amount`    | Numeric value of the monetary amount           | SHOULD   |
-| `currency`  | ISO 4217 currency code (e.g., "EUR", "USD")    | SHOULD   |
-| `name`       | Human-readable currency name                   | COULD   |
-| `symbol`     | Currency symbol for display                    | COULD   |
-| `precision`  | Number of decimal places when displaying minor units like cent (0, 2, 3, etc.)      | COULD   |
+| Field       | Description                                                                    | Practice |
+| ----------- | ------------------------------------------------------------------------------ | -------- |
+| `amount`    | Numeric value of the monetary amount                                           | SHOULD   |
+| `currency`  | ISO 4217 currency code (e.g., "EUR", "USD")                                    | SHOULD   |
+| `name`      | Human-readable currency name                                                   | COULD    |
+| `symbol`    | Currency symbol for display                                                    | COULD    |
+| `precision` | Number of decimal places when displaying minor units like cent (0, 2, 3, etc.) | COULD    |
 
 ---
 
@@ -100,41 +113,17 @@ The Money utility object provides:
 }
 ```
 
-### In Pricing Entity with Currency Information
-
-```jsonc
-{
-  "id": "PRICE-001",
-  "product_id": "PROD-001",
-  "list_price": {
-    "amount": 39.95,
-    "currency": "EUR"
-  },
-  "currencyInfo": {
-    "code": "EUR",
-    "name": "Euro",
-    "symbol": "€",
-    "precision": 2
-  }
-}
-```
 ### In Cart Totals
 
 ```jsonc
 {
   "totals": {
-    "subtotal": {
-      "amount": 69.90,
-      "currency": "EUR"
-    },
-    "discount": {
-      "amount": 5.00,
-      "currency": "EUR"
-    },
-    "grand_total": {
-      "amount": 64.90,
-      "currency": "EUR"
-    }
+    "subtotal": 69.90,
+    "discount": 5.00,
+    "shipping": 5.00,
+    "tax": 12.00,
+    "grand_total": 81.90,
+    "currency": "EUR"
   }
 }
 ```
@@ -194,8 +183,12 @@ The Money utility object provides:
 ### Validation Rules
 - `amount` must be a valid number
 - `currency` must be a valid ISO 4217 code
-- Negative amounts are allowed for refunds, discounts, etc.
 - Zero amounts are valid
+
+### Negative Amount Usage
+- **Appropriate**: Refunds, credit adjustments, accounting reversals
+- **Avoid**: Discounts should typically use separate discount tracking (see [promotion](../promotion/promotion.md) entities) rather than negative money amounts
+- **Consider context**: In totals calculations, negative amounts may be appropriate for display purposes
 
 ### Best Practices
 - Always include both `amount` and `currency` fields
@@ -203,20 +196,25 @@ The Money utility object provides:
 - Consider using a decimal library for financial calculations
 - Validate currency codes against supported currencies
 
+### Optional Fields Usage
+- **`name`** and **`symbol`**: Include when building user interfaces that display currency information
+- **`precision`**: Include when the system needs to format amounts for display or when precision differs from currency defaults
+- For simple API exchanges between systems, `amount` and `currency` are typically sufficient
+
 ## Common Currency Examples
 
-| Code | Name | Symbol | Precision |
-|------|------|--------|-----------|
-| EUR | Euro | € | 2 |
-| USD | US Dollar | $ | 2 |
-| GBP | British Pound | £ | 2 |
-| JPY | Japanese Yen | ¥ | 0 |
-| CAD | Canadian Dollar | C$ | 2 |
-| AUD | Australian Dollar | A$ | 2 |
-| CHF | Swiss Franc | CHF | 2 |
-| CNY | Chinese Yuan | ¥ | 2 |
-| INR | Indian Rupee | ₹ | 2 |
-| BRL | Brazilian Real | R$ | 2 |
+| Code | Name              | Symbol | Precision |
+| ---- | ----------------- | ------ | --------- |
+| EUR  | Euro              | €      | 2         |
+| USD  | US Dollar         | $      | 2         |
+| GBP  | British Pound     | £      | 2         |
+| JPY  | Japanese Yen      | ¥      | 0         |
+| CAD  | Canadian Dollar   | C$     | 2         |
+| AUD  | Australian Dollar | A$     | 2         |
+| CHF  | Swiss Franc       | CHF    | 2         |
+| CNY  | Chinese Yuan      | ¥      | 2         |
+| INR  | Indian Rupee      | ₹      | 2         |
+| BRL  | Brazilian Real    | R$     | 2         |
 
 ---
 
@@ -230,4 +228,4 @@ The Money utility object provides:
 
 > This MACH Alliance Canonical Data Model is intentionally __vendor-neutral__ and serves as a foundation for interoperability across composable architectures. It is __continually evolving__ through community contributions, which are reviewed and approved collaboratively.
 >
-> All contributions are made under the __Creative Commons Attribution 4.0 International License (CC BY 4.0)__. By submitting a contribution, you agree to license your content under <a href="https://creativecommons.org/licenses/by/4.0/deed.en">CC BY 4.0</a>, allowing others to share and adapt the material with proper attribution. 
+> All contributions are made under the __Creative Commons Attribution 4.0 International License (CC BY 4.0)__. By submitting a contribution, you agree to license your content under <a href="https://creativecommons.org/licenses/by/4.0/deed.en">CC BY 4.0</a>, allowing others to share and adapt the material with proper attribution.
