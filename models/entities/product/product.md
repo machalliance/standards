@@ -83,9 +83,9 @@ The ProductVariant entity represents individual sellable items with specific att
 | `status`            | Variant status (`active`, `inactive`, `discontinued`)   | SHOULD   |
 | `position`          | Sort order for display purposes                         | SHOULD   |
 | `option_values`     | Array of option/value pairs for this variant            | MUST     |
-| `price`             | Variant pricing                                         | MUST     |
-| `compare_at_price`  | Original/MSRP price for showing discounts               | COULD    |
-| `cost`              | Cost of goods for margin calculations                   | COULD    |
+| `price`             | Variant pricing using [money](../utilities/money.md) utility object | MUST     |
+| `compare_at_price`  | Original/MSRP price for showing discounts using [money](../utilities/money.md) utility object | COULD    |
+| `cost`              | Cost of goods for margin calculations using [money](../utilities/money.md) utility object | COULD    |
 | `weight`            | Physical weight for shipping calculations               | SHOULD   |
 | `dimensions`        | Physical dimensions (length, width, height)             | COULD    |
 | `barcodes`          | Array of barcode objects (type, value; e.g., UPC, GTIN) | COULD    |

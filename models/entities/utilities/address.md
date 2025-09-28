@@ -60,7 +60,10 @@ The Address utility object provides:
 | `id`                    | Unique identifier for the address (when stored)                   | COULD       |
 | `type`                  | Address type (`shipping`, `billing`, `business`, `residential`)   | SHOULD      |
 | `status`                | Address status (`active`, `inactive`, `archived`, `verified`, `invalid`, `undeliverable`) | COULD       |
-| `line1`                 | Primary address line (street number and name)                     | MUST        |
+| `street_name`           | Street name                                                       | SHOULD * |
+| `building_number`       | Building number                                                   | COULD |
+| `building_name`         | Building name                                                     | COULD |
+| `line1`                 | Primary address line (street number and name)                     | SHOULD *       |
 | `line2`                 | Secondary address line (apartment, suite, unit)                   | COULD       |
 | `line3`                 | Additional address line (building, complex name)                  | COULD       |
 | `line4`                 | Extra address line for complex addresses                          | COULD       |
@@ -83,6 +86,9 @@ The Address utility object provides:
 | `updated_at`            | ISO 8601 update timestamp                                         | SHOULD      |
 | `verified_at`           | ISO 8601 verification timestamp                                   | COULD       |
 | `extensions`            | Namespaced dictionary for extension data                          | RECOMMENDED |
+
+> [!NOTE]  
+> There are three common ways of storing address information _unstructured_, _structured_ and _hybrid_ addresses. You should consult appropriate guideance around ISO 20022 to understand which is best for your use case.  Read https://www.redcompasslabs.com/insights/how-to-get-ready-for-hybrid-addresses-iso-20022/ for more information.
 
 ---
 
@@ -117,7 +123,35 @@ Address:
       description: Address validation and delivery status
       default: "unverified"
 
-    # Address lines (localizable)
+    # Address lines for structured approach (localizable)
+    street_name:
+      oneOf:
+        - type: string # Single language
+        - type: object # Multi-language
+          additionalProperties:
+            type: string
+      description: Street name
+      # example: "Main Street" or {"en-US": "Main Street", "ja-JP": "メインストリート"}        
+
+    building_number:
+      oneOf:
+        - type: string
+        - type: object
+          additionalProperties:
+            type: string
+      description: Building number and suite, if needed
+      # example: "102" or "102 suite 100"
+
+    building_name:
+      oneOf:
+        - type: string # Single language
+        - type: object # Multi-language
+          additionalProperties:
+            type: string
+      description: Building name
+      # example: "Buckingham Palace" or {"en-US": "Buckingham Palace", "ja-JP": "バッキンガム宮殿"}           
+
+    # Address lines for unstructured approach (localizable)
     line1:
       oneOf:
         - type: string  # Single language
@@ -386,7 +420,36 @@ AddressCorrection:
 
 ---
 
-## Sample Object: Minimal Address
+## Sample Object: Minimal Address (structured)
+
+Basic address with only required fields.
+
+```json
+{
+  "street_name":"5th Avenue", 
+  "building_number":"350",
+  "city": "New York",
+  "postal_code":"10118",
+  "country": "US"
+}
+```
+
+## Sample Object: Minimal Address with building name (structured)
+
+Basic address plus building name.
+
+```json
+{
+  "street_name":"5th Avenue", 
+  "building_number":"350",
+  "building_name":"The Empire State Building",
+  "city": "New York",
+  "postal_code":"10118",
+  "country": "US"
+}
+```
+
+## Sample Object: Minimal Address (unstructured)
 
 Basic address with only required fields.
 
@@ -845,6 +908,7 @@ classDef entity fill:#ffd100, stroke:#ffd100,stroke-width:2px
 - **Missing required fields by country** - Some countries require district/prefecture, others don't use postal codes
 - **Single-language only** - Prevents proper delivery in countries requiring local script
 - **No validation metadata** - Can't track whether addresses are deliverable or need correction
+- **Structured vs. unstructured** - Unstructured is easier to capture and store - especially for delivery purposes, but structured may be easier for payment resolution as it is closer to the [ISO 20022 standard](https://medium.com/@domdigby/iso-20022-enhanced-data-structured-addresses-c64c645cc161).
 
 ### Validation and Standardization Problems
 - **Not validating on entry** - Invalid addresses cause delivery failures and customer dissatisfaction
