@@ -5,20 +5,33 @@
 > [!IMPORTANT]
 > A "recipe" is a document intended to serve cross-functional stakeholders (e.g., product, engineering, ops, CX, analytics) when developing composable applications. It is meant to describe a method for solving a business problem in a composable approach. It is envisioned that we may have _multiple_ recipes solving similar problems, but that the advantages and disadvantages of specific approaches unique to the use case are also highlighted.
 
-## Table of contents
-
-- [Recipe purpose](#recipe-purpose)
-- [Recipe Overview](#recipe-overview)
-- [Typical pitfalls](#typical-pitfalls)
-- [Actors / Stakeholders](#actors--stakeholders)
-- [Trigger Points / Events](#trigger-points--events)
-- [Recipe Flows](#recipe-flows)
-- [Systems Involved](#systems-involved)
-- [Data Requirements](#data-requirements)
-- [Variants / Alternatives](#variants--alternatives)
-- [Failure Modes / Edge Cases](#failure-modes--edge-cases)
-- [Success Metrics / KPIs](#success-metrics--kpis)
-- [Security & Compliance Notes](#security--compliance-notes)
+- [MACH Alliance, Open Data Model](#mach-alliance-open-data-model)
+  - [Recipe: `Recipe Name`](#recipe-recipe-name)
+  - [Table of contents](#table-of-contents)
+  - [Recipe Purpose](#recipe-purpose)
+  - [Recipe Overview](#recipe-overview)
+      - [Approach Rationale](#approach-rationale)
+        - [Performance \& User Experience](#performance--user-experience)
+        - [Security \& Compliance](#security--compliance)
+        - [Business Logic \& Consistency](#business-logic--consistency)
+        - [Maintainability \& Scalability](#maintainability--scalability)
+        - [Operational Excellence](#operational-excellence)
+  - [Typical pitfalls](#typical-pitfalls)
+  - [Actors / Stakeholders](#actors--stakeholders)
+  - [Trigger Points / Events](#trigger-points--events)
+  - [Recipe Flows](#recipe-flows)
+      - [Swimlane or Sequence Diagram](#swimlane-or-sequence-diagram)
+      - [Architectural Overlay (optional)](#architectural-overlay-optional)
+  - [Systems Involved](#systems-involved)
+  - [Data Requirements](#data-requirements)
+    - [Data Flow Details](#data-flow-details)
+    - [Data Lineage \& Performance Considerations](#data-lineage--performance-considerations)
+    - [Privacy/PII Considerations](#privacypii-considerations)
+    - [Example Composed Object Output](#example-composed-object-output)
+  - [Variants / Alternatives](#variants--alternatives)
+  - [Failure Modes / Edge Cases](#failure-modes--edge-cases)
+  - [Success Metrics / KPIs](#success-metrics--kpis)
+  - [Security \& Compliance Notes](#security--compliance-notes)
 
 ## Recipe Purpose
 > [!NOTE]
