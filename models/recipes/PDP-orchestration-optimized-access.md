@@ -27,8 +27,9 @@
   - [Systems Involved](#systems-involved)
   - [Data Requirements](#data-requirements)
     - [Data Flow Details](#data-flow-details)
+    - [Example composed object output](#example-composed-object-output)
     - [Access Layer Enhanced Data Lineage](#access-layer-enhanced-data-lineage)
-    - [Privacy/PII Considerations](#privacypii-considerations)
+    - [Privacy/PII Considerations *(Enhanced)*](#privacypii-considerations-enhanced)
     - [Access Layer Performance Optimization](#access-layer-performance-optimization)
   - [Variants / Alternatives](#variants--alternatives)
   - [Failure Modes / Edge Cases](#failure-modes--edge-cases)
@@ -397,8 +398,62 @@ sequenceDiagram
 Fully composed PDP object with optimal caching strategy per data type.
 
 #### Example composed object output
+
+This example demonstrates a fully orchestrated PDP response with access layer optimization annotations:
+
 > [!NOTE]
-> Consult the original [PDP Orchestration](PDP-orchestration-on-the-fly.md#example-composed-object-output) recipe to see the JSON output example.
+> The example below uses JSON with comments (JSONC) for illustration. Remove comments for valid JSON.
+
+```jsonc
+{
+  "id": "PROD-WIRELESS-HEADPHONES-001",
+  "sku": "WH-NOISE-CANCEL-BLK",
+  "slug": "premium-wireless-noise-cancelling-headphones",
+  "type": "PT-ELECTRONICS-AUDIO",
+  "status": "sellable",
+
+  // ✅ ACCESS LAYER: Served from Orchestration Layer Cache (TTL: 2h)
+  "breadcrumbs": [
+    { "label": "Home", "url": "/" },
+    { "label": "Electronics", "url": "/electronics" },
+    { "label": "Audio", "url": "/electronics/audio/headphones" }
+  ],
+
+  // ✅ ACCESS LAYER: Served from CMS Delivery API Cache (TTL: 6h)
+  "name": "Premium Wireless Noise-Cancelling Headphones",
+  "description": "Experience studio-quality sound with industry-leading noise cancellation.",
+  "marketingContent": {
+    "headline": "Silence the World, Amplify Your Music",
+    "features": [
+      "Industry-leading active noise cancellation",
+      "30-hour battery life with quick charge",
+      "Hi-Res Audio certified for studio-quality sound"
+    ]
+  },
+
+  // 🔄 REAL-TIME: Always fresh via Direct API Call
+  "list_price": {
+    "amount": 399.99,
+    "currency": "USD",
+    "taxIncluded": false
+  },
+  "inventory": {
+    "available": 105,
+    "onhand": 120
+  },
+
+  // ✅ ACCESS LAYER: Served from CDN Cache (TTL: 24h)
+  "primary_image": {
+    "url": "https://cdn.audiotech.com/img/wireless-headphones-primary.webp",
+    "alt": "Premium Wireless Noise-Cancelling Headphones",
+    "width": 800,
+    "height": 800
+  }
+}
+```
+
+> [!TIP]
+> Notice how different data types use different access layer strategies: content and media assets are cached for hours/days, while pricing and inventory are always fetched fresh.
 
 #### Access Layer Enhanced Data Lineage
 

@@ -21,6 +21,7 @@
   - [Trigger Points / Events](#trigger-points--events)
   - [Recipe Flows](#recipe-flows)
       - [Swimlane or Sequence Diagram](#swimlane-or-sequence-diagram)
+      - [Architectural Overlay (optional)](#architectural-overlay-optional)
   - [Systems Involved](#systems-involved)
   - [Data Requirements](#data-requirements)
     - [Data Flow Details](#data-flow-details)
@@ -34,7 +35,7 @@
 
 ## Recipe Purpose
 > [!NOTE]
-> What business goal this recipe supports (e.g., increases trust, reduce cart abandonment, drive product insights).
+> What business goal this recipe supports (e.g., increase trust, reduce cart abandonment, drive product insights).
 
 > [!TIP]
 > A **PDP (Product Detail Page) Orchestration** [example](../recipes/PDP-orchestration-on-the-fly.md) is included throughout this template.:
