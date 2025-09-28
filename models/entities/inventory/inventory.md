@@ -209,7 +209,7 @@ InventoryQuantities:
 
     allocated:
       type: integer
-      description: Quantity soft-reserved in carts or quotes
+      description: Quantity soft-reserved in [carts](../cart/cart.md) or quotes
       minimum: 0
       default: 0
       # example: 5
@@ -448,14 +448,14 @@ classDef optionalRel stroke:#b5b5b5, stroke-dasharray: 1 1, fill:#f3f3f3, stroke
 
 ### Business Logic Errors
 - **Ignoring safety stock** - Erodes fulfillment SLAs and causes stockouts of popular items
-- **Not tracking allocated quantity** - Items in carts appear available, leading to abandonment
+- **Not tracking allocated quantity** - Items in [carts](../cart/cart.md) appear available, leading to abandonment
 - **Missing location priorities** - Not optimizing which location fulfills orders
 
 ### Architecture Issues
 - **No immutable adjustment ledger** - Hinders audit trails and shrinkage analysis
 - **Single global inventory pool** - Breaks location-based features like click-and-collect
 - **Blocking WMS calls at checkout** - Synchronous inventory checks slow checkout under load
-- **No inventory reservation system** - Can't guarantee stock between add-to-cart and payment
+- **No inventory reservation system** - Can't guarantee stock between add-to-[cart](../cart/cart.md) and payment
 
 ### Data Quality Problems
 - **Mismatched SKU identifiers** - Different systems using different product IDs

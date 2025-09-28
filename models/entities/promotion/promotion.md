@@ -41,7 +41,7 @@ The Entity describes:
 |---------------|-------------|----------|
 | `id`                   | Unique identifier for the promotion                      | MUST |
 | `name`                 | Promotion name for internal and customer-facing use (string or localized object) | MUST |
-| `type`                 | What the promotion applies to (`cart`, `product`, `shipping`) | MUST |
+| `type`                 | What the promotion applies to (`cart`, `product`, `shipping`). Cart promotions apply to [cart](../cart/cart.md) entities. | MUST |
 | `rules`                | Conditions and actions that define the promotion         | MUST |
 | `status`               | Lifecycle status (`draft`, `scheduled`, `active`, `paused`, `expired`, `archived`) | SHOULD |
 | `description`          | Promotion description for customer communication (string or localized object) | SHOULD |
