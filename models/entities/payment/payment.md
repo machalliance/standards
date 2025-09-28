@@ -12,10 +12,18 @@
   - [Sample Object: Minimal Payment](#sample-object-minimal-payment)
   - [Sample Object: Full Payment](#sample-object-full-payment)
   - [Sample Object: Refund Payment](#sample-object-refund-payment)
+  - [Sample Object: Split Payment](#sample-object-split-payment)
+  - [Sample Object: Partial Capture](#sample-object-partial-capture)
   - [Core Components \& Relationships](#core-components--relationships)
     - [Components](#components)
     - [Typical Relationships](#typical-relationships)
   - [Typical pitfalls](#typical-pitfalls)
+    - [Security Issues](#security-issues)
+    - [Data Integrity Problems](#data-integrity-problems)
+    - [Integration Issues](#integration-issues)
+    - [Business Logic Errors](#business-logic-errors)
+    - [Architecture Problems](#architecture-problems)
+    - [Performance Issues](#performance-issues)
 
 ---
 
@@ -35,24 +43,27 @@ The model supports:
 
 ## Object: Payment
 
-| Field                 | Description                                                                         | Practice    |
-| --------------------- | ----------------------------------------------------------------------------------- | ----------- |
-| `id`                  | Unique payment identifier (e.g., UUID)                                             | MUST        |
-| `order_id`            | Reference to the associated order                                                   | SHOULD      |
-| `customer_id`         | Reference to customer making the payment                                            | SHOULD      |
-| `amount`              | Payment amount in smallest currency unit (cents)                                   | SHOULD      |
-| `currency`            | ISO 4217 currency code (e.g., `USD`, `EUR`, `NOK`)                                 | SHOULD      |
-| `status`              | Payment status (`pending`, `authorized`, `captured`, `refunded`, `failed`)          | SHOULD      |
-| `method`              | Payment method type (`card`, `bank_transfer`, `digital_wallet`, `bnpl`)             | SHOULD      |
-| `provider`            | Payment service provider (e.g., `stripe`, `klarna`, `paypal`)                      | SHOULD      |
-| `external_references` | Dictionary of cross-system IDs (gateway transaction ID, PSP reference)             | SHOULD      |
-| `created_at`          | ISO 8601 creation timestamp                                                         | SHOULD      |
-| `updated_at`          | ISO 8601 update timestamp                                                           | SHOULD      |
-| `processed_at`        | ISO 8601 processing timestamp                                                       | COULD       |
-| `transactions`        | Array of transaction operations (auth, capture, refund)                             | RECOMMENDED |
-| `method_details`      | Payment method specific details (masked/tokenized)                                  | COULD       |
-| `version`             | Integer for optimistic concurrency control                                          | RECOMMENDED |
-| `extensions`          | Namespaced dictionary for extension data                                            | RECOMMENDED |
+| Field                      | Description                                                                                                                           | Practice    |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `id`                       | Unique payment identifier (e.g., UUID)                                                                                                | MUST        |
+| `order_id`                 | Reference to the associated order                                                                                                     | SHOULD      |
+| `customer_id`              | Reference to customer making the payment                                                                                              | SHOULD      |
+| `amount`                   | Payment amount in smallest currency unit, always positive (negative amounts use Transaction records)                                  | MUST        |
+| `currency`                 | ISO 4217 currency code (e.g., `USD`, `EUR`, `NOK`)                                                                                    | MUST        |
+| `status`                   | Payment status (`pending`, `authorized`, `captured`, `partially_captured`, `refunded`, `failed`, `cancelled`, `voided`, `chargeback`) | MUST        |
+| `method`                   | Payment method type (`card`, `bank_transfer`, `digital_wallet`, `bnpl`, `store_credit`, `cash`)                                       | MUST        |
+| `provider`                 | Payment service provider identifier (e.g., `stripe`, `klarna`, `paypal`, `adyen`)                                                     | SHOULD      |
+| `payment_group_id`         | Groups related payments for split payment scenarios                                                                                   | COULD       |
+| `payment_type`             | Type of payment (`full`, `partial`, `split`, `installment`)                                                                           | COULD       |
+| `external_references`      | Dictionary of cross-system IDs for integration (PSP transaction IDs, merchant refs)                                                   | SHOULD      |
+| `created_at`               | ISO 8601 creation timestamp                                                                                                           | SHOULD      |
+| `updated_at`               | ISO 8601 update timestamp                                                                                                             | SHOULD      |
+| `processed_at`             | ISO 8601 processing timestamp                                                                                                         | COULD       |
+| `authorization_expires_at` | ISO 8601 timestamp when authorization expires (typically 7-30 days)                                                                   | COULD       |
+| `transactions`             | Array of transaction operations (auth, capture, refund)                                                                               | RECOMMENDED |
+| `method_details`           | Payment method details including token and masked card info (PCI-compliant)                                                           | COULD       |
+| `version`                  | Integer for optimistic concurrency control                                                                                            | RECOMMENDED |
+| `extensions`               | Namespaced dictionary for vendor-specific data (fraud, SCA, reconciliation)                                                           | RECOMMENDED |
 
 ---
 
@@ -74,47 +85,73 @@ Payment:
     id:
       type: string
       description: Unique payment identifier
-      # example: "pay_776f9240"
+      example: "pay_776f9240"
 
     order_id:
       type: string
       description: Reference to the associated order
-      # example: "ord_12345"
+      example: "ord_12345"
 
     customer_id:
       type: string
       description: Reference to customer making the payment
-      # example: "cus_4741044683"
+      example: "cus_4741044683"
 
     # Financial details
     amount:
       type: integer
-      description: Payment amount in smallest currency unit (cents)
-      # example: 3651920 (for $36,519.20)
+      description: |
+        Payment amount in smallest currency unit (cents).
+        Always positive - negative operations are represented through Transaction records.
+        For refunds, the Payment amount remains positive and refund transactions have negative amounts.
+      minimum: 0
+      example: 3651920
 
     currency:
       type: string
       pattern: "^[A-Z]{3}$"
       description: ISO 4217 currency code
-      # example: "USD", "EUR", "NOK"
+      example: "USD"
 
     # Status and processing
     status:
       type: string
-      enum: ["pending", "authorized", "captured", "refunded", "failed", "cancelled"]
-      description: Payment status
-      # example: "captured"
+      enum: ["pending", "authorized", "captured", "partially_captured", "refunded", "failed", "cancelled", "voided", "chargeback"]
+      description: |
+        Payment status:
+        - pending: Payment initiated but not yet processed
+        - authorized: Payment authorized but not captured
+        - captured: Payment successfully captured in full
+        - partially_captured: Payment partially captured with amount remaining
+        - refunded: Payment refunded (full or partial)
+        - failed: Payment processing failed
+        - cancelled: Payment cancelled before processing
+        - voided: Previously authorized payment voided
+        - chargeback: Payment disputed by cardholder
+      example: "captured"
 
     method:
       type: string
       enum: ["card", "bank_transfer", "digital_wallet", "bnpl", "store_credit", "cash"]
       description: Payment method type
-      # example: "card"
+      example: "card"
 
     provider:
       type: string
       description: Payment service provider
-      # example: "stripe", "klarna", "paypal"
+      example: "stripe"
+
+    # Split payment support
+    payment_group_id:
+      type: string
+      description: Groups related payments for split payment scenarios
+      example: "grp_3NkM8w2eZvKYlo2C1"
+
+    payment_type:
+      type: string
+      enum: ["full", "partial", "split", "installment"]
+      description: Type of payment transaction
+      example: "split"
 
     # External references
     external_references:
@@ -122,9 +159,9 @@ Payment:
       description: Dictionary of cross-system IDs
       additionalProperties:
         type: string
-      # example:
-      #   stripe_payment_intent_id: "pi_3NkM8w2eZvKYlo2C1"
-      #   merchant_reference: "ORD-12345-PAY-1"
+      example:
+        stripe_payment_intent_id: "pi_3NkM8w2eZvKYlo2C1"
+        merchant_reference: "ORD-12345-PAY-1"
 
     # Timestamps
     created_at:
@@ -142,6 +179,12 @@ Payment:
       format: date-time
       description: ISO 8601 processing timestamp
 
+    authorization_expires_at:
+      type: string
+      format: date-time
+      description: ISO 8601 timestamp when authorization expires (typically 7-30 days)
+      example: "2023-06-30T08:54:24Z"
+
     # Transaction history
     transactions:
       type: array
@@ -154,16 +197,30 @@ Payment:
       type: object
       description: Payment method specific details (masked/tokenized)
       properties:
+        token:
+          type: string
+          description: PSP payment token for secure transactions
+          example: "tok_1ABcdefghijk23456789"
         brand:
           type: string
+          description: Card brand or payment method brand
+          example: "visa"
         last4:
           type: string
+          description: Last 4 digits of card number (for cards)
+          example: "4242"
         expiry_month:
           type: integer
+          description: Expiration month (for cards)
+          example: 12
         expiry_year:
           type: integer
+          description: Expiration year (for cards)
+          example: 2024
         fingerprint:
           type: string
+          description: Unique fingerprint for deduplication
+          example: "Xt5EWLLDS7FJjR1c"
 
     # Concurrency control
     version:
@@ -177,13 +234,33 @@ Payment:
       type: object
       description: Namespaced dictionary for extension data
       additionalProperties: true
-      # example:
-      #   fraud:
-      #     risk_score: 0.15
-      #     risk_level: "low"
-      #   reconciliation:
-      #     settlement_date: "2023-06-05"
-      #     fees: 1095
+      examples:
+        - fraud:
+            risk_score: 0.15
+            risk_level: "low"
+            checks: ["cvv_pass", "address_pass"]
+            source: "stripe_radar"
+          reconciliation:
+            settlement_date: "2023-06-05"
+            batch_id: "batch_20230605_001"
+            fees: 1095
+            source: "stripe"
+        - sca:
+            version: "2.2.0"
+            authentication_status: "authenticated"
+            eci: "05"
+            cavv: "AAABCZIhcQAAAABZlyAxAAAAAAA="
+            transaction_id: "c5b808e7-1de1-4069"
+            challenge_required: false
+            liability_shift: true
+            source: "stripe"
+        - recurring:
+            subscription_id: "sub_1234567890"
+            billing_cycle: "monthly"
+            next_billing_date: "2023-07-03T08:54:11Z"
+            trial_end_date: "2023-06-10T08:54:11Z"
+            mandate_id: "mndt_abc123"
+            source: "stripe"
 ```
 
 ### Supporting Type Definitions
@@ -209,7 +286,11 @@ Transaction:
 
     amount:
       type: integer
-      description: Transaction amount in smallest currency unit
+      description: |
+        Transaction amount in smallest currency unit.
+        Positive for charges (authorization, capture).
+        Negative for reversals (refund, void, chargeback).
+      example: 1000
 
     status:
       type: string
@@ -324,14 +405,14 @@ Complete payment with all fields populated.
 
 ## Sample Object: Refund Payment
 
-Payment record showing a refund transaction.
+Payment record showing a refund transaction. Note: Payment amount stays positive, refund is represented in the Transaction record with negative amount.
 
 ```json
 {
   "id": "pay_refund_456",
   "order_id": "ord_12345",
   "customer_id": "cus_4741044683",
-  "amount": -1000000,
+  "amount": 1000000,
   "currency": "NOK",
   "status": "refunded",
   "method": "card",
@@ -364,6 +445,128 @@ Payment record showing a refund transaction.
 }
 ```
 
+## Sample Object: Split Payment
+
+Payment that is part of a split payment scenario (e.g., 50% card, 50% store credit).
+
+```json
+{
+  "id": "pay_split_001",
+  "order_id": "ord_12345",
+  "customer_id": "cus_4741044683",
+  "amount": 1825960,
+  "currency": "NOK",
+  "status": "captured",
+  "method": "card",
+  "provider": "stripe",
+  "payment_group_id": "grp_ord_12345",
+  "payment_type": "split",
+  "external_references": {
+    "stripe_payment_intent_id": "pi_3NkM8w2eZvKYlo2C2",
+    "merchant_reference": "ORD-12345-PAY-1of2"
+  },
+  "created_at": "2023-06-03T08:54:11Z",
+  "updated_at": "2023-06-03T08:55:00Z",
+  "processed_at": "2023-06-03T08:55:00Z",
+  "authorization_expires_at": "2023-06-10T08:54:11Z",
+  "transactions": [
+    {
+      "id": "txn_auth_split_001",
+      "type": "authorization",
+      "amount": 1825960,
+      "status": "success",
+      "timestamp": "2023-06-03T08:54:24Z",
+      "reference": "ch_3NkM8w2eZvKYlo2C2"
+    },
+    {
+      "id": "txn_capture_split_001",
+      "type": "capture",
+      "amount": 1825960,
+      "status": "success",
+      "timestamp": "2023-06-03T08:55:00Z",
+      "reference": "ch_3NkM8w2eZvKYlo2C2_cap"
+    }
+  ],
+  "method_details": {
+    "token": "tok_1ABcdefghijk23456789",
+    "brand": "visa",
+    "last4": "4242",
+    "expiry_month": 12,
+    "expiry_year": 2024,
+    "fingerprint": "Xt5EWLLDS7FJjR1c"
+  },
+  "extensions": {
+    "split_payment": {
+      "total_order_amount": 3651920,
+      "this_payment_percentage": 50,
+      "related_payment_ids": ["pay_split_002"],
+      "source": "checkout_service"
+    }
+  }
+}
+```
+
+## Sample Object: Partial Capture
+
+Payment with partial capture scenario (authorized for $100, captured $75).
+
+```json
+{
+  "id": "pay_partial_001",
+  "order_id": "ord_67890",
+  "customer_id": "cus_4741044683",
+  "amount": 7500,
+  "currency": "USD",
+  "status": "partially_captured",
+  "method": "card",
+  "provider": "stripe",
+  "payment_type": "partial",
+  "external_references": {
+    "stripe_payment_intent_id": "pi_3NkM8w2eZvKYlo2C3",
+    "merchant_reference": "ORD-67890-PAY-PARTIAL"
+  },
+  "created_at": "2023-06-03T08:54:11Z",
+  "updated_at": "2023-06-03T08:55:30Z",
+  "processed_at": "2023-06-03T08:55:30Z",
+  "authorization_expires_at": "2023-06-10T08:54:11Z",
+  "transactions": [
+    {
+      "id": "txn_auth_partial_001",
+      "type": "authorization",
+      "amount": 10000,
+      "status": "success",
+      "timestamp": "2023-06-03T08:54:24Z",
+      "reference": "ch_3NkM8w2eZvKYlo2C3"
+    },
+    {
+      "id": "txn_capture_partial_001",
+      "type": "capture",
+      "amount": 7500,
+      "status": "success",
+      "timestamp": "2023-06-03T08:55:30Z",
+      "reference": "ch_3NkM8w2eZvKYlo2C3_cap"
+    }
+  ],
+  "method_details": {
+    "token": "tok_1CDEfghijk23456789",
+    "brand": "mastercard",
+    "last4": "5555",
+    "expiry_month": 8,
+    "expiry_year": 2025,
+    "fingerprint": "Bg8DWLLDS9FJjR2x"
+  },
+  "extensions": {
+    "partial_capture": {
+      "authorized_amount": 10000,
+      "captured_amount": 7500,
+      "remaining_capturable": 2500,
+      "reason": "partial_shipment",
+      "source": "oms"
+    }
+  }
+}
+```
+
 ---
 
 ## Core Components & Relationships
@@ -376,16 +579,16 @@ Payment record showing a refund transaction.
 | **Transaction**    | Individual payment operations (auth, capture, refund) | Payment Gateway         |
 | **Order**          | Purchase transaction being paid for                   | OMS / Commerce Engine   |
 | **Customer**       | Person or organization making the payment             | CRM / Commerce Engine   |
-| **Payment Method** | Type and details of payment instrument               | Payment Gateway         |
+| **Payment Method** | Type and details of payment instrument                | Payment Gateway         |
 
 ### Typical Relationships
 
 ```mermaid
 erDiagram
-    Payment:::entity 1 to 1 Order:::entity : "pays for"
-    Payment 1 to 1 Customer:::entity : "made by"
-    Payment 1 to 1+ Transaction:::internalRel : contains
-    Payment 1 to 1 "Payment Method":::internalRel : uses
+    Payment:::entity }o--|| Order:::entity : "pays for"
+    Payment }o--|| Customer:::entity : "made by"
+    Payment ||--o{ Transaction:::internalRel : contains
+    Payment ||--|| "Payment Method":::internalRel : uses
 
 classDef entity fill:#ffd100, stroke:#ffd100,stroke-width:2px
 classDef internalRel fill:#ffd10080, stroke:#ffd10080,stroke-width:1px
