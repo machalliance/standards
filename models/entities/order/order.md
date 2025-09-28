@@ -163,11 +163,11 @@ Order:
 
     # Addresses
     billing_address:
-      $ref: "../utilities/address.yaml#/Address"
+      $ref: "../utilities/address.md#/Address"
       description: Billing address
 
     shipping_address:
-      $ref: "../utilities/address.yaml#/Address"
+      $ref: "../utilities/address.md#/Address"
       description: Shipping address
 
     # Payments

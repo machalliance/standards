@@ -146,7 +146,7 @@ OrderReference:
       type: string
       enum: ["new", "processing", "shipped", "delivered", "cancelled", "returned"]
       description: Order status at time of snapshot
-      # example: "fulfilled"
+      # example: "delivered"
 
     order_date:
       type: string
@@ -155,7 +155,7 @@ OrderReference:
       # example: "2024-06-12T14:23:00Z"
 
     total:
-      $ref: "../utilities/money.yaml#/Money"
+      $ref: "../utilities/money.md#/Money"
       description: Order total amount
       # example: {"amount": 129.99, "currency": "USD"}
 
@@ -183,11 +183,11 @@ OrderAggregates:
       minimum: 0
 
     total_spent:
-      $ref: "../utilities/money.yaml#/Money"
+      $ref: "../utilities/money.md#/Money"
       description: Total amount spent across all orders
 
     average_order_value:
-      $ref: "../utilities/money.yaml#/Money"
+      $ref: "../utilities/money.md#/Money"
       description: Average order value
 
     last_order_date:
