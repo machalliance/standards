@@ -53,14 +53,14 @@ erDiagram
 - [Category](product/category.md)
 
 ## Cart
-- Cart *(coming soon)*
+- [Cart](cart/cart.md)
 
 ## Order
-- Order *(coming soon)*
-- Order History *(coming soon)*
+- [Order](order/order.md)
+- [Order History](order/order-history.md)
   
 ## Payment
-- Payment *(coming soon)*
+- [Payment](payment/payment.md)
 
 ## Pricing
 - [Pricing](pricing/pricing.md)
@@ -88,5 +88,5 @@ erDiagram
 - Identifier *(coming soon)*
 - [Language](utilities/language.md)
 - [Media](utilities/media.md)
-- Money *(coming soon)*
+- [Money](utilities/money.md)
 - Store *(coming soon)*
