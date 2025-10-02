@@ -59,6 +59,7 @@ The Product entity represents the master product information shared across all v
 | `tags`                | Array of tags for filtering and search                               | COULD       |
 | `options`             | Array of option definitions for variants                             | SHOULD      |
 | `default_variant_id`  | ID of the primary/master variant                                     | SHOULD      |
+| `item_group_id`       | Variant group ID                                                     | SHOULD      |
 | `variants`            | Array of product variants (Option 1)                                 | SHOULD      |
 | `fulfillment_type`    | How the product is delivered (`physical`, `digital`, `service`)      | SHOULD      |
 | `tax_category`        | Default tax classification for the product                           | SHOULD      |
@@ -78,6 +79,7 @@ The ProductVariant entity represents individual sellable items with specific att
 | Field               | Description                                             | Practice |
 | ------------------- | ------------------------------------------------------- | -------- |
 | `id`                | Unique identifier for the variant                       | MUST     |
+| `item_group_id`     | Variant group ID                                        | SHOULD   |
 | `product_id`        | Reference to parent product (Option 2 only)             | MUST     |
 | `sku`               | Stock Keeping Unit - unique identifier                  | MUST     |
 | `status`            | Variant status (`active`, `inactive`, `discontinued`)   | SHOULD   |
@@ -88,7 +90,7 @@ The ProductVariant entity represents individual sellable items with specific att
 | `cost`              | Cost of goods for margin calculations using [money](../utilities/money.md) utility object | COULD    |
 | `weight`            | Physical weight for shipping calculations               | SHOULD   |
 | `dimensions`        | Physical dimensions (length, width, height)             | COULD    |
-| `barcodes`          | Array of barcode objects (type, value; e.g., UPC, GTIN) | COULD    |
+| `barcodes`          | Array of barcode objects (type, value; e.g., UPC, GTIN, MPN) | SHOULD    |
 | `inventory`         | Inventory levels and tracking                           | SHOULD   |
 | `tax_category`      | Tax classification override (if different from product) | COULD    |
 | `shipping_required` | Whether physical shipping is needed                     | SHOULD   |
@@ -205,6 +207,10 @@ Product:
       type: string
       description: ID of the primary/master variant
 
+    item_group_id:
+      type: string
+      description: Group variants      
+
     variants:
       type: array
       items:
@@ -279,6 +285,10 @@ ProductVariant:
       type: string
       description: Unique identifier for the variant
       # example: "VAR-001"
+
+    item_group_id:
+      type: string
+      description: Group variants           
 
     product_id:
       type: string
@@ -485,6 +495,7 @@ This approach embeds variants within the product entity, following the pattern u
   "description": "Comfortable cotton t-shirt",
   "status": "active",
   "brand": "MACH Apparel",
+  "item_group_id": "PROD-001-VARS",
   "categories": ["apparel", "shirts"],
   "default_variant_id": "VAR-001",
   "fulfillment_type": "physical",
@@ -514,6 +525,7 @@ This approach embeds variants within the product entity, following the pattern u
   "variants": [
   {
     "id": "VAR-001",
+    "item_group_id": "PROD-001-VARS",    
     "sku": "TSHIRT-RED-S",
     "status": "active",
     "position": 1,
@@ -526,16 +538,22 @@ This approach embeds variants within the product entity, following the pattern u
     "currency": "USD"
     },
     "inventory": {
-    "track_inventory": true,
-    "quantity": 100,
-    "location_quantities": {
-      "warehouse-1": 60,
-      "warehouse-2": 40
-    }
+      "track_inventory": true,
+      "quantity": 100,
+      "location_quantities": {
+        "warehouse-1": 60,
+        "warehouse-2": 40
+      }
     },
+    "dimensions": {
+      "length": 20,
+      "width": 18,
+      "height": 9,
+      "unit": "cm"
+    },    
     "weight": {
-    "value": 150,
-    "unit": "g"
+      "value": 150,
+      "unit": "g"
     }
   },
   // ... more variants
@@ -555,6 +573,7 @@ This approach uses separate Product and ProductVariant entities, connected by re
   "description": "Comfortable cotton t-shirt",
   "status": "active",
   "brand": "MACH Apparel",
+  "item_group_id": "PROD-001-VARS",  
   "categories": ["apparel", "shirts"],
   "default_variant_id": "VAR-001",
   "fulfillment_type": "physical",
@@ -596,12 +615,12 @@ This approach uses separate Product and ProductVariant entities, connected by re
   { "option_id": "opt-size", "value": "S" }
   ],
   "price": {
-  "amount": 29.99,
-  "currency": "USD"
+    "amount": 29.99,
+    "currency": "USD"
   },
   "inventory": {
-  "track_inventory": true,
-  "quantity": 100
+    "track_inventory": true,
+    "quantity": 100
   }
 }
 ```
@@ -646,11 +665,11 @@ A simple product with only one variant (following the pattern that every product
     "currency": "EUR"
     },
     "inventory": {
-    "track_inventory": true,
-    "quantity": 28,
-    "allow_backorder": true,
-    "backorder_quantity": 72,
-    "lead_time_days": 2
+      "track_inventory": true,
+      "quantity": 28,
+      "allow_backorder": true,
+      "backorder_quantity": 72,
+      "lead_time_days": 2
     },
     "weight": {
     "value": 200,
@@ -658,7 +677,8 @@ A simple product with only one variant (following the pattern that every product
     },
     "barcodes": [
       { "upc", "1234567890123" },
-      { "gtin", "9876543210987" }
+      { "gtin", "9876543210987" },
+      { "mpn", "TSHIRT-001" }
     ],
     "shipping_required": true
   }
@@ -723,16 +743,16 @@ A product with multiple variants based on color and size options.
     { "option_id": "opt-size", "value": "M" }
     ],
     "price": {
-    "amount": 29.99,
-    "currency": "USD"
+      "amount": 29.99,
+      "currency": "USD"
     },
     "compare_at_price": {
-    "amount": 39.99,
-    "currency": "USD"
+      "amount": 39.99,
+      "currency": "USD"
     },
     "inventory": {
-    "track_inventory": true,
-    "quantity": 150
+      "track_inventory": true,
+      "quantity": 150
     },
     "media": [
     {
@@ -751,12 +771,12 @@ A product with multiple variants based on color and size options.
     { "option_id": "opt-size", "value": "L" }
     ],
     "price": {
-    "amount": 29.99,
-    "currency": "USD"
+      "amount": 29.99,
+      "currency": "USD"
     },
     "inventory": {
-    "track_inventory": true,
-    "quantity": 75
+      "track_inventory": true,
+      "quantity": 75
     }
   }
   // ... more variants for other color/size combinations
