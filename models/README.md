@@ -102,7 +102,8 @@ The intent is that these models can be used by architects (either directly, or v
 | Identity & Customer  | Customer                                       | ✅ Complete       |
 | Product Catalog      | Product, Category, Product Type                | ✅ Complete       |
 | Commerce Operations  | Inventory, Pricing, Promotion, Coupon Instance | ✅ Complete       |
-| Order Management     | Order, Cart, Fulfillment                       | 🚧 Coming Q4 2025 |
+| Payment     | Order, Cart, Fulfillment                       | ✅ Complete |
+| Fulfillment     | Shipping Methods, Fulfillment                        | 🚧 Coming Q4 2025 |
 | Content & Media      | Media (utility)                                | ✅ Complete       |
 | Location & Geography | Address (utility), Store Location              | ✅ Address done   |
 | Internationalization | Language (utility)                             | ✅ Complete       |
@@ -122,15 +123,21 @@ The intent is that these models can be used by architects (either directly, or v
 - **[Pricing](entities/pricing/pricing.md)** - Tiered, bulk, and multi-currency pricing
 - **[Promotion](entities/promotion/promotion.md)** - Discount rules and campaign management
 - **[Coupon Instance](entities/promotion/coupon-instance.md)** - Individual coupon tracking and redemption
+- **[Order](entities/order/order.md)** - Order
+- **[Order History](entities/order/order-history.md)** - Order History
+- **[Payment](entities/payment/payment.md)** - Payment 
 
 #### Utility Objects
 - **[Address](entities/utilities/address.md)** - International address formats with validation
 - **[Media](entities/utilities/media.md)** - Images, videos, and digital assets
 - **[Language](entities/utilities/language.md)** - Locale and internationalization support
+- **[Money](entities/utilities/money.md)** - Currency support
 
 ### Popular Recipes
 - **[PDP Orchestration (on the fly)](recipes/PDP-orchestration-on-the-fly.md)** - Real-time product detail page composition
 - **[PDP Orchestration (optimized access)](recipes/PDP-orchestration-optimized-access.md)** - Pre-optimized product data access layer
+- **[Simple Checkout Flow](recipes/simple-checkout-flow-recipe.md)** - Convert cart into completed orders
+- **[Multi-Step Checkout Flow Orchestration](recipes/checkout-flow-recipe.md)** - Complex version of cart checkout that adds cart validation, payment processing, inventory allocation, tax calculation, and order fulfillment        
 
 ## Contributing
 
