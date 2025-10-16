@@ -27,6 +27,8 @@ A recipe documents:
 | ----------------------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------ |
 | [PDP Orchestration (on the fly)](PDP-orchestration-on-the-fly.md)             | Real-time product detail page composition | E-commerce sites needing fast, dynamic product pages   |
 | [PDP Orchestration (optimized access)](PDP-orchestration-optimized-access.md) | Pre-optimized product data access layer   | High-traffic sites requiring sub-second response times |
+| [Simple Checkout Flow](simple-checkout-flow-recipe.md) | Checkout experience that converts cart contents into completed orders | Simplified approach that focuses on essential checkout functions |
+| [Multi-Step Checkout Flow Orchestration](checkout-flow-recipe.md) | Enterprise-scale orchestration approach for complex checkout requirements | Complex checkout needs |
 
 ### Recipe Structure
 
