@@ -3,7 +3,9 @@
 Digital architectures are rapidly evolving, requiring architects to deeply understand composable systems, guided by the MACH principle. This journey encompasses three fundamental layers—Data Integration, Data Orchestration, and Digital Experience Composition & Frontend—each crucial for creating a flexible and robust ecosystem.
 
 ## Reference architecture
-![MACH Alliance Reference Architecture Diagram - Low detail, domain level](../src/diagrams/MACH-Alliance-Reference-Architecture-Diagram-low.png)
+
+Download the full set of agentic commerce diagrams (PDF): [rev2.1](../src/diagrams/MACH-Alliance-Reference-Architecture-Diagrams-agentic-commerce-rev2.1.pdf).
+![MACH Alliance Reference Architecture Diagram - Low detail, domain level](../src/diagrams/MACH-Alliance-Reference-Architecture-Diagram-low-agentic.png)
 
 
 ### Digital Experience Composition & Frontend Layer
