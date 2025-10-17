@@ -32,7 +32,7 @@ In essence, MACH is the natural evolution of microservices and serverless archit
 
 There are two key aspects in MACH Architecture: decoupling and composability. Decoupling allows each layer to evolve at its own pace. Composability ensures that you can plug in the best-of-breed solutions at each layer, promoting innovation, agility, and ultimately a better digital experience.
 
-![MACH Alliance Reference architecture diagram medium detail, platform level](../src/diagrams/MACH-Alliance-Reference-Architecture-Diagram-medium.png)
+![MACH Alliance Reference architecture diagram medium detail, platform level](../src/diagrams/MACH-Alliance-Reference-Architecture-Diagram-medium-agentic.png)
 
 
 ### Horizontal Integration Layers
@@ -50,20 +50,33 @@ Tech-leaders should be cautious with point-to-point API integrations, using them
 This top layer is where the dynamic, customer-facing action happens. It's the realm of digital channels like websites, apps, POS, and self-service interfaces. The emphasis here is on agility and the capacity to rapidly adapt to market demands and consumer preferences. This layer must offer a seamless, fast and cohesive digital experience across all channels, ensuring that they're all drawing from the same well of resources for delivery and scalability. It's a fast-evolving space, reacting quickly to changes in user experience trends.
 
 ### Data Orchestration Layer
-Consider this the 'neck' of the architecture, crucial for connecting the 'brain' (the digital experience layer) with the 'body' (data integration and systems of record). It's all about the management and flow of data, ensuring that content is relevant, personalized, and delivered efficiently. APIs, gateways, and headless systems live here, orchestrating everything from content to commerce to search functions. This layer has a moderate pace of change and must be robust enough to handle scaling demands.
+Consider this the neck of the architecture, crucial for connecting the brain (the digital experience layer) with the body (data integration and systems of record). It’s all about the management and flow of data, ensuring that content, context, and computation move efficiently through the system. APIs, gateways, and headless services live here, orchestrating everything from content to commerce to search functions. This layer has a fast to moderate pace of change. Focus on keeping it robust enough to handle scaling demands yet flexible enough to cater to channel changes fast.
+
+It is also where orchestration becomes agentic—choreographing traffic, data, models, and guardrails so that both human- and AI-driven experiences remain fast, safe, and contextual across every touchpoint. In practice, it consists of four cooperating capabilities that together create a composable control plane for data and logic (see the high-detail diagram):
+
+**API orchestration** – flow sequencing & routing; stitching/mapping; real-time delivery; dynamic caching; CDN.
+This governs how requests travel through the stack, balancing performance, resilience, and data coherence across APIs and services.
+
+**Content & data delivery** – data federation; memory management for agent context; governance & guardrails.
+This ensures the right data is accessible and relevant for each request—merging structured and unstructured sources while applying policies and privacy constraints.
+
+**AI/experience orchestration** – model orchestration; decisioning & rules; experience management; context & experience handoff between agents and the UI.
+Here, logic and intelligence are coordinated: multiple models and decision engines contribute to a coherent response or experience, continuously adapting to feedback and user behavior.
+
+**Zero‑trust barrier** – segmentation & isolation; data protection; threat mitigation at the edge and in the runtime.
+Security is embedded, not added. This capability isolates workloads, enforces least-privilege access, and ensures integrity across federated environments.
+
+Treat this layer as productized infrastructure owned by a platform team—measured by latency, reliability, and policy compliance, not by features. It should abstract channel specifics and make upgrades (new models, new data products) safe to roll out behind contracts and policies. See the Data Orchestration Layer rows on the high-detail diagram for the canonical scope.
 
 ### Data Integration Layer
 
 The foundation of the structure, this is where the heavy-lifting systems like ERP, CRM, OMS, and finance tools reside. These systems don't change quickly—they're the stable core of an organization's IT ecosystem. The data integration layer ensures that these systems are properly connected to the more agile layers above, without direct, rigid linkages that could stifle flexibility. By decoupling these systems, we allow for more nimble operations in the layers above, where change happens more rapidly.
 
-
-
 ## Key Design Patterns of the MACH Reference Architecture
 
 Integration, orchestration, and composition are the three key design patterns within the MACH architecture that collectively enable a seamless and agile digital ecosystem. Each plays a critical role in ensuring that the architecture remains both technically robust and aligned with business objectives.
 
-![domain level reference architecture digram, mach](../src/diagrams/MACH-Alliance-Reference-Architecture-Diagram-low.png)
-
+![domain level reference architecture digram, mach](../src/diagrams/MACH-Alliance-Reference-Architecture-Diagram-low-agentic.png)
 
 ### Composition: Crafting the User Experience
 
@@ -89,14 +102,11 @@ By leveraging message queues and modern middleware solutions like iPaaS (Integra
 The synergy of integration, orchestration, and composition in a MACH architecture provides a powerful framework for building adaptable digital platforms. Integration ensures that existing systems can play a role in new digital experiences without being a bottleneck; orchestration ensures that the numerous components and services work together in harmony to meet performance expectations; and composition allows businesses to innovate and differentiate by creating unique user experiences from a diverse set of services and data sources.
 For architects implementing or transitioning to composable architectures, these three design patterns are not merely technical considerations but strategic enablers. They facilitate a balance between leveraging existing investments in legacy systems and embracing new, agile ways of delivering value to customers. As such, they are central to realizing the vision of a flexible, responsive, and scalable digital ecosystem that can drive business growth in the digital era.
 
-
-
 ## Platform Composability vs. Component Composability: Navigating Digital Business Model Complexity
 
 In the realm of digital ecosystems, the complexity and uniqueness of your business model dictate whether you adopt a platform approach or a component approach to composability. Platform composability offers an out-of-the-box suite of services, providing comprehensive capabilities across various facets of your digital architecture. It's the straightforward choice for businesses seeking operational simplicity and integrated experiences without the need for deep customization.
 
 However, as the complexity and variability of your digital business model increase, so does the inclination toward component-level composability. This tailored approach enables you to meticulously select or develop components that precisely fit the specific requirements of your market, operational domain, and customer engagement strategies. It’s the strategy for those who find their differentiation in the market through highly specialized services, customer journeys, and innovative processes.
-
 
 ### Platform Composability
 
@@ -123,7 +133,7 @@ In summary, whether you lean towards platform composability for its broad capabi
 
 As you delve into the MACH Reference Architecture for Composable Ecosystems, it's important to contextualize its scope and applicability. This architecture is a comprehensive template, designed to be referential and adaptable across a wide spectrum of business scenarios and industry requirements. It contains an extensive array of platforms and components, meticulously outlined to cover potential digital landscapes. However, it's crucial to recognize that not every element within this reference is a prerequisite for all business ecosystems.
 
-![MACH Alliance Reference architecture diagram high detail version with platform responsibility level defined](../src/diagrams/MACH-Alliance-Reference-Architecture-Diagram-high.png)
+![MACH Alliance Reference architecture diagram high detail version with platform responsibility level defined](../src/diagrams/MACH-Alliance-Reference-Architecture-Diagram-high-agentic.png)
 
 We acknowledge that the landscape of technology platforms is vast and varied, with certain solutions being more prevalent or relevant in specific industries. The MACH Reference Architecture, therefore, should not be seen as a checklist to complete, but rather as a repository of possibilities. It’s a blueprint that illustrates the full breadth of what’s possible, allowing you to identify and integrate the components that resonate with your organization's unique needs.
 
@@ -134,10 +144,6 @@ In our experience, it's exceedingly rare to encounter an organization that requi
 Do not succumb to the fear of missing out on certain technologies or acronyms. The architecture is not prescriptive but rather illustrative, offering a panoramic view of the digital ecosystem components. It empowers you to craft a tailored strategy that aligns with your operational context and strategic ambitions.
 
 In essence, the MACH Reference Architecture is a compendium of potential digital solutions. It encourages you to seek out those that align with your industry's demands, your business's unique challenges, and your customers' specific needs. Use it as a compass, not a map, to navigate the complex landscape of digital ecosystems and to chart a course toward a composable and future-proof architecture that is uniquely your own.
-
-
-
-
 
 ---
 
