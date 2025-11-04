@@ -37,7 +37,7 @@
 
 Defines the available shipping and delivery options that customers can choose during checkout. This entity represents the _potential_ means of shipping products, including cost structure, delivery timeframes, geographic availability, and carrier details. Shipping Methods reside within Order Management Systems (OMS), Commerce Engines, and Shipping Management platforms, serving as the configuration layer for delivery options before actual shipment occurs.
 
-This entity shares many fields with [fulfillment](fulfillment.md) which represents an actual order fulfillment in progress.
+This entity shares many fields with [Fulfillment](fulfillment.md) which represents an _actual_ order fulfillment in progress.
 
 The model supports:
 - **Delivery estimation**: Min/max days for delivery timeframe communication
