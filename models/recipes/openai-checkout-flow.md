@@ -653,7 +653,7 @@ flowchart TD
 - Route through payment gateway for multiple processors
 - Support various payment methods centrally
 - More complex but more flexible
-- Example: Adyen, Braintree
+- Example: Adyen, Stripe
 
 **Stored Payment Methods**
 - Support returning customers with saved cards

@@ -164,7 +164,7 @@ sequenceDiagram
     participant OAI as OpenAI Platform
     participant GPT as ChatGPT
 
-    Note over FG: Every 15 minutes
+    Note over FG: Every 15 minutes (max)
 
     FG->>CP: Get changed products
     CP-->>FG: Delta: Updated/new/deleted products
@@ -217,7 +217,7 @@ sequenceDiagram
 | [Media](../entities/utilities/media.md) → `media`          | `additional_image_urls`       | Extract URLs from array                                     |
 | ProductVariant → `barcodes`                                | `gtin`                        | Extract UPC/EAN/GTIN from barcodes object                   |
 
-[!IMPORTANT]
+> [!IMPORTANT]
 Variant Flattening & Grouping Strategy
 Each product variant must be submitted as a separate feed entry with its own unique id (typically the variant SKU). However, all variants of the same parent product must share the same `item_group_id` (the parent product ID) to enable ChatGPT to:
 
