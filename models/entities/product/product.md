@@ -17,6 +17,8 @@
   - [Sample Object: Simple Product](#sample-object-simple-product)
   - [Sample Object: Product with Variants](#sample-object-product-with-variants)
   - [Sample Object: Digital Product](#sample-object-digital-product)
+  - [Sample Object: Product with Shipping Extensions](#sample-object-product-with-shipping-extensions)
+  - [Sample Object: Product with Free Shipping Promotion](#sample-object-product-with-free-shipping-promotion)
   - [Localization Pattern](#localization-pattern)
     - [Single Language (Simple String)](#single-language-simple-string)
     - [Multi-Language (Localized Object)](#multi-language-localized-object)
@@ -62,6 +64,7 @@ The Product entity represents the master product information shared across all v
 | `item_group_id`       | Variant group ID                                                     | SHOULD      |
 | `variants`            | Array of product variants (Option 1)                                 | SHOULD      |
 | `fulfillment_type`    | How the product is delivered (`physical`, `digital`, `service`)      | SHOULD      |
+| `shipping_methods`    | Potential shipping options using [Shipping Method](../fulfillment/shipping-method.md) | SHOULD |
 | `tax_category`        | Default tax classification for the product                           | SHOULD      |
 | `primary_image`       | Primary product image                                                | SHOULD      |
 | `media`               | Additional images, videos, documents                                 | COULD       |
@@ -262,11 +265,16 @@ Product:
       description: Namespaced dictionary for extension data
       additionalProperties: true
       # example:
+      #   shipping:
+      #     eligible_methods: ["SHIP-STANDARD-001", "SHIP-EXPRESS-001"]
+      #     attributes:
+      #       fragile: true
+      #       oversized: false
       #   loyalty_points:
       #     points_earned: 100
       #   sustainability:
       #     carbon_neutral: true
-      #     materials: ["organic-cotton", "recycled-polyester"]
+      #     materials: ["organic-cotton", "recycled-polyester"]      
 ```
 
 ### ProductVariant Schema
@@ -848,6 +856,149 @@ A digital product example showing the use of `fulfillment_type: "digital"`.
 }
 ```
 
+## Sample Object: Product with Shipping Extensions
+
+A product showing how shipping-related data can be managed through extensions without adding shipping fields to the core model. When integrating with [Shipping Method](../shipping/shipping-method.md) entities, use the `shipping` namespace in extensions to maintain loose coupling:
+
+```json
+{
+  "id": "PROD-004",
+  "name": "Industrial Cleaning Solution",
+  "description": "Professional-grade cleaning concentrate",
+  "status": "active",
+  "brand": "MACH Industrial",
+  "categories": ["industrial", "cleaning", "chemicals"],
+  "default_variant_id": "VAR-001",
+  "fulfillment_type": "physical",
+  "tax_category": "hazmat-taxable",
+  
+  "variants": [
+    {
+      "id": "VAR-001",
+      "sku": "CLEAN-5L",
+      "status": "active",
+      "position": 1,
+      "option_values": [],
+      "price": {
+        "amount": 89.99,
+        "currency": "USD"
+      },
+      "weight": {
+        "value": 5.5,
+        "unit": "kg"
+      },
+      "dimensions": {
+        "length": 30,
+        "width": 20,
+        "height": 25,
+        "unit": "cm"
+      },
+      "shipping_required": true,
+      
+      // Shipping data in extensions
+      "extensions": {
+        "shipping": {
+          "eligible_methods": ["SHIP-STANDARD-001"],
+          "excluded_methods": ["SHIP-EXPRESS-001", "SHIP-INTL-001", "SHIP-SAME-DAY-001"],
+          "requires_special_handling": true,
+          "attributes": {
+            "fragile": true,
+            "hazmat": true,
+            "hazmat_class": "3",
+            "un_number": "UN1760"
+          },
+          "packaging_requirements": {
+            "min_box_size": "medium",
+            "cushioning_required": true,
+            "orientation": "upright_only"
+          }
+        }
+      }
+    }
+  ],
+  
+  // Product-level shipping extensions
+  "extensions": {
+    "shipping": {
+      "restrictions": {
+        "ground_only": true,
+        "no_air_transport": true,
+        "carrier_restrictions": ["residential_delivery_prohibited"]
+      },
+      "compliance": {
+        "dot_regulated": true,
+        "iata_restricted": true,
+        "requires_msds": true
+      }
+    }
+  }
+}
+```
+
+## Sample Object: Product with Free Shipping Promotion
+
+Example showing how shipping promotions can be managed through product extensions.
+```json
+{
+  "id": "PROD-005",
+  "name": "Premium Wireless Headphones",
+  "description": "Noise-cancelling over-ear headphones",
+  "status": "active",
+  "brand": "MACH Audio",
+  "categories": ["electronics", "audio"],
+  "default_variant_id": "VAR-001",
+  "fulfillment_type": "physical",
+  
+  "variants": [
+    {
+      "id": "VAR-001",
+      "sku": "HEADPHONE-BLACK",
+      "status": "active",
+      "price": {
+        "amount": 299.99,
+        "currency": "USD"
+      },
+      "weight": {
+        "value": 450,
+        "unit": "g"
+      },
+      "dimensions": {
+        "length": 25,
+        "width": 20,
+        "height": 10,
+        "unit": "cm"
+      },
+      
+      "extensions": {
+        "shipping": {
+          "eligible_methods": [
+            "SHIP-STANDARD-001",
+            "SHIP-EXPRESS-001",
+            "SHIP-FREE-PROMO-001"
+          ],
+          "qualifies_for_free_shipping": true,
+          "attributes": {
+            "fragile": true,
+            "high_value": true,
+            "signature_recommended": true
+          }
+        }
+      }
+    }
+  ],
+  
+  "extensions": {
+    "shipping": {
+      "promotional": {
+        "free_shipping_eligible": true,
+        "expedited_upgrade_available": true,
+        "badge": "FREE SHIPPING"
+      }
+    }
+  }
+}
+```
+
 ---
 
 ## Localization Pattern
@@ -903,6 +1054,7 @@ Product 1 optionally to 0+ Media:::optionalRel : "assets"
 Product 1 optionally to 0+ "Related Product(s)":::optionalRel : "related to"
 Product 1 optionally to 0+ "Region Availability":::optionalRel : "available in"
 Product 1 optionally to 0+ "Channel Availability":::optionalRel : "visible on"
+Product 1 optionally to 0+ "Shipping Method":::optionalRel : "eligible for"
 
 classDef entity fill:#ffd100, stroke:#ffd100,stroke-width:2px
 classDef internalRel fill:#ffd10080, stroke:#ffd10080,stroke-width:1px
