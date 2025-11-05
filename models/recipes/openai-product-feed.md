@@ -18,7 +18,6 @@
   - [Actors / Stakeholders](#actors--stakeholders)
   - [Trigger Points / Events](#trigger-points--events)
   - [Recipe Flows](#recipe-flows)
-      - [Sequence Diagram: Initial Feed Setup](#sequence-diagram-initial-feed-setup)
       - [Sequence Diagram: Incremental Updates](#sequence-diagram-incremental-updates)
   - [Systems Involved](#systems-involved)
   - [Data Requirements](#data-requirements)
@@ -32,7 +31,7 @@
 ## Recipe Purpose
 
 > [!NOTE]
-> This recipe describes how to transform MACH Alliance Open Data Model product data into OpenAI Product Feed format to enable ChatGPT-powered product discovery and shopping experiences.
+> This recipe describes how to transform MACH Alliance Open Data Model product data into [OpenAI Product Feed](https://developers.openai.com/commerce/specs/feed/) specification to enable ChatGPT-powered product discovery and shopping experiences.
 
 To expose product catalogs to ChatGPT for AI-powered product search, recommendations, and conversational shopping experiences. This integration enables merchants to reach customers through natural language interactions while maintaining their existing composable commerce architecture.
 
@@ -156,52 +155,18 @@ This OpenAI product feed integration is ideal for:
 
 ## Recipe Flows
 
-#### Sequence Diagram: Initial Feed Setup
-
-```mermaid
-sequenceDiagram
-    participant M as Merchant
-    participant CP as Commerce Platform/PIM
-    participant FG as Feed Generator
-    participant OAI as OpenAI Platform
-    participant GPT as ChatGPT
-
-    M->>OAI: Register as merchant partner
-    OAI-->>M: API credentials & endpoint
-    
-    M->>FG: Configure feed generation
-    FG->>CP: Request full product catalog
-    CP-->>FG: MACH format products
-    
-    FG->>FG: Transform to OpenAI format
-    Note over FG: Flatten variants<br/>Extract pricing<br/>Map categories<br/>Select language
-    
-    FG->>OAI: POST initial feed (TSV/CSV/JSON)
-    OAI->>OAI: Validate records
-    OAI->>OAI: Index products
-    OAI-->>FG: Validation report
-    
-    alt Validation Successful
-        OAI->>GPT: Products available for search
-        GPT-->>M: Products discoverable in ChatGPT
-    else Validation Errors
-        OAI-->>FG: Error details
-        FG-->>M: Manual correction needed
-    end
-```
-
 #### Sequence Diagram: Incremental Updates
 
 ```mermaid
 sequenceDiagram
     participant CP as Commerce Platform/PIM
-    participant FG as Feed Generator
+    participant FG as Feed Generator function
     participant OAI as OpenAI Platform
     participant GPT as ChatGPT
 
     Note over FG: Every 15 minutes
 
-    FG->>CP: Request changed products
+    FG->>CP: Get changed products
     CP-->>FG: Delta: Updated/new/deleted products
     
     FG->>FG: Transform changes to OpenAI format
@@ -252,6 +217,23 @@ sequenceDiagram
 | [Media](../entities/utilities/media.md) → `media`          | `additional_image_urls`       | Extract URLs from array                                     |
 | ProductVariant → `barcodes`                                | `gtin`                        | Extract UPC/EAN/GTIN from barcodes object                   |
 
+[!IMPORTANT]
+Variant Flattening & Grouping Strategy
+Each product variant must be submitted as a separate feed entry with its own unique id (typically the variant SKU). However, all variants of the same parent product must share the same `item_group_id` (the parent product ID) to enable ChatGPT to:
+
+Present variants as options within a single product conversation
+Allow users to switch between colors, sizes, or other attributes naturally
+Show variant-specific pricing, availability, and images
+Maintain coherent product context across variant selection
+
+Example: A t-shirt with 3 colors and 3 sizes generates 9 feed entries, each with:
+
+Unique `id`: TSHIRT-RED-M, TSHIRT-BLUE-L, etc.
+Shared `item_group_id`: PROD-TSHIRT-001
+Variant-specific attributes: color, size, gtin, availability
+
+Without proper `item_group_id` grouping, ChatGPT will treat each variant as a completely separate product, resulting in a fragmented and confusing shopping experience.
+
 ### Product Feed Data Flow
 
 **Input Data (MACH Format):**
@@ -291,8 +273,8 @@ sequenceDiagram
     "es-ES": "Camiseta de Algodón Clásica"
   },
   "description": {
-    "en-US": "Comfortable 100% organic cotton t-shirt",
-    "es-ES": "Cómoda camiseta de algodón 100% orgánico"
+    "en-US": "Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.",
+    "es-ES": "Cómoda camiseta de algodón 100% orgánico con cuello redondo y ajuste moderno. Perfecta para el uso diario."
   },
   "brand": "MACH Apparel",
   "categories": ["apparel", "shirts", "sustainable"],
@@ -306,15 +288,20 @@ sequenceDiagram
       "file": {
         "url": "https://cdn.example.com/tshirt-back.jpg"
       }
+    },
+    {
+      "file": {
+        "url": "https://cdn.example.com/tshirt-detail.jpg"
+      }
     }
   ],
   "variants": [
     {
       "id": "VAR-001",
-      "sku": "TSHIRT-RED-M",
+      "sku": "TSHIRT-RED-S",
       "option_values": [
         { "option_id": "color", "value": "Red" },
-        { "option_id": "size", "value": "M" }
+        { "option_id": "size", "value": "S" }
       ],
       "price": {
         "amount": 29.99,
@@ -329,11 +316,223 @@ sequenceDiagram
       },
       "inventory": {
         "quantities": {
+          "available": 85
+        }
+      },
+      "weight": {
+        "value": 180,
+        "unit": "g"
+      }
+    },
+    {
+      "id": "VAR-002",
+      "sku": "TSHIRT-RED-M",
+      "option_values": [
+        { "option_id": "color", "value": "Red" },
+        { "option_id": "size", "value": "M" }
+      ],
+      "price": {
+        "amount": 29.99,
+        "currency": "USD"
+      },
+      "compare_at_price": {
+        "amount": 39.99,
+        "currency": "USD"
+      },
+      "barcodes": {
+        "upc": "123456789013"
+      },
+      "inventory": {
+        "quantities": {
           "available": 150
         }
       },
       "weight": {
         "value": 200,
+        "unit": "g"
+      }
+    },
+    {
+      "id": "VAR-003",
+      "sku": "TSHIRT-RED-L",
+      "option_values": [
+        { "option_id": "color", "value": "Red" },
+        { "option_id": "size", "value": "L" }
+      ],
+      "price": {
+        "amount": 29.99,
+        "currency": "USD"
+      },
+      "compare_at_price": {
+        "amount": 39.99,
+        "currency": "USD"
+      },
+      "barcodes": {
+        "upc": "123456789014"
+      },
+      "inventory": {
+        "quantities": {
+          "available": 120
+        }
+      },
+      "weight": {
+        "value": 220,
+        "unit": "g"
+      }
+    },
+    {
+      "id": "VAR-004",
+      "sku": "TSHIRT-BLUE-S",
+      "option_values": [
+        { "option_id": "color", "value": "Blue" },
+        { "option_id": "size", "value": "S" }
+      ],
+      "price": {
+        "amount": 29.99,
+        "currency": "USD"
+      },
+      "compare_at_price": {
+        "amount": 39.99,
+        "currency": "USD"
+      },
+      "barcodes": {
+        "upc": "123456789015"
+      },
+      "inventory": {
+        "quantities": {
+          "available": 95
+        }
+      },
+      "weight": {
+        "value": 180,
+        "unit": "g"
+      }
+    },
+    {
+      "id": "VAR-005",
+      "sku": "TSHIRT-BLUE-M",
+      "option_values": [
+        { "option_id": "color", "value": "Blue" },
+        { "option_id": "size", "value": "M" }
+      ],
+      "price": {
+        "amount": 29.99,
+        "currency": "USD"
+      },
+      "compare_at_price": {
+        "amount": 39.99,
+        "currency": "USD"
+      },
+      "barcodes": {
+        "upc": "123456789016"
+      },
+      "inventory": {
+        "quantities": {
+          "available": 180
+        }
+      },
+      "weight": {
+        "value": 200,
+        "unit": "g"
+      }
+    },
+    {
+      "id": "VAR-006",
+      "sku": "TSHIRT-BLUE-L",
+      "option_values": [
+        { "option_id": "color", "value": "Blue" },
+        { "option_id": "size", "value": "L" }
+      ],
+      "price": {
+        "amount": 29.99,
+        "currency": "USD"
+      },
+      "compare_at_price": {
+        "amount": 39.99,
+        "currency": "USD"
+      },
+      "barcodes": {
+        "upc": "123456789017"
+      },
+      "inventory": {
+        "quantities": {
+          "available": 140
+        }
+      },
+      "weight": {
+        "value": 220,
+        "unit": "g"
+      }
+    },
+    {
+      "id": "VAR-007",
+      "sku": "TSHIRT-BLACK-S",
+      "option_values": [
+        { "option_id": "color", "value": "Black" },
+        { "option_id": "size", "value": "S" }
+      ],
+      "price": {
+        "amount": 29.99,
+        "currency": "USD"
+      },
+      "barcodes": {
+        "upc": "123456789018"
+      },
+      "inventory": {
+        "quantities": {
+          "available": 5
+        }
+      },
+      "weight": {
+        "value": 180,
+        "unit": "g"
+      }
+    },
+    {
+      "id": "VAR-008",
+      "sku": "TSHIRT-BLACK-M",
+      "option_values": [
+        { "option_id": "color", "value": "Black" },
+        { "option_id": "size", "value": "M" }
+      ],
+      "price": {
+        "amount": 29.99,
+        "currency": "USD"
+      },
+      "barcodes": {
+        "upc": "123456789019"
+      },
+      "inventory": {
+        "quantities": {
+          "available": 0
+        }
+      },
+      "weight": {
+        "value": 200,
+        "unit": "g"
+      }
+    },
+    {
+      "id": "VAR-009",
+      "sku": "TSHIRT-BLACK-L",
+      "option_values": [
+        { "option_id": "color", "value": "Black" },
+        { "option_id": "size", "value": "L" }
+      ],
+      "price": {
+        "amount": 29.99,
+        "currency": "USD"
+      },
+      "barcodes": {
+        "upc": "123456789020"
+      },
+      "inventory": {
+        "quantities": {
+          "available": 8
+        }
+      },
+      "weight": {
+        "value": 220,
         "unit": "g"
       }
     }
@@ -343,34 +542,254 @@ sequenceDiagram
 
 **Output: OpenAI Feed Format (TSV/CSV)**
 ```tsv
-enable_search	enable_checkout	id	gtin	mpn	title	description	brand	category	color	size	image_url	additional_image_urls	product_url	price	currency	availability	sale_price	sale_start_date	sale_end_date	shipping_cost	shipping_country
-true	true	TSHIRT-RED-M	123456789012	TSHIRT-RED-M	Classic Cotton T-Shirt	Comfortable 100% organic cotton t-shirt	MACH Apparel	Apparel & Accessories > Clothing > Shirts	Red	M	https://cdn.example.com/tshirt-primary.jpg	https://cdn.example.com/tshirt-back.jpg	https://example.com/products/classic-cotton-tshirt	29.99	USD	in_stock	39.99			5.99	US
+enable_search	enable_checkout	id	item_group_id	gtin	mpn	title	description	brand	category	color	size	image_url	additional_image_urls	product_url	price	currency	availability	sale_price	sale_start_date	sale_end_date	shipping_cost	shipping_country
+true	true	TSHIRT-RED-S	PROD-TSHIRT-001	123456789012	TSHIRT-RED-S	Classic Cotton T-Shirt	Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.	MACH Apparel	Apparel & Accessories > Clothing > Shirts	Red	S	https://cdn.example.com/tshirt-primary.jpg	https://cdn.example.com/tshirt-back.jpg,https://cdn.example.com/tshirt-detail.jpg	https://example.com/products/classic-cotton-tshirt	29.99	USD	in_stock	39.99			5.99	US
+true	true	TSHIRT-RED-M	PROD-TSHIRT-001	123456789013	TSHIRT-RED-M	Classic Cotton T-Shirt	Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.	MACH Apparel	Apparel & Accessories > Clothing > Shirts	Red	M	https://cdn.example.com/tshirt-primary.jpg	https://cdn.example.com/tshirt-back.jpg,https://cdn.example.com/tshirt-detail.jpg	https://example.com/products/classic-cotton-tshirt	29.99	USD	in_stock	39.99			5.99	US
+true	true	TSHIRT-RED-L	PROD-TSHIRT-001	123456789014	TSHIRT-RED-L	Classic Cotton T-Shirt	Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.	MACH Apparel	Apparel & Accessories > Clothing > Shirts	Red	L	https://cdn.example.com/tshirt-primary.jpg	https://cdn.example.com/tshirt-back.jpg,https://cdn.example.com/tshirt-detail.jpg	https://example.com/products/classic-cotton-tshirt	29.99	USD	in_stock	39.99			5.99	US
+true	true	TSHIRT-BLUE-S	PROD-TSHIRT-001	123456789015	TSHIRT-BLUE-S	Classic Cotton T-Shirt	Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.	MACH Apparel	Apparel & Accessories > Clothing > Shirts	Blue	S	https://cdn.example.com/tshirt-primary.jpg	https://cdn.example.com/tshirt-back.jpg,https://cdn.example.com/tshirt-detail.jpg	https://example.com/products/classic-cotton-tshirt	29.99	USD	in_stock	39.99			5.99	US
+true	true	TSHIRT-BLUE-M	PROD-TSHIRT-001	123456789016	TSHIRT-BLUE-M	Classic Cotton T-Shirt	Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.	MACH Apparel	Apparel & Accessories > Clothing > Shirts	Blue	M	https://cdn.example.com/tshirt-primary.jpg	https://cdn.example.com/tshirt-back.jpg,https://cdn.example.com/tshirt-detail.jpg	https://example.com/products/classic-cotton-tshirt	29.99	USD	in_stock	39.99			5.99	US
+true	true	TSHIRT-BLUE-L	PROD-TSHIRT-001	123456789017	TSHIRT-BLUE-L	Classic Cotton T-Shirt	Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.	MACH Apparel	Apparel & Accessories > Clothing > Shirts	Blue	L	https://cdn.example.com/tshirt-primary.jpg	https://cdn.example.com/tshirt-back.jpg,https://cdn.example.com/tshirt-detail.jpg	https://example.com/products/classic-cotton-tshirt	29.99	USD	in_stock	39.99			5.99	US
+true	true	TSHIRT-BLACK-S	PROD-TSHIRT-001	123456789018	TSHIRT-BLACK-S	Classic Cotton T-Shirt	Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.	MACH Apparel	Apparel & Accessories > Clothing > Shirts	Black	S	https://cdn.example.com/tshirt-primary.jpg	https://cdn.example.com/tshirt-back.jpg,https://cdn.example.com/tshirt-detail.jpg	https://example.com/products/classic-cotton-tshirt	29.99	USD	in_stock				5.99	US
+true	true	TSHIRT-BLACK-M	PROD-TSHIRT-001	123456789019	TSHIRT-BLACK-M	Classic Cotton T-Shirt	Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.	MACH Apparel	Apparel & Accessories > Clothing > Shirts	Black	M	https://cdn.example.com/tshirt-primary.jpg	https://cdn.example.com/tshirt-back.jpg,https://cdn.example.com/tshirt-detail.jpg	https://example.com/products/classic-cotton-tshirt	29.99	USD	out_of_stock				5.99	US
+true	true	TSHIRT-BLACK-L	PROD-TSHIRT-001	123456789020	TSHIRT-BLACK-L	Classic Cotton T-Shirt	Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.	MACH Apparel	Apparel & Accessories > Clothing > Shirts	Black	L	https://cdn.example.com/tshirt-primary.jpg	https://cdn.example.com/tshirt-back.jpg,https://cdn.example.com/tshirt-detail.jpg	https://example.com/products/classic-cotton-tshirt	29.99	USD	in_stock				5.99	US
 ```
 
 **Output: OpenAI Feed Format (JSON)**
+
 ```json
-{
-  "enable_search": true,
-  "enable_checkout": true,
-  "id": "TSHIRT-RED-M",
-  "gtin": "123456789012",
-  "mpn": "TSHIRT-RED-M",
-  "title": "Classic Cotton T-Shirt",
-  "description": "Comfortable 100% organic cotton t-shirt",
-  "brand": "MACH Apparel",
-  "category": "Apparel & Accessories > Clothing > Shirts",
-  "color": "Red",
-  "size": "M",
-  "image_url": "https://cdn.example.com/tshirt-primary.jpg",
-  "additional_image_urls": ["https://cdn.example.com/tshirt-back.jpg"],
-  "product_url": "https://example.com/products/classic-cotton-tshirt",
-  "price": 29.99,
-  "currency": "USD",
-  "availability": "in_stock",
-  "sale_price": 39.99,
-  "shipping_cost": 5.99,
-  "shipping_country": "US"
-}
+[
+  {
+    "enable_search": true,
+    "enable_checkout": true,
+    "id": "TSHIRT-RED-S",
+    "item_group_id": "PROD-TSHIRT-001",
+    "gtin": "123456789012",
+    "mpn": "TSHIRT-RED-S",
+    "title": "Classic Cotton T-Shirt",
+    "description": "Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.",
+    "brand": "MACH Apparel",
+    "category": "Apparel & Accessories > Clothing > Shirts",
+    "color": "Red",
+    "size": "S",
+    "image_url": "https://cdn.example.com/tshirt-primary.jpg",
+    "additional_image_urls": [
+      "https://cdn.example.com/tshirt-back.jpg",
+      "https://cdn.example.com/tshirt-detail.jpg"
+    ],
+    "product_url": "https://example.com/products/classic-cotton-tshirt",
+    "price": 29.99,
+    "currency": "USD",
+    "availability": "in_stock",
+    "sale_price": 39.99,
+    "shipping_cost": 5.99,
+    "shipping_country": "US"
+  },
+  {
+    "enable_search": true,
+    "enable_checkout": true,
+    "id": "TSHIRT-RED-M",
+    "item_group_id": "PROD-TSHIRT-001",
+    "gtin": "123456789013",
+    "mpn": "TSHIRT-RED-M",
+    "title": "Classic Cotton T-Shirt",
+    "description": "Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.",
+    "brand": "MACH Apparel",
+    "category": "Apparel & Accessories > Clothing > Shirts",
+    "color": "Red",
+    "size": "M",
+    "image_url": "https://cdn.example.com/tshirt-primary.jpg",
+    "additional_image_urls": [
+      "https://cdn.example.com/tshirt-back.jpg",
+      "https://cdn.example.com/tshirt-detail.jpg"
+    ],
+    "product_url": "https://example.com/products/classic-cotton-tshirt",
+    "price": 29.99,
+    "currency": "USD",
+    "availability": "in_stock",
+    "sale_price": 39.99,
+    "shipping_cost": 5.99,
+    "shipping_country": "US"
+  },
+  {
+    "enable_search": true,
+    "enable_checkout": true,
+    "id": "TSHIRT-RED-L",
+    "item_group_id": "PROD-TSHIRT-001",
+    "gtin": "123456789014",
+    "mpn": "TSHIRT-RED-L",
+    "title": "Classic Cotton T-Shirt",
+    "description": "Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.",
+    "brand": "MACH Apparel",
+    "category": "Apparel & Accessories > Clothing > Shirts",
+    "color": "Red",
+    "size": "L",
+    "image_url": "https://cdn.example.com/tshirt-primary.jpg",
+    "additional_image_urls": [
+      "https://cdn.example.com/tshirt-back.jpg",
+      "https://cdn.example.com/tshirt-detail.jpg"
+    ],
+    "product_url": "https://example.com/products/classic-cotton-tshirt",
+    "price": 29.99,
+    "currency": "USD",
+    "availability": "in_stock",
+    "sale_price": 39.99,
+    "shipping_cost": 5.99,
+    "shipping_country": "US"
+  },
+  {
+    "enable_search": true,
+    "enable_checkout": true,
+    "id": "TSHIRT-BLUE-S",
+    "item_group_id": "PROD-TSHIRT-001",
+    "gtin": "123456789015",
+    "mpn": "TSHIRT-BLUE-S",
+    "title": "Classic Cotton T-Shirt",
+    "description": "Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.",
+    "brand": "MACH Apparel",
+    "category": "Apparel & Accessories > Clothing > Shirts",
+    "color": "Blue",
+    "size": "S",
+    "image_url": "https://cdn.example.com/tshirt-primary.jpg",
+    "additional_image_urls": [
+      "https://cdn.example.com/tshirt-back.jpg",
+      "https://cdn.example.com/tshirt-detail.jpg"
+    ],
+    "product_url": "https://example.com/products/classic-cotton-tshirt",
+    "price": 29.99,
+    "currency": "USD",
+    "availability": "in_stock",
+    "sale_price": 39.99,
+    "shipping_cost": 5.99,
+    "shipping_country": "US"
+  },
+  {
+    "enable_search": true,
+    "enable_checkout": true,
+    "id": "TSHIRT-BLUE-M",
+    "item_group_id": "PROD-TSHIRT-001",
+    "gtin": "123456789016",
+    "mpn": "TSHIRT-BLUE-M",
+    "title": "Classic Cotton T-Shirt",
+    "description": "Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.",
+    "brand": "MACH Apparel",
+    "category": "Apparel & Accessories > Clothing > Shirts",
+    "color": "Blue",
+    "size": "M",
+    "image_url": "https://cdn.example.com/tshirt-primary.jpg",
+    "additional_image_urls": [
+      "https://cdn.example.com/tshirt-back.jpg",
+      "https://cdn.example.com/tshirt-detail.jpg"
+    ],
+    "product_url": "https://example.com/products/classic-cotton-tshirt",
+    "price": 29.99,
+    "currency": "USD",
+    "availability": "in_stock",
+    "sale_price": 39.99,
+    "shipping_cost": 5.99,
+    "shipping_country": "US"
+  },
+  {
+    "enable_search": true,
+    "enable_checkout": true,
+    "id": "TSHIRT-BLUE-L",
+    "item_group_id": "PROD-TSHIRT-001",
+    "gtin": "123456789017",
+    "mpn": "TSHIRT-BLUE-L",
+    "title": "Classic Cotton T-Shirt",
+    "description": "Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.",
+    "brand": "MACH Apparel",
+    "category": "Apparel & Accessories > Clothing > Shirts",
+    "color": "Blue",
+    "size": "L",
+    "image_url": "https://cdn.example.com/tshirt-primary.jpg",
+    "additional_image_urls": [
+      "https://cdn.example.com/tshirt-back.jpg",
+      "https://cdn.example.com/tshirt-detail.jpg"
+    ],
+    "product_url": "https://example.com/products/classic-cotton-tshirt",
+    "price": 29.99,
+    "currency": "USD",
+    "availability": "in_stock",
+    "sale_price": 39.99,
+    "shipping_cost": 5.99,
+    "shipping_country": "US"
+  },
+  {
+    "enable_search": true,
+    "enable_checkout": true,
+    "id": "TSHIRT-BLACK-S",
+    "item_group_id": "PROD-TSHIRT-001",
+    "gtin": "123456789018",
+    "mpn": "TSHIRT-BLACK-S",
+    "title": "Classic Cotton T-Shirt",
+    "description": "Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.",
+    "brand": "MACH Apparel",
+    "category": "Apparel & Accessories > Clothing > Shirts",
+    "color": "Black",
+    "size": "S",
+    "image_url": "https://cdn.example.com/tshirt-primary.jpg",
+    "additional_image_urls": [
+      "https://cdn.example.com/tshirt-back.jpg",
+      "https://cdn.example.com/tshirt-detail.jpg"
+    ],
+    "product_url": "https://example.com/products/classic-cotton-tshirt",
+    "price": 29.99,
+    "currency": "USD",
+    "availability": "in_stock",
+    "shipping_cost": 5.99,
+    "shipping_country": "US"
+  },
+  {
+    "enable_search": true,
+    "enable_checkout": true,
+    "id": "TSHIRT-BLACK-M",
+    "item_group_id": "PROD-TSHIRT-001",
+    "gtin": "123456789019",
+    "mpn": "TSHIRT-BLACK-M",
+    "title": "Classic Cotton T-Shirt",
+    "description": "Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.",
+    "brand": "MACH Apparel",
+    "category": "Apparel & Accessories > Clothing > Shirts",
+    "color": "Black",
+    "size": "M",
+    "image_url": "https://cdn.example.com/tshirt-primary.jpg",
+    "additional_image_urls": [
+      "https://cdn.example.com/tshirt-back.jpg",
+      "https://cdn.example.com/tshirt-detail.jpg"
+    ],
+    "product_url": "https://example.com/products/classic-cotton-tshirt",
+    "price": 29.99,
+    "currency": "USD",
+    "availability": "out_of_stock",
+    "shipping_cost": 5.99,
+    "shipping_country": "US"
+  },
+  {
+    "enable_search": true,
+    "enable_checkout": true,
+    "id": "TSHIRT-BLACK-L",
+    "item_group_id": "PROD-TSHIRT-001",
+    "gtin": "123456789020",
+    "mpn": "TSHIRT-BLACK-L",
+    "title": "Classic Cotton T-Shirt",
+    "description": "Comfortable 100% organic cotton t-shirt with crew neck and modern fit. Perfect for everyday wear.",
+    "brand": "MACH Apparel",
+    "category": "Apparel & Accessories > Clothing > Shirts",
+    "color": "Black",
+    "size": "L",
+    "image_url": "https://cdn.example.com/tshirt-primary.jpg",
+    "additional_image_urls": [
+      "https://cdn.example.com/tshirt-back.jpg",
+      "https://cdn.example.com/tshirt-detail.jpg"
+    ],
+    "product_url": "https://example.com/products/classic-cotton-tshirt",
+    "price": 29.99,
+    "currency": "USD",
+    "availability": "in_stock",
+    "shipping_cost": 5.99,
+    "shipping_country": "US"
+  }
+]
 ```
 
 ---
