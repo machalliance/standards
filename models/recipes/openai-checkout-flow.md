@@ -4,50 +4,30 @@
 
 ## Table of contents
 
-- [MACH Alliance • Open Data Model](#mach-alliance--open-data-model)
-  - [Recipe: `OpenAI Agentic Checkout Flow`](#recipe-openai-agentic-checkout-flow)
-  - [Table of contents](#table-of-contents)
-  - [Recipe Purpose](#recipe-purpose)
-  - [Recipe Overview](#recipe-overview)
-      - [Approach Rationale](#approach-rationale)
-        - [Conversational Commerce](#conversational-commerce)
-        - [Merchant Control](#merchant-control)
-        - [Rich Cart State](#rich-cart-state)
-  - [When to Use This Recipe](#when-to-use-this-recipe)
-  - [Typical pitfalls](#typical-pitfalls)
-  - [Actors / Stakeholders](#actors--stakeholders)
-  - [Trigger Points / Events](#trigger-points--events)
-  - [Recipe Flows](#recipe-flows)
-      - [Sequence Diagram](#sequence-diagram)
-  - [Systems Involved](#systems-involved)
-  - [Data Requirements](#data-requirements)
-    - [Agentic Checkout Data Flow](#agentic-checkout-data-flow)
-      - [Example Create Session Request (OpenAI → Merchant)](#example-create-session-request-openai--merchant)
-      - [Example Session Response (Merchant → OpenAI)](#example-session-response-merchant--openai)
-      - [Example Complete Checkout Request](#example-complete-checkout-request)
-      - [Example Order Created Webhook (Merchant → OpenAI)](#example-order-created-webhook-merchant--openai)
-  - [Entity Mappings](#entity-mappings)
-    - [MACH Cart to OpenAI Checkout Session](#mach-cart-to-openai-checkout-session)
-    - [MACH Payment to OpenAI Payment Methods](#mach-payment-to-openai-payment-methods)
-    - [MACH Order to OpenAI Order Events](#mach-order-to-openai-order-events)
-  - [API Endpoint Implementations](#api-endpoint-implementations)
-    - [POST /checkout\_sessions](#post-checkout_sessions)
-    - [POST /checkout\_sessions/{checkout\_session\_id}](#post-checkout_sessionscheckout_session_id)
-    - [POST /checkout\_sessions/{checkout\_session\_id}/complete](#post-checkout_sessionscheckout_session_idcomplete)
-    - [POST /checkout\_sessions/{checkout\_session\_id}/cancel](#post-checkout_sessionscheckout_session_idcancel)
-  - [Webhook Implementation](#webhook-implementation)
-    - [Order Lifecycle Events](#order-lifecycle-events)
-  - [Variants / Alternatives](#variants--alternatives)
-  - [Failure Modes / Edge Cases](#failure-modes--edge-cases)
-  - [Success Metrics / KPIs](#success-metrics--kpis)
-  - [Security \& Compliance Notes](#security--compliance-notes)
+- [Recipe Purpose](#recipe-purpose)
+- [Recipe Overview](#recipe-overview)
+- [When to Use This Recipe](#when-to-use-this-recipe)
+- [Typical pitfalls](#typical-pitfalls)
+- [Actors / Stakeholders](#actors--stakeholders)
+- [Trigger Points / Events](#trigger-points--events)
+- [Recipe Flows](#recipe-flows)
+- [Systems Involved](#systems-involved)
+- [Data Requirements](#data-requirements)
+- [Entity Mapping Concepts](#entity-mapping-concepts)
+- [Integration Patterns](#integration-patterns)
+- [Variants / Alternatives](#variants--alternatives)
+- [Failure Modes / Edge Cases](#failure-modes--edge-cases)
+- [Success Metrics / KPIs](#success-metrics--kpis)
+- [Security & Compliance Notes](#security--compliance-notes)
+
+---
 
 ## Recipe Purpose
 
 > [!NOTE]
-> This recipe implements the OpenAI Agentic Checkout Specification, enabling end-to-end checkout flows inside ChatGPT while maintaining full control over orders, payments, and compliance on the merchant's existing MACH commerce stack.
+> This recipe implements the [OpenAI Agentic Checkout Specification](https://developers.openai.com/commerce/specs/checkout), enabling end-to-end checkout flows inside ChatGPT while maintaining full control over orders, payments, and compliance on the merchant's existing MACH commerce stack.
 
-To enable merchants to offer seamless AI-powered checkout experiences through ChatGPT by mapping MACH Alliance Open Data Model entities (Product, Cart, Payment, Order) to OpenAI's Agentic Checkout Spec. This recipe demonstrates how to implement the required REST endpoints and webhooks while leveraging existing MACH architecture and business logic.
+Enable merchants to offer seamless AI-powered checkout experiences through ChatGPT by mapping MACH Alliance Open Data Model entities (Product, Cart, Payment, Order) to OpenAI's Agentic Checkout Spec. This recipe demonstrates the architectural patterns and data flows required to implement the REST endpoints and webhooks while leveraging existing MACH architecture and business logic.
 
 ___Key Business Goals:___
 * Enable ChatGPT users to complete purchases without leaving the conversation
@@ -65,24 +45,24 @@ ___Key Business Goals:___
 
 OpenAI's Agentic Checkout enables customers to complete purchases directly within ChatGPT through a structured flow: ChatGPT creates a checkout session with cart contents, the merchant returns authoritative cart state with pricing and options, ChatGPT collects payment and shipping details, and the merchant completes the order. Throughout this process, the merchant maintains full control using existing MACH entities while transforming data to meet OpenAI's specification.
 
-#### Approach Rationale
+### Approach Rationale
 
 This Agentic Checkout integration approach provides:
 
-##### Conversational Commerce
+#### Conversational Commerce
 - **Natural Shopping Flow:** Customers discuss products and checkout without leaving ChatGPT
 - **AI-Guided Experience:** ChatGPT helps customers make decisions and complete purchases
 - **Reduced Friction:** No app switching or complex navigation required
 - **Voice-First Ready:** Same flow works for voice and text interactions
 
-##### Merchant Control
+#### Merchant Control
 - **Existing Commerce Stack:** Use current MACH entities and business logic
 - **Payment Integration:** Leverage existing payment processors and fraud prevention
 - **Pricing Authority:** Merchant calculates and validates all pricing
 - **Inventory Management:** Real-time inventory checks using existing systems
 - **Compliance:** Maintain tax, shipping, and regulatory compliance
 
-##### Rich Cart State
+#### Rich Cart State
 - **Single Source of Truth:** Merchant provides authoritative cart state for every interaction
 - **Real-Time Updates:** Immediate pricing, tax, and availability calculations
 - **Transparent Pricing:** Line-by-line breakdown of costs, taxes, and discounts
@@ -181,64 +161,78 @@ This Agentic Checkout integration approach provides:
 
 ## Recipe Flows
 
-#### Sequence Diagram
+### Sequence Diagram
 
 ```mermaid
 sequenceDiagram
-    participant U as Customer
-    participant AI as ChatGPT
-    participant API as Merchant API<br/>(Agentic Checkout)
-    participant CP as Commerce Platform<br/>(MACH Entities)
-    participant PAY as Payment Processor
-    participant WH as Webhook Endpoint
+    participant Customer
+    participant ChatGPT
+    participant Merchant API
+    participant Commerce Platform
+    participant Payment Processor
+    participant OpenAI Webhooks
 
-    Note over U,API: 1. Create Checkout Session
-    U->>AI: "I want to buy 2 t-shirts"
-    AI->>API: POST /checkout_sessions
-    Note over API: Map to Cart entity<br/>Add line items<br/>Calculate totals
-    API->>CP: Create Cart entity
-    CP-->>API: Cart with totals
-    API-->>AI: checkout_session with cart state
-    AI-->>U: "Your cart: 2 items, $69.90"
-
-    Note over U,API: 2. Update Session (Shipping)
-    U->>AI: "Ship to 123 Main St, Seattle"
-    AI->>API: POST /checkout_sessions/{id}<br/>(add shipping address)
-    Note over API: Update Cart.addresses<br/>Calculate shipping & tax
-    API->>CP: Update Cart entity
-    CP-->>API: Cart with shipping/tax
-    API-->>AI: Updated cart state
-    AI-->>U: "Shipping $5, Tax $12. Total: $86.90"
-
-    Note over U,API: 3. Update Session (Discount)
-    U->>AI: "Apply code SUMMER2024"
-    AI->>API: POST /checkout_sessions/{id}<br/>(add discount code)
-    Note over API: Apply promotion<br/>Recalculate totals
-    API->>CP: Update Cart.applied_promotions
-    CP-->>API: Cart with discount
-    API-->>AI: Updated cart state with discount
-    AI-->>U: "$5 off! New total: $81.90"
-
-    Note over U,API: 4. Complete Checkout
-    U->>AI: "Complete purchase"
-    AI->>PAY: Authorize payment
-    PAY-->>AI: Payment authorized
-    AI->>API: POST /checkout_sessions/{id}/complete<br/>(with payment token)
-    Note over API: Validate payment<br/>Create Payment entity<br/>Create Order entity
-    API->>CP: Create Payment & Order
-    CP-->>API: Order confirmation
-    API-->>AI: Completion response
-    AI-->>U: "Order #12345 confirmed!"
-
-    Note over U,WH: 5. Order Events (Async)
-    CP->>API: Order created in system
-    API->>WH: POST webhook (order.created)
-    WH-->>API: 200 OK
+    Note over Customer,Commerce Platform: Phase 1: Session Creation
+    Customer->>ChatGPT: "I want to buy 2 t-shirts"
+    ChatGPT->>Merchant API: POST /checkout_sessions<br/>{line_items, buyer_identity}
     
-    Note over CP,WH: Later: Fulfillment updates
-    CP->>API: Order shipped
-    API->>WH: POST webhook (order.shipped)
-    WH-->>API: 200 OK
+    Merchant API->>Commerce Platform: Create Cart Entity
+    Note over Commerce Platform: - Map line items to Cart<br/>- Fetch Product details<br/>- Calculate initial totals
+    Commerce Platform-->>Merchant API: Cart with totals
+    
+    Merchant API-->>ChatGPT: checkout_session<br/>{session_id, cart_state}
+    ChatGPT-->>Customer: "Your cart: 2 items, $69.90"
+
+    Note over Customer,Commerce Platform: Phase 2: Shipping Address
+    Customer->>ChatGPT: "Ship to 123 Main St, Seattle"
+    ChatGPT->>Merchant API: POST /checkout_sessions/{id}<br/>{shipping_address}
+    
+    Merchant API->>Commerce Platform: Update Cart.addresses
+    Note over Commerce Platform: - Add shipping address<br/>- Calculate shipping options<br/>- Calculate tax<br/>- Recalculate totals
+    Commerce Platform-->>Merchant API: Updated Cart with shipping/tax
+    
+    Merchant API-->>ChatGPT: Updated cart_state<br/>{shipping_methods, totals}
+    ChatGPT-->>Customer: "Shipping $5.00, Tax $6.11<br/>Total: $81.01"
+
+    Note over Customer,Commerce Platform: Phase 3: Apply Discount
+    Customer->>ChatGPT: "Apply code SUMMER2024"
+    ChatGPT->>Merchant API: POST /checkout_sessions/{id}<br/>{discount_codes: ["SUMMER2024"]}
+    
+    Merchant API->>Commerce Platform: Apply Promotion to Cart
+    Note over Commerce Platform: - Validate discount code<br/>- Calculate discount<br/>- Update applied_promotions<br/>- Recalculate totals
+    Commerce Platform-->>Merchant API: Cart with discount applied
+    
+    Merchant API-->>ChatGPT: Updated cart_state<br/>{applied_discounts, new_totals}
+    ChatGPT-->>Customer: "$5.00 off! New total: $76.01"
+
+    Note over Customer,Payment Processor: Phase 4: Payment Authorization
+    Customer->>ChatGPT: "Complete purchase"
+    ChatGPT->>Payment Processor: Authorize Payment
+    Note over Payment Processor: - Collect payment details<br/>- Authorize amount<br/>- Generate token
+    Payment Processor-->>ChatGPT: Payment authorized<br/>{payment_token, auth_id}
+
+    Note over Customer,Commerce Platform: Phase 5: Order Completion
+    ChatGPT->>Merchant API: POST /checkout_sessions/{id}/complete<br/>{payment_method, billing_address}
+    
+    Merchant API->>Commerce Platform: Validate and Create Order
+    Note over Commerce Platform: - Validate cart state<br/>- Check inventory<br/>- Create Payment entity<br/>- Create Order entity<br/>- Reserve inventory
+    Commerce Platform-->>Merchant API: Order created<br/>{order_id, confirmation}
+    
+    Merchant API-->>ChatGPT: Completion response<br/>{order_id, status: "completed"}
+    ChatGPT-->>Customer: "Order #12345 confirmed!<br/>Estimated delivery: Oct 15"
+
+    Note over Customer,OpenAI Webhooks: Phase 6: Asynchronous Order Events
+    Commerce Platform->>Merchant API: Order confirmed in system
+    Merchant API->>OpenAI Webhooks: POST webhook<br/>order.created event
+    OpenAI Webhooks-->>Merchant API: 200 OK
+    
+    Note over Commerce Platform,OpenAI Webhooks: Later: Fulfillment Updates
+    Commerce Platform->>Merchant API: Order status: shipped
+    Merchant API->>OpenAI Webhooks: POST webhook<br/>order.shipped event<br/>{tracking_number, tracking_url}
+    OpenAI Webhooks-->>Merchant API: 200 OK
+    
+    OpenAI Webhooks->>ChatGPT: Update order status
+    ChatGPT->>Customer: "Your order has shipped!<br/>Track: [tracking_url]"
 ```
 
 ---
@@ -299,7 +293,9 @@ sequenceDiagram
 - Fulfillment updates with tracking information
 - Status changes throughout order journey
 
-#### Example Create Session Request (OpenAI → Merchant)
+### Example Data Structures
+
+#### Create Session Request (OpenAI → Merchant)
 
 ```json
 {
@@ -318,9 +314,7 @@ sequenceDiagram
 }
 ```
 
-#### Example Session Response (Merchant → OpenAI)
-
-This response maps from MACH Cart entity to OpenAI's expected format:
+#### Session Response (Merchant → OpenAI)
 
 ```json
 {
@@ -335,67 +329,29 @@ This response maps from MACH Cart entity to OpenAI's expected format:
       "name": "Organic Cotton T-Shirt - Black M",
       "quantity": 2,
       "unit_amount": 3495,
-      "total_amount": 6990,
-      "variant_title": "Black / M"
+      "total_amount": 6990
     }
   ],
   "subtotal_amount": 6990,
-  "shipping_amount": 0,
-  "tax_amount": 0,
+  "shipping_amount": 500,
+  "tax_amount": 611,
   "discount_amount": 0,
-  "total_amount": 6990,
-  "buyer_identity": {
-    "email": "customer@example.com",
-    "full_name": "John Doe"
-  },
-  "available_shipping_methods": [],
-  "selected_shipping_method": null,
-  "shipping_address": null,
-  "billing_address": null,
-  "applied_discounts": [],
+  "total_amount": 8101,
+  "available_shipping_methods": [
+    {
+      "shipping_method_id": "standard",
+      "name": "Standard Shipping",
+      "amount": 500,
+      "estimated_delivery_date": "2025-10-15"
+    }
+  ],
   "metadata": {
-    "mach_cart_id": "cart_abc123",
-    "session_created_at": "2025-10-10T14:23:15Z"
+    "mach_cart_id": "cart_abc123"
   }
 }
 ```
 
-#### Example Complete Checkout Request
-
-```json
-{
-  "payment_method": {
-    "type": "card",
-    "token": "pm_1234567890"
-  },
-  "billing_address": {
-    "line1": "123 Main St",
-    "city": "Seattle",
-    "region": "WA",
-    "postal_code": "98101",
-    "country": "US"
-  }
-}
-```
-
-**Complete Checkout Response:**
-
-```json
-{
-  "checkout_session_id": "cs_abc123xyz",
-  "status": "completed",
-  "order_id": "ord_12345",
-  "currency": "USD",
-  "total_amount": 8190,
-  "confirmation_number": "ORD-12345",
-  "metadata": {
-    "mach_order_id": "ord_12345",
-    "mach_payment_id": "pay_001"
-  }
-}
-```
-
-#### Example Order Created Webhook (Merchant → OpenAI)
+#### Order Created Webhook (Merchant → OpenAI)
 
 ```json
 {
@@ -407,27 +363,7 @@ This response maps from MACH Cart entity to OpenAI's expected format:
     "checkout_session_id": "cs_abc123xyz",
     "status": "processing",
     "currency": "USD",
-    "total_amount": 8190,
-    "buyer_identity": {
-      "email": "customer@example.com",
-      "full_name": "John Doe"
-    },
-    "line_items": [
-      {
-        "line_item_id": "item_001",
-        "product_id": "PROD-001",
-        "name": "Organic Cotton T-Shirt",
-        "quantity": 2,
-        "total_amount": 6990
-      }
-    ],
-    "shipping_address": {
-      "line1": "123 Main St",
-      "city": "Seattle",
-      "region": "WA",
-      "postal_code": "98101",
-      "country": "US"
-    },
+    "total_amount": 8101,
     "estimated_delivery_date": "2025-10-15"
   }
 }
@@ -435,730 +371,314 @@ This response maps from MACH Cart entity to OpenAI's expected format:
 
 ---
 
-## Entity Mappings
+## Entity Mapping Concepts
 
-### MACH Cart to OpenAI Checkout Session
+### MACH Cart ↔ OpenAI Checkout Session
 
-Transform MACH Cart entity to OpenAI checkout_session format:
+**Core Mapping Principles:**
 
-```javascript
-function transformCartToCheckoutSession(machCart, sessionId) {
-  // OpenAI uses cents for amounts, MACH entities may use decimal or cents
-  const toCents = (amount) => Math.round(amount * 100);
-  
-  return {
-    checkout_session_id: sessionId || machCart.external_references?.openai_session_id,
-    status: mapCartStatusToSessionStatus(machCart.status),
-    currency: machCart.totals?.currency || 'USD',
-    
-    // Map line items from Cart.line_items
-    line_items: machCart.line_items?.map(item => ({
-      line_item_id: item.id,
-      product_id: item.product_id,
-      variant_id: item.variant_id,
-      name: item.name,
-      quantity: item.quantity,
-      unit_amount: toCents(item.price.amount),
-      total_amount: toCents(item.price.amount * item.quantity),
-      variant_title: extractVariantTitle(item),
-      image_url: item.primary_image?.url,
-      product_url: item.product_url
-    })) || [],
-    
-    // Map totals from Cart.totals
-    subtotal_amount: toCents(machCart.totals?.subtotal || 0),
-    shipping_amount: toCents(machCart.totals?.shipping || 0),
-    tax_amount: toCents(machCart.totals?.tax || 0),
-    discount_amount: toCents(machCart.totals?.discount || 0),
-    total_amount: toCents(machCart.totals?.grand_total || 0),
-    
-    // Map buyer identity
-    buyer_identity: {
-      email: machCart.customer_email || machCart.addresses?.find(a => a.type === 'shipping')?.contact?.email,
-      full_name: extractFullName(machCart),
-      phone: machCart.addresses?.find(a => a.type === 'shipping')?.contact?.phone
-    },
-    
-    // Map shipping methods
-    available_shipping_methods: machCart.shipping_methods?.map(method => ({
-      shipping_method_id: method.id,
-      name: method.name,
-      amount: toCents(method.price?.amount || 0),
-      estimated_delivery_date: method.estimated_delivery_date,
-      description: method.description
-    })) || [],
-    
-    selected_shipping_method: machCart.shipping_methods?.find(m => m.selected)?.id,
-    
-    // Map addresses from Cart.addresses
-    shipping_address: transformAddress(machCart.addresses?.find(a => a.type === 'shipping')),
-    billing_address: transformAddress(machCart.addresses?.find(a => a.type === 'billing')),
-    
-    // Map promotions from Cart.applied_promotions
-    applied_discounts: machCart.applied_promotions?.map(promo => ({
-      discount_code: promo.code,
-      discount_id: promo.id,
-      name: promo.name,
-      amount: toCents(promo.discount.amount)
-    })) || [],
-    
-    // Preserve MACH references in metadata
-    metadata: {
-      mach_cart_id: machCart.id,
-      mach_customer_id: machCart.customer_id,
-      session_created_at: machCart.created_at,
-      session_updated_at: machCart.updated_at,
-      ...machCart.extensions?.openai
-    }
-  };
-}
+| **MACH Cart Field**              | **OpenAI Field**                  | **Transformation Notes**                                      |
+| -------------------------------- | --------------------------------- | ------------------------------------------------------------- |
+| `Cart.id`                        | `metadata.mach_cart_id`           | Preserve internal ID in metadata                              |
+| `Cart.line_items[]`              | `line_items[]`                    | Map each line item with product details                       |
+| `Cart.totals.subtotal`           | `subtotal_amount`                 | Convert to cents (multiply by 100)                            |
+| `Cart.totals.shipping`           | `shipping_amount`                 | Convert to cents                                              |
+| `Cart.totals.tax`                | `tax_amount`                      | Convert to cents                                              |
+| `Cart.totals.discount`           | `discount_amount`                 | Convert to cents                                              |
+| `Cart.totals.grand_total`        | `total_amount`                    | Convert to cents                                              |
+| `Cart.addresses[type=shipping]`  | `shipping_address`                | Transform address structure                                   |
+| `Cart.addresses[type=billing]`   | `billing_address`                 | Transform address structure                                   |
+| `Cart.shipping_methods[]`        | `available_shipping_methods[]`    | Map shipping options with rates                               |
+| `Cart.applied_promotions[]`      | `applied_discounts[]`             | Map discount codes and amounts                                |
+| `Cart.customer_email`            | `buyer_identity.email`            | Direct mapping                                                |
 
-function mapCartStatusToSessionStatus(cartStatus) {
-  const statusMap = {
-    'active': 'pending',
-    'completed': 'completed',
-    'abandoned': 'expired',
-    'pending_approval': 'pending'
-  };
-  return statusMap[cartStatus] || 'pending';
-}
+**Key Transformation Rules:**
 
-function transformAddress(cartAddress) {
-  if (!cartAddress) return null;
-  
-  return {
-    line1: cartAddress.address?.line1,
-    line2: cartAddress.address?.line2,
-    city: cartAddress.address?.city,
-    region: cartAddress.address?.region,
-    postal_code: cartAddress.address?.postal_code,
-    country: cartAddress.address?.country,
-    full_name: `${cartAddress.contact?.first_name || ''} ${cartAddress.contact?.last_name || ''}`.trim(),
-    phone: cartAddress.contact?.phone
-  };
-}
+1. **Currency Conversion:** OpenAI expects amounts in cents (integer), while MACH entities may use decimal representation. Always convert and round appropriately.
 
-function extractVariantTitle(lineItem) {
-  // Extract variant options like "Black / M" from line item
-  if (lineItem.variant_options) {
-    return Object.values(lineItem.variant_options).join(' / ');
-  }
-  return null;
-}
+2. **Address Structure:** MACH Address entities use nested structures (`address.line1`, `contact.first_name`) that must be flattened to OpenAI's format (`line1`, `full_name`).
 
-function extractFullName(cart) {
-  const shippingContact = cart.addresses?.find(a => a.type === 'shipping')?.contact;
-  if (shippingContact?.first_name || shippingContact?.last_name) {
-    return `${shippingContact.first_name || ''} ${shippingContact.last_name || ''}`.trim();
-  }
-  return null;
-}
-```
+3. **Status Mapping:** Cart status values (`active`, `completed`, `abandoned`) map to OpenAI session status (`pending`, `completed`, `expired`).
 
-### MACH Payment to OpenAI Payment Methods
+4. **Line Item Enrichment:** OpenAI requires complete product information in each line item, necessitating Product entity lookups to populate `name`, `variant_title`, `image_url`.
 
-Map payment authorization from ChatGPT to MACH Payment entity:
+5. **Metadata Preservation:** Store MACH-specific identifiers (Cart ID, Customer ID) in OpenAI's `metadata` field for bidirectional reference.
 
-```javascript
-function createPaymentFromCheckout(checkoutSession, paymentMethod, authorizationResult) {
-  return {
-    id: generatePaymentId(),
-    order_id: checkoutSession.metadata?.mach_order_id,
-    customer_id: checkoutSession.metadata?.mach_customer_id,
-    amount: checkoutSession.total_amount, // Already in cents
-    currency: checkoutSession.currency,
-    status: mapAuthorizationStatus(authorizationResult.status),
-    method: mapPaymentMethodType(paymentMethod.type),
-    provider: detectPaymentProvider(paymentMethod),
-    external_references: {
-      openai_checkout_session_id: checkoutSession.checkout_session_id,
-      payment_token: paymentMethod.token,
-      authorization_id: authorizationResult.authorization_id
-    },
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    transactions: [
-      {
-        id: generateTransactionId(),
-        type: 'authorization',
-        amount: checkoutSession.total_amount,
-        status: 'success',
-        timestamp: new Date().toISOString(),
-        reference: authorizationResult.authorization_id
-      }
-    ],
-    method_details: {
-      token: paymentMethod.token,
-      last4: paymentMethod.last4,
-      brand: paymentMethod.brand
-    },
-    extensions: {
-      openai: {
-        checkout_session_id: checkoutSession.checkout_session_id,
-        payment_method_type: paymentMethod.type
-      }
-    }
-  };
-}
+### MACH Payment ↔ OpenAI Payment Methods
 
-function mapAuthorizationStatus(authStatus) {
-  const statusMap = {
-    'succeeded': 'authorized',
-    'pending': 'pending',
-    'failed': 'failed'
-  };
-  return statusMap[authStatus] || 'pending';
-}
+**Payment Authorization Flow:**
 
-function mapPaymentMethodType(openaiType) {
-  const typeMap = {
-    'card': 'card',
-    'paypal': 'digital_wallet',
-    'apple_pay': 'digital_wallet',
-    'google_pay': 'digital_wallet'
-  };
-  return typeMap[openaiType] || 'card';
-}
-```
+1. **ChatGPT Collects Payment:** ChatGPT interface gathers payment details from customer
+2. **Payment Processor Authorization:** ChatGPT authorizes payment with processor (Stripe, PayPal, etc.)
+3. **Token Generation:** Payment processor returns authorization token and transaction ID
+4. **Token Transmission:** ChatGPT sends payment token to merchant in completion request
+5. **MACH Payment Entity Creation:** Merchant creates Payment entity with authorization details
 
-### MACH Order to OpenAI Order Events
+**Key Payment Mappings:**
 
-Transform MACH Order entity to OpenAI webhook event format:
+| **OpenAI Payment Method**        | **MACH Payment Entity**           | **Notes**                                                     |
+| -------------------------------- | --------------------------------- | ------------------------------------------------------------- |
+| `payment_method.type`            | `Payment.method`                  | Map `card` → `card`, `paypal` → `digital_wallet`              |
+| `payment_method.token`           | `Payment.external_references.payment_token` | Store processor token               |
+| `payment_method.last4`           | `Payment.method_details.last4`    | Card last 4 digits for display                                |
+| Authorization response           | `Payment.transactions[0]`         | Record authorization as first transaction                     |
+| Checkout session total           | `Payment.amount`                  | Payment amount in cents                                       |
 
-```javascript
-function createOrderCreatedEvent(machOrder, checkoutSessionId) {
-  return {
-    event_type: 'order.created',
-    event_id: generateEventId(),
-    timestamp: new Date().toISOString(),
-    order: {
-      order_id: machOrder.id,
-      checkout_session_id: checkoutSessionId,
-      status: mapOrderStatus(machOrder.status),
-      currency: machOrder.currency,
-      total_amount: Math.round(machOrder.total_amount * 100), // Convert to cents
-      
-      buyer_identity: {
-        email: machOrder.customer_email,
-        full_name: machOrder.customer_name,
-        phone: machOrder.customer_phone
-      },
-      
-      line_items: machOrder.line_items?.map(item => ({
-        line_item_id: item.id,
-        product_id: item.product_id,
-        variant_id: item.variant_id,
-        name: item.name,
-        quantity: item.quantity,
-        unit_amount: Math.round(item.unit_price * 100),
-        total_amount: Math.round(item.total_price * 100)
-      })) || [],
-      
-      shipping_address: transformAddress(machOrder.shipping_address),
-      billing_address: transformAddress(machOrder.billing_address),
-      
-      estimated_delivery_date: machOrder.estimated_delivery_date,
-      tracking_number: machOrder.tracking_number,
-      tracking_url: machOrder.tracking_url,
-      
-      metadata: {
-        mach_order_id: machOrder.id,
-        order_number: machOrder.order_number
-      }
-    }
-  };
-}
+### MACH Order ↔ OpenAI Order Events
 
-function createOrderShippedEvent(machOrder, checkoutSessionId) {
-  return {
-    event_type: 'order.shipped',
-    event_id: generateEventId(),
-    timestamp: new Date().toISOString(),
-    order: {
-      order_id: machOrder.id,
-      checkout_session_id: checkoutSessionId,
-      status: 'shipped',
-      tracking_number: machOrder.tracking_number,
-      tracking_url: machOrder.tracking_url,
-      shipped_at: machOrder.shipped_at,
-      estimated_delivery_date: machOrder.estimated_delivery_date
-    }
-  };
-}
+**Order Lifecycle Event Mapping:**
 
-function mapOrderStatus(machStatus) {
-  const statusMap = {
-    'pending': 'processing',
-    'confirmed': 'processing',
-    'processing': 'processing',
-    'shipped': 'shipped',
-    'delivered': 'delivered',
-    'cancelled': 'cancelled',
-    'refunded': 'refunded'
-  };
-  return statusMap[machStatus] || 'processing';
-}
-```
+| **MACH Order Status**    | **OpenAI Event Type**     | **When to Send**                                              |
+| ------------------------ | ------------------------- | ------------------------------------------------------------- |
+| Order created            | `order.created`           | Immediately after order confirmation                          |
+| Status change            | `order.updated`           | Any status change (payment captured, processing started)      |
+| Order shipped            | `order.shipped`           | When tracking number assigned and shipment created            |
+| Order delivered          | `order.delivered`         | When delivery confirmed (optional)                            |
+| Order cancelled          | `order.cancelled`         | When order cancellation processed                             |
+| Refund processed         | `order.refunded`          | When refund completed                                         |
+
+**Order Event Data Mapping:**
+
+| **MACH Order Field**             | **OpenAI Event Field**            | **Notes**                                                     |
+| -------------------------------- | --------------------------------- | ------------------------------------------------------------- |
+| `Order.id`                       | `order.order_id`                  | Merchant's order identifier                                   |
+| `Order.order_number`             | `metadata.order_number`           | Customer-facing order number                                  |
+| `Order.status`                   | `order.status`                    | Map to OpenAI status values                                   |
+| `Order.tracking_number`          | `order.tracking_number`           | Shipment tracking number                                      |
+| `Order.tracking_url`             | `order.tracking_url`              | Carrier tracking page URL                                     |
+| `Order.estimated_delivery_date`  | `order.estimated_delivery_date`   | ISO 8601 date format                                          |
+| `Order.external_references.openai_session_id` | `order.checkout_session_id` | Link back to original session    |
 
 ---
 
-## API Endpoint Implementations
+## Integration Patterns
 
-### POST /checkout_sessions
+### API Endpoint Requirements
 
-Create a new checkout session from cart items.
+The merchant must implement four core REST API endpoints:
 
-**Implementation Pattern:**
+#### 1. Create Checkout Session
+**Endpoint:** `POST /checkout_sessions`
 
-```javascript
-async function createCheckoutSession(request) {
-  // 1. Extract OpenAI request data
-  const { line_items, buyer_identity, currency, discount_codes } = request.body;
-  
-  // 2. Create MACH Cart entity
-  const cart = {
-    id: generateCartId(),
-    type: 'b2c',
-    status: 'active',
-    customer_email: buyer_identity?.email,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+**Purpose:** Initialize a new checkout session from cart items
+
+**Flow:**
+1. Receive line items and buyer identity from ChatGPT
+2. Create MACH Cart entity with line items
+3. Fetch Product details for each line item
+4. Calculate initial totals (subtotal only, no shipping/tax yet)
+5. Return checkout session with cart state
+
+**Key Considerations:**
+- Generate unique session ID for tracking
+- Store session ID in Cart entity for future lookups
+- Validate product availability before creating session
+- Lock product prices at session creation time
+
+#### 2. Update Checkout Session
+**Endpoint:** `POST /checkout_sessions/{checkout_session_id}`
+
+**Purpose:** Update existing session with items, addresses, shipping, or discounts
+
+**Flow:**
+1. Locate Cart entity by session ID
+2. Apply requested updates (line items, addresses, shipping method, discount codes)
+3. Recalculate all totals (shipping, tax, discounts)
+4. Validate updated cart state
+5. Return updated cart state
+
+**Key Considerations:**
+- Always recalculate totals after any update
+- Validate addresses for shipping availability
+- Calculate shipping options based on address
+- Apply tax calculations based on address
+- Validate and apply discount codes
+- Handle concurrent updates with optimistic locking
+
+#### 3. Complete Checkout
+**Endpoint:** `POST /checkout_sessions/{checkout_session_id}/complete`
+
+**Purpose:** Finalize checkout and create order
+
+**Flow:**
+1. Locate Cart entity by session ID
+2. Validate cart state (inventory, addresses, shipping method)
+3. Create Payment entity with authorization details
+4. Create Order entity from Cart
+5. Update Cart status to completed
+6. Send `order.created` webhook to OpenAI
+7. Return completion confirmation
+
+**Key Considerations:**
+- Validate inventory availability before order creation
+- Ensure payment authorization is valid
+- Atomic order creation (rollback on failure)
+- Immediate webhook notification
+- Reserve or decrement inventory
+
+#### 4. Cancel Checkout Session
+**Endpoint:** `POST /checkout_sessions/{checkout_session_id}/cancel`
+
+**Purpose:** Abandon checkout session
+
+**Flow:**
+1. Locate Cart entity by session ID
+2. Update Cart status to abandoned
+3. Release any reserved inventory
+4. Return cancellation confirmation
+
+**Key Considerations:**
+- Allow cancellation at any stage before completion
+- Clean up resources and reservations
+- Log abandonment for analytics
+
+### Webhook Implementation Pattern
+
+**Webhook Delivery Architecture:**
+
+```mermaid
+flowchart LR
+    A[Commerce Platform] --> B[Order Event Trigger]
+    B --> C{Event Type}
+    C -->|created| D[Build order.created Event]
+    C -->|updated| E[Build order.updated Event]
+    C -->|shipped| F[Build order.shipped Event]
+    C -->|cancelled| G[Build order.cancelled Event]
+    C -->|refunded| H[Build order.refunded Event]
     
-    line_items: await Promise.all(line_items.map(async item => {
-      // Fetch product details from Product entity
-      const product = await getProduct(item.product_id);
-      const variant = product.variants?.find(v => v.id === item.variant_id);
-      
-      return {
-        id: generateLineItemId(),
-        sku: variant.sku,
-        product_id: item.product_id,
-        variant_id: item.variant_id,
-        name: `${product.name} - ${variant.variant_title || ''}`,
-        quantity: item.quantity,
-        price: {
-          amount: variant.price.amount,
-          currency: currency || variant.price.currency,
-          type: 'retail'
-        }
-      };
-    })),
+    D --> I[Webhook Queue]
+    E --> I
+    F --> I
+    G --> I
+    H --> I
     
-    extensions: {
-      openai: {
-        checkout_session_id: generateCheckoutSessionId(),
-        source: 'openai_checkout'
-      }
-    }
-  };
-  
-  // 3. Apply discount codes if provided
-  if (discount_codes?.length > 0) {
-    cart.applied_promotions = await applyPromotions(cart, discount_codes);
-  }
-  
-  // 4. Calculate totals
-  cart.totals = await calculateCartTotals(cart);
-  
-  // 5. Save Cart entity
-  await saveCart(cart);
-  
-  // 6. Transform to OpenAI format and return
-  return transformCartToCheckoutSession(cart, cart.extensions.openai.checkout_session_id);
-}
+    I --> J[Webhook Delivery Service]
+    J --> K[Sign Payload]
+    K --> L[POST to OpenAI Webhook URL]
+    L --> M{Success?}
+    M -->|200 OK| N[Mark Delivered]
+    M -->|Error| O[Retry with Backoff]
+    O --> L
+    O -->|Max Retries| P[Alert & Dead Letter]
 ```
 
-### POST /checkout_sessions/{checkout_session_id}
+**Webhook Best Practices:**
 
-Update an existing checkout session with new items, shipping, or discounts.
+1. **Asynchronous Delivery:** Queue webhooks for reliable delivery, don't block order processing
+2. **Retry Logic:** Implement exponential backoff (e.g., 1s, 5s, 25s, 125s, 625s)
+3. **Webhook Signatures:** Sign payloads with HMAC for verification
+4. **Idempotency:** Include event IDs so OpenAI can deduplicate
+5. **Timeout Handling:** Set reasonable timeouts (5-10 seconds)
+6. **Dead Letter Queue:** Store failed webhooks after max retries for manual review
+7. **Monitoring:** Alert on high failure rates or delivery delays
 
-**Implementation Pattern:**
+### Session State Management
 
-```javascript
-async function updateCheckoutSession(checkoutSessionId, request) {
-  // 1. Find existing Cart entity by OpenAI session ID
-  const cart = await findCartBySessionId(checkoutSessionId);
-  
-  if (!cart) {
-    throw new Error('Checkout session not found');
-  }
-  
-  // 2. Apply updates based on request
-  const { line_items, shipping_address, billing_address, shipping_method_id, discount_codes } = request.body;
-  
-  // Update line items if provided
-  if (line_items) {
-    cart.line_items = await updateLineItems(cart, line_items);
-  }
-  
-  // Update shipping address
-  if (shipping_address) {
-    cart.addresses = cart.addresses || [];
-    const shippingIndex = cart.addresses.findIndex(a => a.type === 'shipping');
-    const mappedAddress = {
-      type: 'shipping',
-      address: {
-        line1: shipping_address.line1,
-        line2: shipping_address.line2,
-        city: shipping_address.city,
-        region: shipping_address.region,
-        postal_code: shipping_address.postal_code,
-        country: shipping_address.country
-      },
-      contact: {
-        first_name: shipping_address.full_name?.split(' ')[0],
-        last_name: shipping_address.full_name?.split(' ').slice(1).join(' '),
-        phone: shipping_address.phone
-      }
-    };
-    
-    if (shippingIndex >= 0) {
-      cart.addresses[shippingIndex] = mappedAddress;
-    } else {
-      cart.addresses.push(mappedAddress);
-    }
-    
-    // Calculate shipping methods based on address
-    cart.shipping_methods = await calculateShippingMethods(cart);
-  }
-  
-  // Update billing address
-  if (billing_address) {
-    cart.addresses = cart.addresses || [];
-    const billingIndex = cart.addresses.findIndex(a => a.type === 'billing');
-    const mappedAddress = {
-      type: 'billing',
-      address: {
-        line1: billing_address.line1,
-        line2: billing_address.line2,
-        city: billing_address.city,
-        region: billing_address.region,
-        postal_code: billing_address.postal_code,
-        country: billing_address.country
-      },
-      contact: {
-        first_name: billing_address.full_name?.split(' ')[0],
-        last_name: billing_address.full_name?.split(' ').slice(1).join(' '),
-        phone: billing_address.phone
-      }
-    };
-    
-    if (billingIndex >= 0) {
-      cart.addresses[billingIndex] = mappedAddress;
-    } else {
-      cart.addresses.push(mappedAddress);
-    }
-  }
-  
-  // Select shipping method
-  if (shipping_method_id) {
-    cart.shipping_methods = cart.shipping_methods?.map(method => ({
-      ...method,
-      selected: method.id === shipping_method_id
-    }));
-  }
-  
-  // Apply discount codes
-  if (discount_codes) {
-    cart.applied_promotions = await applyPromotions(cart, discount_codes);
-  }
-  
-  // 3. Recalculate totals (important!)
-  cart.totals = await calculateCartTotals(cart);
-  
-  // 4. Update timestamp
-  cart.updated_at = new Date().toISOString();
-  
-  // 5. Save updated Cart entity
-  await saveCart(cart);
-  
-  // 6. Transform to OpenAI format and return
-  return transformCartToCheckoutSession(cart, checkoutSessionId);
-}
+**Session Storage Options:**
+
+| **Approach**              | **Description**                                           | **Pros**                              | **Cons**                              |
+| ------------------------- | --------------------------------------------------------- | ------------------------------------- | ------------------------------------- |
+| **Stateful (Recommended)** | Store full Cart entity, update on each request          | Complete state, easy querying         | Requires database writes              |
+| **Stateless**             | Rebuild cart from minimal session data                    | No storage overhead                   | Complex rebuilding logic              |
+| **Hybrid**                | Cache Cart entity with TTL, rebuild if expired            | Balance performance and storage       | Cache invalidation complexity         |
+
+**Recommended: Stateful Approach**
+- Create Cart entity on session creation
+- Update Cart entity on each session update
+- Query Cart entity by session ID lookup
+- Maintain Cart as source of truth throughout session
+- Set reasonable session expiration (30-60 minutes)
+
+### Total Calculation Pattern
+
+**Calculation Flow:**
+
+```mermaid
+flowchart TD
+    A[Cart Updated] --> B[Calculate Subtotal]
+    B --> C[Line Items × Unit Price]
+    C --> D{Shipping Address?}
+    D -->|No| E[Subtotal Only]
+    D -->|Yes| F[Calculate Shipping Options]
+    F --> G[Calculate Tax]
+    G --> H{Discount Codes?}
+    H -->|No| I[Calculate Grand Total]
+    H -->|Yes| J[Apply Promotions]
+    J --> K[Calculate Discount Amount]
+    K --> I
+    I --> L[Return Cart Totals]
 ```
 
-### POST /checkout_sessions/{checkout_session_id}/complete
+**Critical Calculation Rules:**
 
-Complete the checkout and create an order.
-
-**Implementation Pattern:**
-
-```javascript
-async function completeCheckout(checkoutSessionId, request) {
-  // 1. Find Cart entity
-  const cart = await findCartBySessionId(checkoutSessionId);
-  
-  if (!cart) {
-    throw new Error('Checkout session not found');
-  }
-  
-  // 2. Validate cart state
-  await validateCartForCheckout(cart);
-  
-  // 3. Process payment authorization
-  const { payment_method, billing_address } = request.body;
-  
-  // Update billing address if provided
-  if (billing_address) {
-    const billingIndex = cart.addresses.findIndex(a => a.type === 'billing');
-    const mappedAddress = {
-      type: 'billing',
-      address: {
-        line1: billing_address.line1,
-        line2: billing_address.line2,
-        city: billing_address.city,
-        region: billing_address.region,
-        postal_code: billing_address.postal_code,
-        country: billing_address.country
-      },
-      contact: {
-        first_name: billing_address.full_name?.split(' ')[0],
-        last_name: billing_address.full_name?.split(' ').slice(1).join(' '),
-        phone: billing_address.phone
-      }
-    };
-    
-    if (billingIndex >= 0) {
-      cart.addresses[billingIndex] = mappedAddress;
-    } else {
-      cart.addresses = cart.addresses || [];
-      cart.addresses.push(mappedAddress);
-    }
-  }
-  
-  // 4. Create Payment entity
-  const payment = await createPaymentFromCheckout(
-    transformCartToCheckoutSession(cart, checkoutSessionId),
-    payment_method,
-    await authorizePayment(payment_method, cart.totals.grand_total)
-  );
-  
-  await savePayment(payment);
-  
-  // 5. Create Order entity from Cart
-  const order = await createOrderFromCart(cart, payment);
-  await saveOrder(order);
-  
-  // 6. Update cart status
-  cart.status = 'completed';
-  cart.updated_at = new Date().toISOString();
-  await saveCart(cart);
-  
-  // 7. Send order.created webhook to OpenAI
-  await sendWebhook(createOrderCreatedEvent(order, checkoutSessionId));
-  
-  // 8. Return completion response
-  return {
-    checkout_session_id: checkoutSessionId,
-    status: 'completed',
-    order_id: order.id,
-    currency: cart.totals.currency,
-    total_amount: Math.round(cart.totals.grand_total * 100),
-    confirmation_number: order.order_number,
-    metadata: {
-      mach_order_id: order.id,
-      mach_payment_id: payment.id,
-      mach_cart_id: cart.id
-    }
-  };
-}
-
-async function validateCartForCheckout(cart) {
-  // Validate inventory availability
-  for (const item of cart.line_items) {
-    const inventory = await getInventory(item.variant_id);
-    if (inventory.quantity < item.quantity) {
-      throw new Error(`Insufficient inventory for ${item.name}`);
-    }
-  }
-  
-  // Validate addresses
-  if (!cart.addresses?.find(a => a.type === 'shipping')) {
-    throw new Error('Shipping address required');
-  }
-  
-  // Validate shipping method selected
-  if (!cart.shipping_methods?.find(m => m.selected)) {
-    throw new Error('Shipping method required');
-  }
-  
-  // Additional validation as needed
-}
-
-async function createOrderFromCart(cart, payment) {
-  return {
-    id: generateOrderId(),
-    order_number: generateOrderNumber(),
-    customer_id: cart.customer_id,
-    customer_email: cart.customer_email,
-    status: 'confirmed',
-    currency: cart.totals.currency,
-    total_amount: cart.totals.grand_total,
-    
-    line_items: cart.line_items.map(item => ({
-      id: item.id,
-      sku: item.sku,
-      product_id: item.product_id,
-      variant_id: item.variant_id,
-      name: item.name,
-      quantity: item.quantity,
-      unit_price: item.price.amount,
-      total_price: item.price.amount * item.quantity
-    })),
-    
-    shipping_address: cart.addresses.find(a => a.type === 'shipping'),
-    billing_address: cart.addresses.find(a => a.type === 'billing'),
-    
-    payment_id: payment.id,
-    payment_status: payment.status,
-    
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    
-    external_references: {
-      openai_checkout_session_id: cart.extensions.openai.checkout_session_id,
-      cart_id: cart.id
-    }
-  };
-}
-```
-
-### POST /checkout_sessions/{checkout_session_id}/cancel
-
-Cancel a checkout session.
-
-**Implementation Pattern:**
-
-```javascript
-async function cancelCheckoutSession(checkoutSessionId) {
-  // 1. Find Cart entity
-  const cart = await findCartBySessionId(checkoutSessionId);
-  
-  if (!cart) {
-    throw new Error('Checkout session not found');
-  }
-  
-  // 2. Update cart status
-  cart.status = 'abandoned';
-  cart.updated_at = new Date().toISOString();
-  
-  // 3. Save updated cart
-  await saveCart(cart);
-  
-  // 4. Return cancellation confirmation
-  return {
-    checkout_session_id: checkoutSessionId,
-    status: 'cancelled',
-    cancelled_at: new Date().toISOString()
-  };
-}
-```
-
----
-
-## Webhook Implementation
-
-### Order Lifecycle Events
-
-Send order lifecycle events to OpenAI's webhook endpoint:
-
-**Implementation Pattern:**
-
-```javascript
-async function sendWebhook(eventPayload) {
-  const webhookUrl = process.env.OPENAI_WEBHOOK_URL;
-  const webhookSecret = process.env.OPENAI_WEBHOOK_SECRET;
-  
-  // Create signature for webhook verification
-  const signature = createWebhookSignature(eventPayload, webhookSecret);
-  
-  try {
-    const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Webhook-Signature': signature,
-        'X-Event-Type': eventPayload.event_type
-      },
-      body: JSON.stringify(eventPayload)
-    });
-    
-    if (!response.ok) {
-      console.error('Webhook delivery failed:', response.status);
-      // Implement retry logic here
-      await retryWebhook(eventPayload);
-    }
-    
-    return response;
-  } catch (error) {
-    console.error('Webhook error:', error);
-    await retryWebhook(eventPayload);
-  }
-}
-
-// Example: Send order.shipped event
-async function notifyOrderShipped(order) {
-  const checkoutSessionId = order.external_references?.openai_checkout_session_id;
-  
-  if (!checkoutSessionId) {
-    console.log('No OpenAI session ID, skipping webhook');
-    return;
-  }
-  
-  const event = createOrderShippedEvent(order, checkoutSessionId);
-  await sendWebhook(event);
-}
-
-// Example: Send order.updated event
-async function notifyOrderUpdated(order) {
-  const checkoutSessionId = order.external_references?.openai_checkout_session_id;
-  
-  if (!checkoutSessionId) {
-    return;
-  }
-  
-  const event = {
-    event_type: 'order.updated',
-    event_id: generateEventId(),
-    timestamp: new Date().toISOString(),
-    order: {
-      order_id: order.id,
-      checkout_session_id: checkoutSessionId,
-      status: mapOrderStatus(order.status),
-      updated_at: order.updated_at
-    }
-  };
-  
-  await sendWebhook(event);
-}
-```
+1. **Always Recalculate:** Never trust client-provided totals, always recalculate server-side
+2. **Order of Operations:** Subtotal → Shipping → Tax → Discounts → Grand Total
+3. **Tax Calculation:** Apply tax to (Subtotal + Shipping - Discounts) based on address
+4. **Rounding:** Round to currency precision (2 decimals for USD) at each step
+5. **Currency Consistency:** Ensure all amounts use same currency throughout session
 
 ---
 
 ## Variants / Alternatives
 
-**Session Storage Approaches:**
-- **Stateful Sessions:** Store full Cart entity, update on each request (recommended)
-- **Stateless Sessions:** Rebuild cart from minimal session data on each request
-- **Hybrid Approach:** Cache Cart entity with short TTL, rebuild if expired
+### Session Storage Strategies
 
-**Payment Integration Patterns:**
-- **Direct Payment Processor:** ChatGPT calls your processor directly (Stripe, PayPal)
-- **Payment Gateway:** Route through payment gateway for multiple processor support
-- **Stored Payment Methods:** Support returning customers with saved payment methods
-- **Alternative Payments:** Support Apple Pay, Google Pay, Buy Now Pay Later
+**Stateful Sessions (Recommended)**
+- Store complete Cart entity in database
+- Update on every session operation
+- Query by session ID for fast retrieval
+- Suitable for: Most implementations
 
-**Webhook Delivery:**
-- **Synchronous:** Send webhook immediately after order events
-- **Asynchronous Queue:** Queue webhooks for reliable delivery with retries
-- **Batch Updates:** Combine multiple updates into single webhook call
-- **Event Streaming:** Use event bus (Kafka, RabbitMQ) for webhook delivery
+**Stateless Sessions**
+- Store minimal session metadata only
+- Rebuild cart from line items on each request
+- Recalculate everything dynamically
+- Suitable for: High-scale, read-heavy workloads
 
-**Discount Code Handling:**
-- **Automatic Application:** Apply best available discount automatically
-- **Code Stacking:** Allow multiple discount codes
-- **Customer-Specific:** Apply account-level discounts from CRM
-- **Dynamic Pricing:** Real-time pricing from external systems
+**Hybrid Caching**
+- Cache Cart entity in Redis/Memcached
+- Rebuild from database if cache miss
+- Set TTL for automatic expiration
+- Suitable for: High-performance requirements
+
+### Payment Integration Approaches
+
+**Direct Integration**
+- ChatGPT authorizes directly with payment processor
+- Merchant receives payment token
+- Simplest approach, fewer moving parts
+- Example: Stripe, PayPal direct integration
+
+**Payment Gateway**
+- Route through payment gateway for multiple processors
+- Support various payment methods centrally
+- More complex but more flexible
+- Example: Adyen, Braintree
+
+**Stored Payment Methods**
+- Support returning customers with saved cards
+- Requires customer authentication
+- Faster checkout for repeat purchases
+- Requires PCI compliance consideration
+
+### Webhook Delivery Patterns
+
+**Synchronous (Not Recommended)**
+- Send webhook immediately in request flow
+- Blocks order processing on webhook failure
+- Simple but fragile
+
+**Asynchronous Queue (Recommended)**
+- Queue webhook events for async delivery
+- Retry failed deliveries automatically
+- Doesn't block order processing
+- Example: RabbitMQ, AWS SQS, Google Pub/Sub
+
+**Event Streaming**
+- Publish events to event bus
+- Webhook service consumes and delivers
+- Highly scalable and decoupled
+- Example: Kafka, AWS EventBridge
 
 ---
 
