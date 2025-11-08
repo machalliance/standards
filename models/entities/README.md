@@ -78,9 +78,6 @@ erDiagram
 ## Inventory
 - [Inventory](inventory/inventory.md)
 
-## Shipping
-- Shipping Method
-
 ## Identity
 - [Customer](identity/customer.md)
 

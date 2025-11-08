@@ -383,6 +383,9 @@ Package:
       type: array
       items:
         type: object
+        required:
+          - order_line_item_id
+          - quantity
         properties:
           order_line_item_id:
             type: string
@@ -816,8 +819,6 @@ Partial shipment with remaining items on backorder.
   "order_id": "ORDER-22222",
   "status": "shipped",
   "created_at": "2024-07-18T08:00:00Z",
-
-```json
   "updated_at": "2024-07-18T12:00:00Z",
   "fulfillment_type": "shipment",
   "line_items": [

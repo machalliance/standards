@@ -61,7 +61,6 @@ The Product entity represents the master product information shared across all v
 | `tags`                | Array of tags for filtering and search                               | COULD       |
 | `options`             | Array of option definitions for variants                             | SHOULD      |
 | `default_variant_id`  | ID of the primary/master variant                                     | SHOULD      |
-| `item_group_id`       | Variant group ID                                                     | SHOULD      |
 | `variants`            | Array of product variants (Option 1)                                 | SHOULD      |
 | `fulfillment_type`    | How the product is delivered (`physical`, `digital`, `service`)      | SHOULD      |
 | `shipping_methods`    | Potential shipping options using [Shipping Method](../fulfillment/shipping-method.md) | SHOULD |
@@ -209,10 +208,6 @@ Product:
     default_variant_id:
       type: string
       description: ID of the primary/master variant
-
-    item_group_id:
-      type: string
-      description: Group variants      
 
     variants:
       type: array
@@ -503,7 +498,6 @@ This approach embeds variants within the product entity, following the pattern u
   "description": "Comfortable cotton t-shirt",
   "status": "active",
   "brand": "MACH Apparel",
-  "item_group_id": "PROD-001-VARS",
   "categories": ["apparel", "shirts"],
   "default_variant_id": "VAR-001",
   "fulfillment_type": "physical",
@@ -581,7 +575,6 @@ This approach uses separate Product and ProductVariant entities, connected by re
   "description": "Comfortable cotton t-shirt",
   "status": "active",
   "brand": "MACH Apparel",
-  "item_group_id": "PROD-001-VARS",  
   "categories": ["apparel", "shirts"],
   "default_variant_id": "VAR-001",
   "fulfillment_type": "physical",

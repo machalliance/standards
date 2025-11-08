@@ -105,7 +105,7 @@ ShippingMethod:
           additionalProperties:
             type: string
       description: Display name of the shipping method
-      # example: "Standard Ground Shipping" or {"en-US": "Standard Ground", "es-ES": "EnvĂ­o EstĂˇndar"}
+      # example: "Standard Ground Shipping" or {"en-US": "Standard Ground", "es-ES": "Envío Estándar"}
 
     status:
       type: string
@@ -507,7 +507,7 @@ Complete standard shipping method with comprehensive configuration.
   "id": "SHIP-STANDARD-001",
   "name": {
     "en-US": "Standard Ground Shipping",
-    "es-ES": "EnvĂ­o EstĂˇndar Terrestre",
+    "es-ES": "Envío Estándar Terrestre",
     "fr-FR": "Livraison Standard au Sol"
   },
   "status": "active",
@@ -520,8 +520,8 @@ Complete standard shipping method with comprehensive configuration.
   "updated_at": "2024-07-15T10:30:00Z",
   "description": {
     "en-US": "Reliable ground shipping delivered within 3-5 business days",
-    "es-ES": "EnvĂ­o terrestre confiable entregado en 3-5 dĂ­as hĂˇbiles",
-    "fr-FR": "Livraison au sol fiable dans les 3 Ă  5 jours ouvrables"
+    "es-ES": "Envío terrestre confiable entregado en 3-5 días hábiles",
+    "fr-FR": "Livraison au sol fiable dans les 3 à 5 jours ouvrables"
   },
   "carrier_id": "CARRIER-UPS",
   "carrier_name": "UPS",
@@ -969,13 +969,13 @@ All fields that are displayed to end users support flexible localization. Fields
 {
   "name": {
     "en-US": "Standard Shipping",
-    "es-ES": "EnvĂ­o EstĂˇndar",
+    "es-ES": "Envío Estándar",
     "fr-FR": "Livraison Standard"
   },
   "description": {
     "en-US": "Reliable delivery within 3-5 business days",
-    "es-ES": "Entrega confiable en 3-5 dĂ­as hĂˇbiles",
-    "fr-FR": "Livraison fiable sous 3 Ă  5 jours ouvrables"
+    "es-ES": "Entrega confiable en 3-5 días hábiles",
+    "fr-FR": "Livraison fiable sous 3 à 5 jours ouvrables"
   }
 }
 ```
