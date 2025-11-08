@@ -48,7 +48,7 @@ The model supports:
 | `location_id`         | Reference to the inventory location                                                 | MUST        |
 | `quantities`          | Stock quantities (on_hand, reserved, available, incoming)                           | MUST        |
 | `status`              | Lifecycle state (`draft`, `active`, `inactive`)                                     | SHOULD      |
-| `stock_status`        | Calculated availability state (`in_stock`, `out_of_stock`, `backorder`, `preorder`) | SHOULD      |
+| `availability`        | Calculated availability state (`in_stock`, `out_of_stock`, `backorder`, `preorder`) | SHOULD      |
 | `external_references` | Dictionary of cross-system IDs (e.g., WMS, ERP, 3PL)                                | SHOULD      |
 | `created_at`          | ISO 8601 creation timestamp                                                         | SHOULD      |
 | `updated_at`          | ISO 8601 update timestamp                                                           | SHOULD      |
@@ -102,7 +102,7 @@ Inventory:
       description: Lifecycle state of the inventory record
       default: "active"
 
-    stock_status:
+    availability:
       type: string
       enum: ["in_stock", "out_of_stock", "backorder", "preorder"]
       description: Calculated availability state

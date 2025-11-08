@@ -444,6 +444,10 @@ Complete order with all fields populated.
       "points_earned": 365,
       "tier_at_purchase": "gold",
       "source": "talonone"
+    },
+    "fulfillment": {
+      "fulfillment_type": "shipment",
+      "fulfillment_id": "FULFILL-STD-001"
     }
   }
 }

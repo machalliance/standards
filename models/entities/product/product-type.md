@@ -45,7 +45,7 @@ The Entity describes:
 - Data type constraints and allowed values
 - Localization requirements for global commerce
 - Compliance and regulatory attribute requirements
-- Integration with external classification systems (UNSPSC, eCl@ss)
+- Integration with external classification systems ([UNSPSC](https://www.ungm.org/public/unspsc), [ECLASS](https://eclass.eu/en))
 - Versioning and evolution of product schemas
 - Channel and region-specific attribute variations
 

@@ -10,6 +10,8 @@ erDiagram
     Product 0+ optionally to 1+ "Media(s)":::couldRel : "has media"
     Product 1 to 1+ Inventory:::entity : "has stock in"
     Product 0+ optionally to 1+ Pricing:::entity : "has pricing for"
+    Product 1 optionally to 0+ "Shipping Method":::optionalRel : "eligible for"
+
 
     %% Cart relationships
     Cart:::entity 1 to 1 Customer:::entity : "belongs to"
@@ -62,6 +64,10 @@ erDiagram
 ## Payment
 - [Payment](payment/payment.md)
 
+## Fulfillment
+- [Fulfillment](fulfillment/fulfillment.md)
+- [Shipping Method](fulfillment/shipping-method.md)
+
 ## Pricing
 - [Pricing](pricing/pricing.md)
 
@@ -71,9 +77,6 @@ erDiagram
 
 ## Inventory
 - [Inventory](inventory/inventory.md)
-
-## Shipping
-- Shipping Method
 
 ## Identity
 - [Customer](identity/customer.md)

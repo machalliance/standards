@@ -302,6 +302,10 @@ Complete order history with all fields populated.
       "satisfaction_score": 4.5,
       "source": "zendesk"
     },
+    "fulfillment": {
+      "fulfillment_type": "shipment",
+      "fulfillment_id": "FULFILL-STD-001"
+    },    
     "analytics": {
       "frequent_categories": ["electronics", "books"],
       "purchase_frequency": "monthly",
