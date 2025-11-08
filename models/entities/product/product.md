@@ -88,7 +88,7 @@ The ProductVariant entity represents individual sellable items with specific att
 | `cost`              | Cost of goods for margin calculations using [money](../utilities/money.md) utility object | COULD    |
 | `weight`            | Physical weight for shipping calculations               | SHOULD   |
 | `dimensions`        | Physical dimensions (length, width, height)             | COULD    |
-| `barcodes`          | Array of barcode objects (type, value; e.g., UPC, GTIN) | COULD    |
+| `barcodes`          | Object of barcode identifiers (e.g., UPC, GTIN, MPN)     | COULD    |
 | `inventory`         | Inventory levels and tracking                           | SHOULD   |
 | `tax_category`      | Tax classification override (if different from product) | COULD    |
 | `shipping_required` | Whether physical shipping is needed                     | SHOULD   |
@@ -656,10 +656,10 @@ A simple product with only one variant (following the pattern that every product
     "value": 200,
     "unit": "g"
     },
-    "barcodes": [
-      { "upc", "1234567890123" },
-      { "gtin", "9876543210987" }
-    ],
+    "barcodes": {
+      "upc": "1234567890123",
+      "gtin": "9876543210987"
+    },
     "shipping_required": true
   }
   ],
